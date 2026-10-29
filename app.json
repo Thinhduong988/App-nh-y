@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Độ Nhạy Free Fire Pro",
+    "slug": "ff-sensitivity-pro",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0D0E12",
+    "sdkVersion": "51.0.0",
+    "splash": {
+      "backgroundColor": "#0D0E12",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.ffpro.sensitivity",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#0D0E12"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e0ca9158-e9ba-47ee-a26b-9542f747f136"
+      }
+    }
+  }
+}

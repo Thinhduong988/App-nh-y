@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Độ Nhạy Free Fire Pro 2026 - Sci-Fi Cosmic Edition</title>
+  <style>
+    :root {
+      --bg: #07050E;
+      --bg-nebula: radial-gradient(circle at 50% 0%, #200E42 0%, #0D0820 40%, #07050E 100%);
+      --surface: #110A24;
+      --card: #180F33;
+      --card-alt: #1F1442;
+      --primary: #FF6200;
+      --primary-light: #FF8533;
+      --primary-glow: rgba(255, 98, 0, 0.45);
+      --secondary: #FFB800;
+      --secondary-glow: rgba(255, 184, 0, 0.35);
+      --cyan: #00F0FF;
+      --cyan-glow: rgba(0, 240, 255, 0.3);
+      --text: #FFFFFF;
+      --text-muted: #9D96B8;
+      --border: #2D1B54;
+      --border-glow: #6038A8;
+      --green: #00FF88;
+      --red: #FF3B30;
+      --overlay: rgba(5, 3, 12, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Orbitron', Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #040208 radial-gradient(circle at 50% 20%, #15092B 0%, #040208 80%);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 12px;
+    }
+
+    /* Cosmic Galaxy Phone Frame */
+    .phone-wrapper {
+      width: 100%;
+      max-width: 430px;
+      height: 890px;
+      background: var(--bg-nebula);
+      border-radius: 42px;
+      border: 3px solid #3A236E;
+      box-shadow: 0 0 50px rgba(112, 51, 255, 0.25), 0 0 80px rgba(255, 98, 0, 0.2), 0 25px 60px rgba(0, 0, 0, 0.95);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Ambient Cosmic Grid */
+    .phone-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 350px;
+      background: radial-gradient(circle at 80% 10%, rgba(255, 98, 0, 0.12) 0%, transparent 60%),
+                  radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.08) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .phone-notch {
+      width: 130px;
+      height: 24px;
+      background: #0E071F;
+      margin: 0 auto;
+      border-bottom-left-radius: 14px;
+      border-bottom-right-radius: 14px;
+      border: 1px solid #3A236E;
+      border-top: none;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .notch-camera {
+      width: 10px;
+      height: 10px;
+      background: #030108;
+      border-radius: 50%;
+      border: 1px solid #553399;
+    }
+    .notch-speaker {
+      width: 40px;
+      height: 4px;
+      background: #251642;
+      border-radius: 2px;
+    }
+
+    .app-screen {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      padding-bottom: 95px;
+      scroll-behavior: smooth;
+      position: relative;
+      z-index: 2;
+    }
+    .app-screen::-webkit-scrollbar { display: none; }
+
+    /* Tactical Navigation Bar */
+    .nav-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: rgba(17, 10, 36, 0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-glow);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 90;
+      padding-bottom: 6px;
+      box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.6);
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+      flex: 1;
+      position: relative;
+    }
+    .nav-item.active {
+      color: var(--secondary);
+    }
+    .nav-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      width: 28px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 2px;
+      box-shadow: 0 0 10px var(--primary);
+    }
+    .nav-item span.icon {
+      font-size: 20px;
+      margin-bottom: 2px;
+      filter: drop-shadow(0 0 4px rgba(255, 184, 0, 0.2));
+    }
+    .nav-item.active span.icon {
+      filter: drop-shadow(0 0 8px var(--primary));
+      transform: translateY(-2px);
+    }
+
+    /* Headings & Sci-Fi Labels */
+    .title-h1 {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #FFFFFF, var(--secondary), var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sub-title {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      letter-spacing: 0.3px;
+    }
+
+    /* Tactical Chamfered Cards */
+    .scifi-panel {
+      background: linear-gradient(135deg, rgba(24, 15, 51, 0.95), rgba(17, 10, 36, 0.95));
+      border: 1px solid var(--border-glow);
+      position: relative;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(96, 56, 168, 0.15);
+      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    }
+    .scifi-panel::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 14px; height: 14px;
+      border-top: 2px solid var(--secondary);
+      border-right: 2px solid var(--secondary);
+    }
+    .scifi-panel::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 14px; height: 14px;
+      border-bottom: 2px solid var(--primary);
+      border-left: 2px solid var(--primary);
+    }
+
+    .badge-tactical {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 98, 0, 0.18);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      padding: 3px 9px;
+      text-transform: uppercase;
+      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+      box-shadow: 0 0 10px rgba(255, 98, 0, 0.25);
+    }
+    .badge-cyan {
+      background: rgba(0, 240, 255, 0.15);
+      color: var(--cyan);
+      border-color: var(--cyan);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+    }
+    .badge-gold {
+      background: rgba(255, 184, 0, 0.15);
+      color: var(--secondary);
+      border-color: var(--secondary);
+      box-shadow: 0 0 10px rgba(255, 184, 0, 0.25);
+    }
+
+    /* Stats Row */
+    .stats-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .stat-card {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 10px 6px;
+      text-align: center;
+      clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    }
+    .stat-val {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--secondary);
+      text-shadow: 0 0 10px var(--secondary-glow);
+    }
+    .stat-lbl {
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* Search Input Box */
+    .search-box {
+      background: var(--card);
+      border: 1px solid var(--border-glow);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 14px;
+      clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+      box-shadow: 0 0 12px rgba(96, 56, 168, 0.2);
+    }
+    .search-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      flex: 1;
+      margin-left: 8px;
+      font-size: 13px;
+    }
+    .search-box input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Brands & Devices */
+    .brand-grid { display: flex; flex-direction: column; gap: 8px; }
+    .brand-card {
+      background: linear-gradient(90deg, var(--card) 0%, var(--surface) 100%);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--primary);
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+    }
+    .brand-card:active {
+      transform: scale(0.98);
+      border-color: var(--primary);
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+    .brand-card-left { display: flex; align-items: center; gap: 12px; }
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: var(--surface);
+      border: 1px solid var(--border-glow);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    }
+
+    .device-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--primary);
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+    }
+    .device-card:active {
+      transform: scale(0.98);
+      border-color: var(--secondary);
+      box-shadow: 0 0 12px var(--secondary-glow);
+    }
+    .score-badge {
+      background: rgba(255, 98, 0, 0.15);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      font-weight: 900;
+      font-size: 14px;
+      padding: 5px 9px;
+      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    /* Sci-Fi Sliders */
+    .slider-box {
+      margin-bottom: 12px;
+      background: rgba(17, 10, 36, 0.6);
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .slider-track {
+      height: 7px;
+      background: #090514;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid #2D1B54;
+    }
+    .slider-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #FF6200, #FFB800);
+      box-shadow: 0 0 8px var(--primary);
+      border-radius: 4px;
+    }
+
+    /* HUD Simulator with Tactical Crosshair */
+    .hud-box {
+      background: #06030F radial-gradient(circle, rgba(255, 98, 0, 0.08) 0%, transparent 70%);
+      border: 1px solid var(--border-glow);
+      padding: 16px;
+      text-align: center;
+      margin: 14px 0;
+      position: relative;
+      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    }
+    .hud-box::before {
+      content: '[ RADAR HUD TACTICAL 2026 ]';
+      position: absolute;
+      top: 6px;
+      left: 10px;
+      font-size: 8px;
+      color: var(--cyan);
+      letter-spacing: 1px;
+      font-weight: 900;
+    }
+    .fire-button-sim {
+      background: radial-gradient(circle, rgba(255, 98, 0, 0.35) 0%, rgba(255, 98, 0, 0.1) 80%);
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      margin: 10px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 25px var(--primary-glow), inset 0 0 12px var(--primary-glow);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .fire-button-sim:active {
+      transform: scale(0.94);
+      box-shadow: 0 0 35px var(--secondary);
+    }
+
+    /* Tactical Action Buttons */
+    .btn-row { display: flex; gap: 8px; margin: 14px 0; }
+    .btn {
+      flex: 1;
+      padding: 12px 14px;
+      border: none;
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+      clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, #FF8500 100%);
+      color: #FFFFFF;
+      box-shadow: 0 0 18px var(--primary-glow);
+    }
+    .btn-primary:active {
+      transform: scale(0.97);
+      box-shadow: 0 0 28px var(--primary);
+    }
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--secondary) 0%, #FFA000 100%);
+      color: #07050E;
+      box-shadow: 0 0 15px var(--secondary-glow);
+    }
+    .btn-outline {
+      background: var(--surface);
+      color: #FFFFFF;
+      border: 1px solid var(--border-glow);
+      box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    }
+    .btn-outline:active {
+      border-color: var(--secondary);
+      box-shadow: 0 0 14px var(--secondary-glow);
+    }
+
+    /* Chip Selection */
+    .chip-group { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 6px 11px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+    }
+    .chip.active {
+      background: rgba(255, 98, 0, 0.2);
+      border-color: var(--primary);
+      color: var(--secondary);
+      font-weight: 800;
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: absolute;
+      top: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--primary), #FF8500);
+      color: #fff;
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      padding: 8px 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px var(--primary);
+      display: none;
+      z-index: 500;
+      white-space: nowrap;
+    }
+
+    /* Modal Overlay for Save & Rename */
+    .modal-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--overlay);
+      backdrop-filter: blur(8px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 400;
+    }
+    .modal-card {
+      background: #140C2E;
+      border: 2px solid var(--primary);
+      width: 100%;
+      max-width: 380px;
+      padding: 20px;
+      box-shadow: 0 0 35px var(--primary-glow), 0 20px 40px rgba(0,0,0,0.9);
+      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+      position: relative;
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--secondary);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .modal-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+    .modal-input {
+      width: 100%;
+      background: #0B061A;
+      border: 1px solid var(--border-glow);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 12px;
+      outline: none;
+      margin-bottom: 12px;
+      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+    }
+    .modal-input:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 12px var(--secondary-glow);
+    }
+    .quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .tag-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      cursor: pointer;
+      clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
+    }
+    .tag-btn:hover, .tag-btn:active {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone-wrapper">
+  <div class="phone-notch">
+    <div class="notch-speaker"></div>
+    <div class="notch-camera"></div>
+  </div>
+  <div class="toast" id="toastMsg">Thành công!</div>
+
+  <!-- Main Viewport -->
+  <div class="app-screen" id="appContent"></div>
+
+  <!-- Bottom Tactical Tabs -->
+  <div class="nav-bar">
+    <div class="nav-item active" onclick="switchTab('home')">
+      <span class="icon">🌌</span>
+      <span>Vũ Trụ</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('sens')">
+      <span class="icon">🎯</span>
+      <span>Độ Nhạy</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('gen')">
+      <span class="icon">⚡</span>
+      <span>Tạo 5D</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('account')">
+      <span class="icon">👤</span>
+      <span>Hồ Sơ</span>
+    </div>
+  </div>
+
+  <!-- SAVE MODAL (Allows multiple saves with custom name) -->
+  <div class="modal-overlay" id="saveModalOverlay">
+    <div class="modal-card">
+      <div class="modal-title">💾 LƯU CẤU HÌNH VÀO BỘ NHỚ</div>
+      <div class="modal-desc">Đặt tên riêng cho cấu hình độ nhạy này để dễ dàng chuyển đổi khi thi đấu hoặc bắn giải:</div>
+      <input type="text" id="saveConfigTitleInput" class="modal-input" placeholder="Nhập tên cấu hình (vd: Sấy MP40 Cực Gắt)">
+      <div style="font-size:10px; color:var(--secondary); font-weight:bold; margin-bottom:6px;">Gợi ý gắn thẻ nhanh:</div>
+      <div class="quick-tags">
+        <span class="tag-btn" onclick="appendTagToSave('[🔥 Bắn Giải]')">[🔥 Bắn Giải]</span>
+        <span class="tag-btn" onclick="appendTagToSave('[🎯 Shotgun One-Shot]')">[🎯 Shotgun]</span>
+        <span class="tag-btn" onclick="appendTagToSave('[⚡ Sấy MP40]')">[⚡ Sấy MP40]</span>
+        <span class="tag-btn" onclick="appendTagToSave('[🏆 Leo Thách Đấu]')">[🏆 Thách Đấu]</span>
+        <span class="tag-btn" onclick="appendTagToSave('[💎 Tầm Xa]')">[💎 Tầm Xa]</span>
+      </div>
+      <div class="btn-row" style="margin-bottom:0;">
+        <button class="btn btn-outline" onclick="closeSaveModal()">HỦY</button>
+        <button class="btn btn-primary" onclick="confirmSaveConfig()">LƯU NGAY</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RENAME MODAL (Allows renaming any saved config) -->
+  <div class="modal-overlay" id="renameModalOverlay">
+    <div class="modal-card">
+      <div class="modal-title">✏️ ĐỔI TÊN CẤU HÌNH</div>
+      <div class="modal-desc">Cập nhật tên mới cho cấu hình độ nhạy của bạn:</div>
+      <input type="text" id="renameConfigTitleInput" class="modal-input" placeholder="Tên cấu hình mới...">
+      <div class="btn-row" style="margin-bottom:0;">
+        <button class="btn btn-outline" onclick="closeRenameModal()">HỦY</button>
+        <button class="btn btn-primary" onclick="confirmRenameConfig()">XÁC NHẬN</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const BRANDS = [
+    { id: 'Apple', name: 'Apple', icon: '🍏', badge: 'iOS 120Hz' },
+    { id: 'Samsung', name: 'Samsung', icon: '📱', badge: 'OneUI' },
+    { id: 'Xiaomi', name: 'Xiaomi', icon: '⚡', badge: 'HyperOS' },
+    { id: 'REDMI', name: 'REDMI', icon: '🔥', badge: 'Quốc Dân' },
+    { id: 'POCO', name: 'POCO', icon: '🚀', badge: 'Gaming' },
+    { id: 'iQOO', name: 'iQOO', icon: '🎯', badge: 'Esports' },
+    { id: 'Vivo', name: 'Vivo', icon: '💎', badge: 'Funtouch' },
+    { id: 'OPPO', name: 'OPPO', icon: '🌟', badge: 'ColorOS' },
+    { id: 'Realme', name: 'Realme', icon: '⚡', badge: 'RealmeUI' },
+    { id: 'REDMAGIC', name: 'REDMAGIC', icon: '🎮', badge: '165Hz Pro' },
+    { id: 'ROGPHONE', name: 'ROGPHONE', icon: '👑', badge: 'Ultimate' },
+    { id: 'HONOR', name: 'HONOR', icon: '🛡️', badge: 'MagicOS' },
+    { id: 'OnePlus', name: 'OnePlus', icon: '🏎️', badge: 'OxygenOS' },
+    { id: 'Huawei', name: 'Huawei', icon: '🌐', badge: 'HarmonyOS' },
+    { id: 'Infinix', name: 'Infinix', icon: '♾️', badge: 'XOS' },
+    { id: 'Tecno', name: 'Tecno', icon: '🔷', badge: 'HiOS' },
+  ];
+
+const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Max", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip16pm", "brand": "Apple", "name": "iPhone 16 Pro Max", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip15pm", "brand": "Apple", "name": "iPhone 15 Pro Max", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip14pm", "brand": "Apple", "name": "iPhone 14 Pro Max", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip13pm", "brand": "Apple", "name": "iPhone 13 Pro Max", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip12pm", "brand": "Apple", "name": "iPhone 12 Pro Max", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip17p", "brand": "Apple", "name": "iPhone 17 Pro", "gen": 184, "red": 174, "s2x": 168, "s4x": 160, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip16p", "brand": "Apple", "name": "iPhone 16 Pro", "gen": 184, "red": 174, "s2x": 168, "s4x": 160, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip15p", "brand": "Apple", "name": "iPhone 15 Pro", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip14p", "brand": "Apple", "name": "iPhone 14 Pro", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip13p", "brand": "Apple", "name": "iPhone 13 Pro", "gen": 184, "red": 174, "s2x": 168, "s4x": 160, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip12p", "brand": "Apple", "name": "iPhone 12 Pro", "gen": 184, "red": 174, "s2x": 168, "s4x": 160, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip11p", "brand": "Apple", "name": "iPhone 11 Pro / 11 Pro Max", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip17", "brand": "Apple", "name": "iPhone 17", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip16", "brand": "Apple", "name": "iPhone 16 / 16 Plus", "gen": 188, "red": 178, "s2x": 172, "s4x": 164, "awm": 75, "look": 143, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip15", "brand": "Apple", "name": "iPhone 15 / 15 Plus", "gen": 188, "red": 178, "s2x": 172, "s4x": 164, "awm": 75, "look": 143, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip14", "brand": "Apple", "name": "iPhone 14 / 14 Plus", "gen": 188, "red": 178, "s2x": 172, "s4x": 164, "awm": 75, "look": 143, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip13", "brand": "Apple", "name": "iPhone 13 / 13 Mini", "gen": 188, "red": 178, "s2x": 172, "s4x": 164, "awm": 75, "look": 143, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip12", "brand": "Apple", "name": "iPhone 12 / 12 Mini", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip11", "brand": "Apple", "name": "iPhone 11", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ipxs", "brand": "Apple", "name": "iPhone XS / XS Max", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip-x", "brand": "Apple", "name": "iPhone X / XR", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip-8-plus", "brand": "Apple", "name": "iPhone 8 Plus", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip-8", "brand": "Apple", "name": "iPhone 8 (Thường)", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip-7-plus", "brand": "Apple", "name": "iPhone 7 Plus", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip-7", "brand": "Apple", "name": "iPhone 7", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip-6s", "brand": "Apple", "name": "iPhone 6s / 6s Plus", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-se3", "brand": "Apple", "name": "iPhone SE 3 (2022)", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-se2", "brand": "Apple", "name": "iPhone SE 2 (2020)", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ipad-pro-m4", "brand": "Apple", "name": "iPad Pro M4 (2024)", "gen": 178, "red": 166, "s2x": 160, "s4x": 152, "awm": 71, "look": 133, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 38, "hud": "Đáy 10% • Phải 16%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ipad-pro-m2", "brand": "Apple", "name": "iPad Pro M2 / M1", "gen": 178, "red": 166, "s2x": 160, "s4x": 152, "awm": 71, "look": 133, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 38, "hud": "Đáy 10% • Phải 16%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ipad-air-m2", "brand": "Apple", "name": "iPad Air M2 / M1", "gen": 178, "red": 166, "s2x": 160, "s4x": 152, "awm": 71, "look": 133, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 38, "hud": "Đáy 10% • Phải 16%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ipad-10", "brand": "Apple", "name": "iPad 10 / iPad 9 (Thường)", "gen": 178, "red": 166, "s2x": 160, "s4x": 152, "awm": 71, "look": 133, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 38, "hud": "Đáy 10% • Phải 16%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ipad-mini-6", "brand": "Apple", "name": "iPad Mini 6 / Mini 7", "gen": 178, "red": 166, "s2x": 160, "s4x": 152, "awm": 71, "look": 133, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 38, "hud": "Đáy 10% • Phải 16%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s26u", "brand": "Samsung", "name": "Galaxy S26 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "450 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s25u", "brand": "Samsung", "name": "Galaxy S25 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "460 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s24u", "brand": "Samsung", "name": "Galaxy S24 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "470 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s23u", "brand": "Samsung", "name": "Galaxy S23 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "470 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s22u", "brand": "Samsung", "name": "Galaxy S22 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s21u", "brand": "Samsung", "name": "Galaxy S21 Ultra 5G", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-note20u", "brand": "Samsung", "name": "Galaxy Note 20 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s25-plus", "brand": "Samsung", "name": "Galaxy S25 Plus / S25", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "470 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s24-plus", "brand": "Samsung", "name": "Galaxy S24 Plus / S24", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "450 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s24fe", "brand": "Samsung", "name": "Galaxy S24 FE", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "460 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s23-plus", "brand": "Samsung", "name": "Galaxy S23 Plus / S23", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "440 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s23fe", "brand": "Samsung", "name": "Galaxy S23 FE", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "450 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s22", "brand": "Samsung", "name": "Galaxy S22 / S22 Plus", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "460 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-s21", "brand": "Samsung", "name": "Galaxy S21 / S21 Plus", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "470 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-s21fe", "brand": "Samsung", "name": "Galaxy S21 FE 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "475 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-s20fe", "brand": "Samsung", "name": "Galaxy S20 FE 5G / S20", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-ga73", "brand": "Samsung", "name": "Galaxy A73 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-ga56", "brand": "Samsung", "name": "Galaxy A56 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-ga55", "brand": "Samsung", "name": "Galaxy A55 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-ga54", "brand": "Samsung", "name": "Galaxy A54 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-ga53", "brand": "Samsung", "name": "Galaxy A53 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-ga36", "brand": "Samsung", "name": "Galaxy A36 5G", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "ss-ga35", "brand": "Samsung", "name": "Galaxy A35 / A34", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "ss-ga26", "brand": "Samsung", "name": "Galaxy A26 5G", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "ss-ga25", "brand": "Samsung", "name": "Galaxy A25 / A24", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "ss-ga16", "brand": "Samsung", "name": "Galaxy A16 5G / A16", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "470 (An toàn: <500)", "safeMax": 500, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "ss-ga15", "brand": "Samsung", "name": "Galaxy A15 / A14", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "465 (An toàn: <500)", "safeMax": 500, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "ss-ga06", "brand": "Samsung", "name": "Galaxy A06 / A05s / A05", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "450 (An toàn: <500)", "safeMax": 500, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "ss-m55-f55", "brand": "Samsung", "name": "Galaxy M55 / F55 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-m35-f35", "brand": "Samsung", "name": "Galaxy M35 / F35 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "460 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-m34-f34", "brand": "Samsung", "name": "Galaxy M34 / F34 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "440 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-m15", "brand": "Samsung", "name": "Galaxy M15 5G / F15", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "465 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-15-ultra", "brand": "Xiaomi", "name": "Xiaomi 15 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "mi-14-ultra", "brand": "Xiaomi", "name": "Xiaomi 14 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "mi-13-ultra", "brand": "Xiaomi", "name": "Xiaomi 13 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "mi-mix-fold-4", "brand": "Xiaomi", "name": "Xiaomi MIX Fold 4 / Flip", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-mix-flip", "brand": "Xiaomi", "name": "Xiaomi MIX Flip", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "520 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-15-pro", "brand": "Xiaomi", "name": "Xiaomi 15 Pro / 15", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "mi-14-pro", "brand": "Xiaomi", "name": "Xiaomi 14 Pro / 14T Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "520 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "mi-13-pro", "brand": "Xiaomi", "name": "Xiaomi 13 Pro / 13T Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-12-pro", "brand": "Xiaomi", "name": "Xiaomi 12 Pro / 12T Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-11-pro", "brand": "Xiaomi", "name": "Xiaomi 11 Ultra / 11T Pro", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "495 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "mi-15-base", "brand": "Xiaomi", "name": "Xiaomi 15 / 14T", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-14-base", "brand": "Xiaomi", "name": "Xiaomi 14 / 14T", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-13-base", "brand": "Xiaomi", "name": "Xiaomi 13 / 13T", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-12-base", "brand": "Xiaomi", "name": "Xiaomi 12 / 12X / 12T", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "485 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-11-base", "brand": "Xiaomi", "name": "Xiaomi 11 Lite NE 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "485 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-14-civi", "brand": "Xiaomi", "name": "Xiaomi 14 Civi / Civi 4 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-civi3", "brand": "Xiaomi", "name": "Xiaomi Civi 3 / Civi 2", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "485 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-13-lite", "brand": "Xiaomi", "name": "Xiaomi 13 Lite / 12 Lite", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "470 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-11lite", "brand": "Xiaomi", "name": "Xiaomi 11 Lite 5G NE", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-pad6pro", "brand": "Xiaomi", "name": "Xiaomi Pad 6 Pro / Pad 6", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-k90-ultra", "brand": "REDMI", "name": "Redmi K90 Ultra / Pro", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "510 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rm-k80-pro", "brand": "REDMI", "name": "Redmi K80 Pro / K80", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "490 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rm-k70-pro", "brand": "REDMI", "name": "Redmi K70 Pro / K70 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rm-k70", "brand": "REDMI", "name": "Redmi K70 / K70E", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "485 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-k60-pro", "brand": "REDMI", "name": "Redmi K60 Pro / K60 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rm-k60", "brand": "REDMI", "name": "Redmi K60 / K60E", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "485 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-k50-pro", "brand": "REDMI", "name": "Redmi K50 Pro Gaming", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-k40-pro", "brand": "REDMI", "name": "Redmi K40 Pro / Gaming", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-turbo4", "brand": "REDMI", "name": "Redmi Turbo 4 / 4 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-turbo3", "brand": "REDMI", "name": "Redmi Turbo 3", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-n14-pro", "brand": "REDMI", "name": "Redmi Note 14 Pro / Pro+ 5G", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rm-n14", "brand": "REDMI", "name": "Redmi Note 14 5G / 4G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "495 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-n13-pro", "brand": "REDMI", "name": "Redmi Note 13 Pro / Pro+ 5G", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "510 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rm-n13", "brand": "REDMI", "name": "Redmi Note 13 / 13 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-n12-pro", "brand": "REDMI", "name": "Redmi Note 12 Pro / 12s", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-n12", "brand": "REDMI", "name": "Redmi Note 12 / 12 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "495 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-n11-pro", "brand": "REDMI", "name": "Redmi Note 11 Pro 5G / Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-n11", "brand": "REDMI", "name": "Redmi Note 11 / 11S / 10 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-14c", "brand": "REDMI", "name": "Redmi 14C / 13C", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "rm-a3", "brand": "REDMI", "name": "Redmi A3 / A3x / A2+", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "520 (An toàn: <550)", "safeMax": 550, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "rm-12-budget", "brand": "REDMI", "name": "Redmi 12 / 12C", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "510 (An toàn: <550)", "safeMax": 550, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "rm-10-9a", "brand": "REDMI", "name": "Redmi 10 / 10C / 9A / 9C", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "poco-f7-ultra", "brand": "POCO", "name": "POCO F7 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "poco-f7-pro", "brand": "POCO", "name": "POCO F7 Pro / F7", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-f6-pro", "brand": "POCO", "name": "POCO F6 Pro / F6", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-f5-pro", "brand": "POCO", "name": "POCO F5 Pro / F5", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "520 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-f4-gt", "brand": "POCO", "name": "POCO F4 GT / F4", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-f3", "brand": "POCO", "name": "POCO F3 (Huyền Thoại)", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-x7-pro", "brand": "POCO", "name": "POCO X7 Pro 5G / X7", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "515 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-x6-pro", "brand": "POCO", "name": "POCO X6 Pro 5G / X6", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "510 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-x5-pro", "brand": "POCO", "name": "POCO X5 Pro 5G / X5", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-x4-pro", "brand": "POCO", "name": "POCO X4 Pro 5G / X4 GT", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "470 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-x3-pro", "brand": "POCO", "name": "POCO X3 Pro / X3 NFC", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "460 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-m6-pro", "brand": "POCO", "name": "POCO M6 Pro / M6 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "460 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-m5-m5s", "brand": "POCO", "name": "POCO M5 / M5s / M4 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "460 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-c65", "brand": "POCO", "name": "POCO C65 / C75 / C61", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "iqoo-13", "brand": "iQOO", "name": "iQOO 13 / 13 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "440 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-12", "brand": "iQOO", "name": "iQOO 12 / 12 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "460 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-11", "brand": "iQOO", "name": "iQOO 11 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "470 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-neo10-pro", "brand": "iQOO", "name": "iQOO Neo 10 Pro / Plus", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "475 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-neo9-pro", "brand": "iQOO", "name": "iQOO Neo 9 Pro / Neo 9", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-neo8", "brand": "iQOO", "name": "iQOO Neo 8 / Neo 8 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-neo7", "brand": "iQOO", "name": "iQOO Neo 7 / Neo 7 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "485 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-z9-turbo", "brand": "iQOO", "name": "iQOO Z9 Turbo / Turbo Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-z9", "brand": "iQOO", "name": "iQOO Z9 / Z9x / Z9s", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "495 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-z7", "brand": "iQOO", "name": "iQOO Z7 5G / Z7x / Z6", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-x300-pro", "brand": "Vivo", "name": "Vivo X300 Ultra / Pro", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "vivo-x200-pro", "brand": "Vivo", "name": "Vivo X200 / X200 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-x100-pro", "brand": "Vivo", "name": "Vivo X100 Pro / Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "vivo-x100", "brand": "Vivo", "name": "Vivo X100 / X100s", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-x90-pro", "brand": "Vivo", "name": "Vivo X90 Pro / X90", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-v40-pro", "brand": "Vivo", "name": "Vivo V40 Pro / V40 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-v30-pro", "brand": "Vivo", "name": "Vivo V30 Pro / V30 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-v29-v27", "brand": "Vivo", "name": "Vivo V29 / V29e / V27", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-v25", "brand": "Vivo", "name": "Vivo V25 5G / V25 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-y200", "brand": "Vivo", "name": "Vivo Y200 Pro / Y200 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-y100", "brand": "Vivo", "name": "Vivo Y100 5G / Y100i", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-y58-y38", "brand": "Vivo", "name": "Vivo Y58 / Y38 / Y28", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-y17s", "brand": "Vivo", "name": "Vivo Y17s / Y16 / Y15s", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "485 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "vivo-t3", "brand": "Vivo", "name": "Vivo T3 5G / T3x / T2", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "oppo-find-x9-pro", "brand": "OPPO", "name": "OPPO Find X9 Pro / Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "oppo-find-x8-pro", "brand": "OPPO", "name": "OPPO Find X8 Pro / X8", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "oppo-find-x7-ultra", "brand": "OPPO", "name": "OPPO Find X7 Ultra / X7", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "oppo-find-x6-pro", "brand": "OPPO", "name": "OPPO Find X6 Pro / X5 Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "oppo-reno-15-pro", "brand": "OPPO", "name": "OPPO Reno 15 Pro / Reno 15", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "oppo-reno-14-pro", "brand": "OPPO", "name": "OPPO Reno 14 Pro / Reno 14", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "oppo-reno-12-pro", "brand": "OPPO", "name": "OPPO Reno 12 Pro 5G / Reno 12", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "oppo-reno-11-pro", "brand": "OPPO", "name": "OPPO Reno 11 Pro / Reno 11", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "oppo-reno-10", "brand": "OPPO", "name": "OPPO Reno 10 Pro+ 5G / Reno 10", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "op-a3-pro", "brand": "OPPO", "name": "OPPO A3 Pro / A3 (Siêu Bền)", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "op-a79", "brand": "OPPO", "name": "OPPO A79 5G / A78 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op-a60", "brand": "OPPO", "name": "OPPO A60 / A60s", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op-a38", "brand": "OPPO", "name": "OPPO A38 / A18 / A17", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "480 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "op-a58", "brand": "OPPO", "name": "OPPO A58 4G / A57", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "475 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rl-gt8-pro", "brand": "Realme", "name": "Realme GT 8 Pro (8 Elite)", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rl-gt7-pro", "brand": "Realme", "name": "Realme GT 7 Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rl-gt6", "brand": "Realme", "name": "Realme GT 6 / GT 6T", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rl-gt5-pro", "brand": "Realme", "name": "Realme GT 5 Pro / GT 5", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rl-gt-neo5", "brand": "Realme", "name": "Realme GT Neo 5 / Neo 6", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rl-gt3", "brand": "Realme", "name": "Realme GT 3 / GT Neo 3T", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rl-14-pro-plus", "brand": "Realme", "name": "Realme 14 Pro Plus / Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rl-13-pro-plus", "brand": "Realme", "name": "Realme 13 Pro Plus / Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "490 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rl-12-pro-plus", "brand": "Realme", "name": "Realme 12 Pro+ 5G / 12 Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rl-11-pro-plus", "brand": "Realme", "name": "Realme 11 Pro+ 5G / 11 Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rl-c75", "brand": "Realme", "name": "Realme C75 / C73 / C67", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "475 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rl-c65-c55", "brand": "Realme", "name": "Realme C65 / C55 / C53", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "450 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "rl-c35", "brand": "Realme", "name": "Realme C35 / C33 / C31", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "460 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "rl-narzo-70", "brand": "Realme", "name": "Realme Narzo 70 Pro / 70 / 60", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "495 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rmg-10-pro-plus", "brand": "REDMAGIC", "name": "RedMagic 10 Pro Plus / 10 Pro", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "560 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rmg-9s-pro-plus", "brand": "REDMAGIC", "name": "RedMagic 9S Pro Plus / 9S Pro", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "550 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rmg-9-pro", "brand": "REDMAGIC", "name": "RedMagic 9 Pro / 9 Pro+", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "540 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rmg-8s-pro", "brand": "REDMAGIC", "name": "RedMagic 8S Pro / 8 Pro", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "510 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rmg-10-base", "brand": "REDMAGIC", "name": "RedMagic 10 Air / Nova", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "520 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rmg-8-base", "brand": "REDMAGIC", "name": "RedMagic 8 / 7S / 7", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "500 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rog-9-pro", "brand": "ROGPHONE", "name": "ASUS ROG Phone 9 Pro / Ultimate", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "560 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rog-8-pro", "brand": "ROGPHONE", "name": "ASUS ROG Phone 8 Pro / Ultimate", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "550 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rog-7-ultimate", "brand": "ROGPHONE", "name": "ASUS ROG Phone 7 Ultimate / 7", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "530 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rog-6-pro", "brand": "ROGPHONE", "name": "ASUS ROG Phone 6 Pro / 6D", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "510 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rog-9-base", "brand": "ROGPHONE", "name": "ASUS ROG Phone 9", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "560 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rog-8-base", "brand": "ROGPHONE", "name": "ASUS ROG Phone 8", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "540 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "hn-magic7-pro", "brand": "HONOR", "name": "HONOR Magic 7 Pro / Lite", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "hn-magic6-pro", "brand": "HONOR", "name": "HONOR Magic 6 Pro / 6", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "hn-magic5-pro", "brand": "HONOR", "name": "HONOR Magic 5 Pro / 5", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hn-magic-v3", "brand": "HONOR", "name": "HONOR Magic V3 / V2 (Gập)", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hn-200-pro", "brand": "HONOR", "name": "HONOR 200 Pro / 200 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hn-90", "brand": "HONOR", "name": "HONOR 90 5G / 90 Lite", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hn-x9c", "brand": "HONOR", "name": "HONOR X9c 5G / X9b 5G", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "hn-x8b", "brand": "HONOR", "name": "HONOR X8b / X8a / X7b", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hn-play-60", "brand": "HONOR", "name": "HONOR Play 60 Plus / Play 50", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hn-x6a", "brand": "HONOR", "name": "HONOR X6a / X5 Plus", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "470 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "op1-13", "brand": "OnePlus", "name": "OnePlus 13 / 13R", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "op1-12", "brand": "OnePlus", "name": "OnePlus 12 / 12R", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "op1-11", "brand": "OnePlus", "name": "OnePlus 11 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op1-10-pro", "brand": "OnePlus", "name": "OnePlus 10 Pro / 10T", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op1-9-pro", "brand": "OnePlus", "name": "OnePlus 9 Pro / 9 / 9RT", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op1-ace5", "brand": "OnePlus", "name": "OnePlus Ace 5 / Ace 5 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op1-ace3", "brand": "OnePlus", "name": "OnePlus Ace 3 / Ace 3V", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op1-nord4", "brand": "OnePlus", "name": "OnePlus Nord 4 / Nord CE4", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "495 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op1-nord3", "brand": "OnePlus", "name": "OnePlus Nord 3 5G / Nord CE3", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op1-nordn30", "brand": "OnePlus", "name": "OnePlus Nord N30 / N20", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hw-pura70-ultra", "brand": "Huawei", "name": "Huawei Pura 70 Ultra / Pro", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "hw-mate60-pro", "brand": "Huawei", "name": "Huawei Mate 60 Pro / RS", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "hw-mate50-pro", "brand": "Huawei", "name": "Huawei Mate 50 Pro / P60 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hw-p50", "brand": "Huawei", "name": "Huawei P50 Pro / P50", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hw-nova13", "brand": "Huawei", "name": "Huawei Nova 13 Pro / Nova 13", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hw-nova12", "brand": "Huawei", "name": "Huawei Nova 12 / Nova 12i", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "495 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hw-nova11", "brand": "Huawei", "name": "Huawei Nova 11 / Nova 10", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hw-enjoy-60x", "brand": "Huawei", "name": "Huawei Enjoy 60X / 70", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "475 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "inf-gt20-pro", "brand": "Infinix", "name": "Infinix GT 20 Pro 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "inf-gt10-pro", "brand": "Infinix", "name": "Infinix GT 10 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "inf-zero-40", "brand": "Infinix", "name": "Infinix Zero 40 5G / Zero 30", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "inf-note40-pro", "brand": "Infinix", "name": "Infinix Note 40 Pro+ 5G / 40 Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "495 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "inf-note30-pro", "brand": "Infinix", "name": "Infinix Note 30 Pro / Note 30", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "485 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "inf-hot40-pro", "brand": "Infinix", "name": "Infinix Hot 40 Pro / Hot 40i", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "475 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "inf-hot50-pro", "brand": "Infinix", "name": "Infinix Hot 50 Pro+ / Hot 50", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "480 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "inf-smart8", "brand": "Infinix", "name": "Infinix Smart 8 / Smart 8 Plus", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "460 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "tc-phantom-x2", "brand": "Tecno", "name": "Tecno Phantom X2 Pro / V Fold", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "tc-camon-30-pro", "brand": "Tecno", "name": "Tecno Camon 30 Pro / Premier", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "tc-camon-20-pro", "brand": "Tecno", "name": "Tecno Camon 20 Pro 5G / 20", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "495 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "tc-pova6-pro", "brand": "Tecno", "name": "Tecno POVA 6 Pro 5G / POVA 6", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "tc-pova5-pro", "brand": "Tecno", "name": "Tecno POVA 5 Pro / POVA 5", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "tc-spark-30-pro", "brand": "Tecno", "name": "Tecno Spark 30 Pro / Spark 30", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "480 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "tc-spark-20-pro", "brand": "Tecno", "name": "Tecno Spark 20 Pro+ / 20 Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "475 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "tc-pop-9", "brand": "Tecno", "name": "Tecno Pop 9 / Pop 8 / Pop 7", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "460 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}];
+
+  let currentTab = 'home';
+  let selectedDevice = null;
+  let savedConfigs = JSON.parse(localStorage.getItem('saved_ff_configs') || '[]');
+  let pendingSaveDevice = null;
+  let pendingRenameId = null;
+  let savedSearchQuery = '';
+
+  function showToast(msg) {
+    const t = document.getElementById('toastMsg');
+    t.innerText = msg;
+    t.style.display = 'block';
+    setTimeout(() => { t.style.display = 'none'; }, 2200);
+  }
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.nav-item').forEach((el, idx) => {
+      el.classList.toggle('active', ['home', 'sens', 'gen', 'account'][idx] === tab);
+    });
+    render();
+  }
+
+  // --- SAVE MODAL LOGIC (Unlimited saves with custom naming) ---
+  function openSaveModal(dev) {
+    pendingSaveDevice = dev;
+    const input = document.getElementById('saveConfigTitleInput');
+    input.value = dev.customTitle || `[AI] ${dev.name || 'Cấu hình'}`;
+    document.getElementById('saveModalOverlay').style.display = 'flex';
+  }
+
+  function closeSaveModal() {
+    pendingSaveDevice = null;
+    document.getElementById('saveModalOverlay').style.display = 'none';
+  }
+
+  function appendTagToSave(tag) {
+    const input = document.getElementById('saveConfigTitleInput');
+    if (!input.value.includes(tag)) {
+      input.value = `${tag} ${input.value.trim()}`;
+    }
+  }
+
+  function confirmSaveConfig() {
+    if (!pendingSaveDevice) return;
+    const title = document.getElementById('saveConfigTitleInput').value.trim() || pendingSaveDevice.name || 'Cấu hình mới';
+    
+    // Create new independent saved config with unique timestamp id
+    const newConfig = {
+      ...pendingSaveDevice,
+      id: 'cfg_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+      customTitle: title,
+      savedAt: new Date().toLocaleDateString('vi-VN')
+    };
+
+    savedConfigs.unshift(newConfig);
+    localStorage.setItem('saved_ff_configs', JSON.stringify(savedConfigs));
+    closeSaveModal();
+    showToast(`✅ Đã lưu: "${title}"!`);
+    if (currentTab === 'account') render();
+  }
+
+  // --- RENAME MODAL LOGIC ---
+  function openRenameModal(configId) {
+    pendingRenameId = configId;
+    const config = savedConfigs.find(c => c.id === configId);
+    if (!config) return;
+    const input = document.getElementById('renameConfigTitleInput');
+    input.value = config.customTitle || config.name;
+    document.getElementById('renameModalOverlay').style.display = 'flex';
+  }
+
+  function closeRenameModal() {
+    pendingRenameId = null;
+    document.getElementById('renameModalOverlay').style.display = 'none';
+  }
+
+  function confirmRenameConfig() {
+    if (!pendingRenameId) return;
+    const newName = document.getElementById('renameConfigTitleInput').value.trim();
+    if (!newName) {
+      showToast('⚠️ Vui lòng nhập tên cấu hình!');
+      return;
+    }
+    const idx = savedConfigs.findIndex(c => c.id === pendingRenameId);
+    if (idx !== -1) {
+      savedConfigs[idx].customTitle = newName;
+      localStorage.setItem('saved_ff_configs', JSON.stringify(savedConfigs));
+      showToast(`✏️ Đã đổi tên thành: "${newName}"!`);
+      closeRenameModal();
+      render();
+    }
+  }
+
+  function deleteSaved(configId) {
+    const idx = savedConfigs.findIndex(c => c.id === configId);
+    if (idx !== -1) {
+      const removed = savedConfigs.splice(idx, 1)[0];
+      localStorage.setItem('saved_ff_configs', JSON.stringify(savedConfigs));
+      showToast(`🗑️ Đã xóa: "${removed.customTitle || removed.name}"!`);
+      render();
+    }
+  }
+
+  function copyConfig(device) {
+    const title = device.customTitle || device.name;
+    const text = `🎯 [ĐỘ NHẠY FREE FIRE ESPORTS 2026]
+📱 Cấu hình: ${title}
+• Nhìn xung quanh: ${device.gen}
+• Red Dot: ${device.red}
+• Ống 2X: ${device.s2x}
+• Ống 4X: ${device.s4x}
+• AWM / Sniper: ${device.awm}
+• Nhìn tự do: ${device.look}
+• DPI đề xuất: ${device.dpi}
+• Nút bắn chuẩn: ${device.btn}%
+• Vị trí HUD: ${device.hud}
+• Kiểu kéo tâm: ${device.drag}
+🔥 Hiệu chuẩn ma trận Cosmic Free Fire OB 2026`;
+    navigator.clipboard.writeText(text);
+    showToast('📋 Đã sao chép thông số vào bộ nhớ đệm!');
+  }
+
+  function renderSliderHtml(label, val) {
+    const pct = Math.min(100, Math.max(0, (val / 200) * 100));
+    return `
+      <div class="slider-box">
+        <div class="slider-header">
+          <span style="color:var(--text-muted);">${label}</span>
+          <span style="color:var(--secondary); font-weight:900;">${val}</span>
+        </div>
+        <div class="slider-track"><div class="slider-fill" style="width:${pct}%"></div></div>
+      </div>
+    `;
+  }
+
+  function renderBrandGridHtml() {
+    return BRANDS.map(b => `
+      <div class="brand-card" onclick="filterByBrand('${b.name}')">
+        <div class="brand-card-left">
+          <div class="brand-icon">${b.icon}</div>
+          <div>
+            <div style="font-weight:900; font-size:14px; letter-spacing:0.5px;">${b.name}</div>
+            <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">${b.badge}</div>
+          </div>
+        </div>
+        <div style="color:var(--primary); font-weight:900; font-size:16px;">➔</div>
+      </div>
+    `).join('');
+  }
+
+  function filterByBrand(brand) {
+    const list = DEVICES.filter(d => d.brand.toLowerCase() === brand.toLowerCase());
+    const area = document.getElementById('deviceListArea');
+    area.innerHTML = `
+      <div style="color:var(--secondary); font-size:12px; font-weight:900; cursor:pointer; margin-bottom:10px; display:flex; align-items:center; gap:4px;" onclick="render()">
+        ← QUAY LẠI DANH SÁCH HÃNG
+      </div>
+      <div class="title-h1" style="font-size:16px; margin-bottom:12px;">DÒNG MÁY ${brand.toUpperCase()} (${list.length})</div>
+      ${list.map(d => `
+        <div class="device-card" onclick='openDeviceById("${d.id}")'>
+          <div>
+            <div style="font-size:14px; font-weight:900; color:#fff;">${d.name}</div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">🎯 ${d.drag} • Nút: ${d.btn}%</div>
+          </div>
+          <div class="score-badge">${d.gen}</div>
+        </div>
+      `).join('')}
+    `;
+  }
+
+  function filterDevices(query) {
+    const q = query.trim().toLowerCase();
+    const area = document.getElementById('deviceListArea');
+    if (!q) {
+      area.innerHTML = renderBrandGridHtml();
+      return;
+    }
+    const matched = DEVICES.filter(d => d.name.toLowerCase().includes(q) || d.brand.toLowerCase().includes(q));
+    if (matched.length === 0) {
+      area.innerHTML = `
+        <div style="text-align:center; padding:35px; color:var(--text-muted); background:var(--card); clip-path:polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);">
+          🔍 Không tìm thấy thiết bị nào khớp từ khóa.<br>Thử tìm "K70", "iPhone 16", "S24"...
+        </div>
+      `;
+      return;
+    }
+    area.innerHTML = matched.map(d => `
+      <div class="device-card" onclick='openDeviceById("${d.id}")'>
+        <div>
+          <span class="badge-tactical" style="font-size:9px; padding:2px 6px;">${d.brand}</span>
+          <div style="font-size:14px; font-weight:900; margin-top:4px; color:#fff;">${d.name}</div>
+          <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">🎯 ${d.drag} • DPI: ${d.dpi}</div>
+        </div>
+        <div class="score-badge">${d.gen}</div>
+      </div>
+    `).join('');
+  }
+
+  function openDeviceById(id) {
+    selectedDevice = DEVICES.find(d => d.id === id) || savedConfigs.find(d => d.id === id);
+    currentTab = 'sens';
+    render();
+  }
+
+  function selectChip(el) {
+    el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // --- 5D MATRIX AI CALCULATOR ---
+  function runAIGenerator() {
+    const area = document.getElementById('aiResultArea');
+    const dev = document.querySelector('#genDevChips .active').innerText;
+    const hz = document.querySelector('#genHzChips .active').innerText;
+    const force = document.querySelector('#genForceChips .active').innerText;
+    const friction = document.querySelector('#genFrictionChips .active').innerText;
+    const weapon = document.querySelector('#genWeaponChips .active').innerText;
+
+    let gen = 190, red = 176, dpi = "480 (An toàn: <520)", btn = 44, drag = "Vuốt Chữ J Móc Nhanh Góc 45°", hud = "Đáy 12% • Phải 19%";
+    
+    if (dev.includes('iPhone')) { gen = 184; dpi = "120 (Trượt iOS)"; btn = 43; }
+    else if (dev.includes('Flagship')) { gen = 182; dpi = "510 (An toàn: <550)"; btn = 42; }
+    else if (dev.includes('Yếu')) { gen = 198; dpi = "440 (An toàn: <480)"; btn = 45; }
+
+    if (hz === '60Hz') gen += 6;
+    else if (hz === '120Hz+') gen -= 2;
+    else if (hz === '144Hz') gen -= 4;
+
+    if (force.includes('Mạnh')) gen -= 7;
+    else if (force.includes('Nhẹ')) gen += 6;
+
+    if (friction.includes('Nhám')) gen += 4;
+    else if (friction.includes('Bao Ngón Tay')) gen -= 6;
+
+    let redOffset = 0;
+    if (weapon.includes('Shotgun')) { redOffset = 4; btn = 42; drag = "Vuốt Chữ J Móc Sâu Cận Chiến"; hud = "Đáy 10% • Phải 17%"; }
+    else if (weapon.includes('SMG')) { redOffset = -2; btn = 44; drag = "Kéo Thẳng Đều Tay Giữ Đường Đạn"; hud = "Đáy 12% • Phải 19%"; }
+    else if (weapon.includes('Súng Trường')) { redOffset = -4; btn = 46; drag = "Vuốt Nhẹ Hồi Tâm (Bắn 3 viên nhả)"; hud = "Đáy 13% • Phải 20%"; }
+    else if (weapon.includes('Gõ 1 Viên')) { redOffset = 2; btn = 48; drag = "Đặt Tâm Ngực Hất Nhẹ Đỉnh Đầu"; hud = "Đáy 11% • Phải 18%"; }
+
+    gen = Math.min(200, Math.max(160, gen));
+    red = Math.min(200, Math.max(140, gen - 11 + redOffset));
+    const s2x = Math.max(70, red - 6);
+    const s4x = Math.max(60, red - 14);
+    const awm = Math.max(40, Math.round(gen * 0.40));
+    const look = Math.max(70, gen - 45);
+
+    const resDevice = {
+      id: 'ai-' + Date.now(),
+      brand: 'AI Tối Ưu',
+      name: `${dev} • ${weapon.split(' ')[0]}`,
+      gen, red, s2x, s4x, awm, look, dpi, btn, hud, drag
+    };
+
+    area.innerHTML = `
+      <div class="scifi-panel" style="margin-top:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span class="badge-tactical badge-gold">⚡ KẾT QUẢ TÍNH TOÁN 5D</span>
+          <span style="color:var(--green); font-size:11px; font-weight:900;">99.4% Chuẩn Đầu</span>
+        </div>
+        <h3 style="font-size:15px; font-weight:900; color:#fff; margin-bottom:12px;">${resDevice.name}</h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
+          <div style="background:var(--surface); padding:8px 10px; border:1px solid var(--border); clip-path:polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);">
+            <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Nhìn xung quanh</div>
+            <div style="font-size:18px; font-weight:900; color:var(--secondary); text-shadow:0 0 8px var(--secondary-glow);">${gen}</div>
+          </div>
+          <div style="background:var(--surface); padding:8px 10px; border:1px solid var(--border); clip-path:polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);">
+            <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Red Dot Sight</div>
+            <div style="font-size:18px; font-weight:900; color:var(--secondary); text-shadow:0 0 8px var(--secondary-glow);">${red}</div>
+          </div>
+          <div style="background:var(--surface); padding:8px 10px; border:1px solid var(--border); clip-path:polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);">
+            <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Nút Bắn Chuẩn</div>
+            <div style="font-size:18px; font-weight:900; color:var(--primary); text-shadow:0 0 8px var(--primary-glow);">${btn}%</div>
+          </div>
+          <div style="background:var(--surface); padding:8px 10px; border:1px solid var(--border); clip-path:polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);">
+            <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Ống 2X / 4X</div>
+            <div style="font-size:18px; font-weight:900; color:var(--secondary); text-shadow:0 0 8px var(--secondary-glow);">${s2x} / ${s4x}</div>
+          </div>
+        </div>
+        <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">DPI Đề Xuất: <b style="color:var(--cyan);">${dpi}</b></div>
+        <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Vị trí HUD: <b style="color:#fff;">${hud}</b></div>
+        <div style="font-size:12px; color:var(--green); font-weight:900; margin-bottom:14px;">Kỹ thuật: ${drag}</div>
+        
+        <div class="btn-row" style="margin-bottom:0;">
+          <button class="btn btn-primary" onclick='openSaveModal(${JSON.stringify(resDevice)})'>💾 LƯU CẤU HÌNH AI NÀY</button>
+          <button class="btn btn-outline" onclick='copyConfig(${JSON.stringify(resDevice)})'>📋 SAO CHÉP</button>
+        </div>
+      </div>
+    `;
+    showToast('⚡ AI đã hiệu chuẩn thành công!');
+  }
+
+  // --- MAIN RENDER FUNCTION ---
+  function render() {
+    const container = document.getElementById('appContent');
+
+    if (currentTab === 'home') {
+      container.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <div>
+            <div style="font-size:11px; color:var(--secondary); font-weight:900; letter-spacing:1px; text-transform:uppercase;">
+              ⚡ FREE FIRE ESPORTS OB 2026
+            </div>
+            <h2 style="font-size:18px; font-weight:900; color:#fff;">CHIẾN BINH VŨ TRỤ 👋</h2>
+          </div>
+          <div style="width:42px; height:42px; background:linear-gradient(135deg, var(--primary), #FF8500); border:2px solid var(--secondary); clip-path:polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px); display:flex; align-items:center; justify-content:center; font-weight:900; box-shadow:0 0 15px var(--primary-glow);">
+            FF
+          </div>
+        </div>
+
+        <div class="scifi-panel">
+          <span class="badge-tactical">HIỆU CHUẨN MA TRẬN 5D</span>
+          <h3 style="font-size:16px; font-weight:900; color:#fff; margin:8px 0 6px 0;">Thuật Toán Kéo Tâm OB 2026</h3>
+          <p style="font-size:11px; color:var(--text-muted); line-height:1.5; margin-bottom:14px;">
+            Hệ thống độ nhạy vũ trụ kết hợp lực vuốt, tần số quét màn hình, độ nhám ngón tay và vũ khí tủ. Không vọt đầu - không kẹt ngực!
+          </p>
+          <button class="btn btn-primary" style="width:auto; padding:8px 16px; font-size:11px;" onclick="switchTab('sens')">
+            🎯 CHỌN MÁY CỦA BẠN →
+          </button>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-val">${DEVICES.length}+</div>
+            <div class="stat-lbl">Thiết Bị</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val">16</div>
+            <div class="stat-lbl">Hãng Máy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val">99.4%</div>
+            <div class="stat-lbl">Chuẩn Đầu</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val">OB47</div>
+            <div class="stat-lbl">Mùa Giải</div>
+          </div>
+        </div>
+
+        <div class="title-h1" style="font-size:15px; margin:16px 0 10px 0;">⚡ LỐI TẮT NHANH</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
+          <div class="scifi-panel" style="padding:12px; margin-bottom:0; cursor:pointer;" onclick="switchTab('gen')">
+            <div style="font-size:22px; margin-bottom:4px;">⚡</div>
+            <div style="font-size:13px; font-weight:900; color:var(--secondary);">Tạo 5D Theo Tay</div>
+            <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">Tùy biến lực vuốt & phụ kiện</div>
+          </div>
+          <div class="scifi-panel" style="padding:12px; margin-bottom:0; cursor:pointer;" onclick="switchTab('account')">
+            <div style="font-size:22px; margin-bottom:4px;">📁</div>
+            <div style="font-size:13px; font-weight:900; color:var(--primary);">Bộ Nhớ Đã Lưu</div>
+            <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">Quản lý ${savedConfigs.length} cấu hình riêng</div>
+          </div>
+        </div>
+
+        <div class="title-h1" style="font-size:15px; margin:16px 0 10px 0;">🏆 DÒNG MÁY PHỔ BIẾN NHẤT</div>
+        <div class="brand-grid">
+          ${DEVICES.slice(0, 5).map(d => `
+            <div class="device-card" onclick='openDeviceById("${d.id}")'>
+              <div>
+                <span class="badge-tactical" style="font-size:9px; padding:2px 6px;">${d.brand}</span>
+                <div style="font-size:13px; font-weight:900; margin-top:3px; color:#fff;">${d.name}</div>
+                <div style="font-size:11px; color:var(--text-muted);">🎯 ${d.drag} • Nút: ${d.btn}%</div>
+              </div>
+              <div class="score-badge">${d.gen}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    } else if (currentTab === 'sens') {
+      if (selectedDevice) {
+        container.innerHTML = `
+          <div style="color:var(--secondary); font-size:12px; font-weight:900; cursor:pointer; margin-bottom:12px; display:flex; align-items:center; gap:4px;" onclick="selectedDevice=null; render();">
+            ← QUAY LẠI TÌM MÁY KHÁC
+          </div>
+
+          <div class="scifi-panel">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div>
+                <span class="badge-tactical">${selectedDevice.brand}</span>
+                <h2 style="font-size:18px; font-weight:900; color:#fff; margin-top:4px;">${selectedDevice.name}</h2>
+              </div>
+              <div class="score-badge" style="font-size:18px;">${selectedDevice.gen}</div>
+            </div>
+          </div>
+
+          <div class="title-h1" style="font-size:14px; margin-bottom:10px;">📊 BẢNG ĐỘ NHẠY TRONG GAME</div>
+          ${renderSliderHtml('Nhìn Xung Quanh (General)', selectedDevice.gen)}
+          ${renderSliderHtml('Red Dot Sight (Tâm Đỏ)', selectedDevice.red)}
+          ${renderSliderHtml('Ống Ngắm 2X', selectedDevice.s2x)}
+          ${renderSliderHtml('Ống Ngắm 4X', selectedDevice.s4x)}
+          ${renderSliderHtml('Ống Ngắm Ngắm Bắn (AWM)', selectedDevice.awm)}
+          ${renderSliderHtml('Góc Nhìn Tự Do', selectedDevice.look)}
+
+          <div class="title-h1" style="font-size:14px; margin:14px 0 10px 0;">⚙️ THÔNG SỐ CẢI TIẾN CHIẾN THUẬT</div>
+          <div class="scifi-panel">
+            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px;">
+              <span style="color:var(--text-muted);">DPI Tối Ưu:</span>
+              <span style="color:var(--secondary); font-weight:900;">${selectedDevice.dpi}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px;">
+              <span style="color:var(--text-muted);">Kích Thước Nút Bắn:</span>
+              <span style="color:var(--primary); font-weight:900;">${selectedDevice.btn}%</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px;">
+              <span style="color:var(--text-muted);">Vị Trí Nút Bắn HUD:</span>
+              <span style="color:#fff; font-weight:900;">${selectedDevice.hud}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:12px;">
+              <span style="color:var(--text-muted);">Kỹ Thuật Vuốt Tâm:</span>
+              <span style="color:var(--green); font-weight:900;">${selectedDevice.drag}</span>
+            </div>
+          </div>
+
+          <div class="title-h1" style="font-size:14px; margin:14px 0 8px 0;">🔘 MÔ PHỎNG NÚT BẮN HUD THỰC TẾ</div>
+          <div class="hud-box">
+            <div style="color:var(--red); font-size:20px; font-weight:900;">┼</div>
+            <div style="color:var(--red); font-size:10px; font-weight:900; margin-top:-2px;">ĐẦU MỤC TIÊU</div>
+            <div style="color:var(--green); font-size:12px; margin:6px 0; font-weight:900;">▲ ${selectedDevice.drag}</div>
+            <div class="fire-button-sim" style="width:${selectedDevice.btn * 1.5}px; height:${selectedDevice.btn * 1.5}px;">
+              <span style="font-size:16px;">🔥</span>
+              <span style="font-size:11px; font-weight:900; color:#fff;">${selectedDevice.btn}%</span>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="openSaveModal(selectedDevice)">💾 LƯU CẤU HÌNH</button>
+            <button class="btn btn-outline" onclick="copyConfig(selectedDevice)">📋 SAO CHÉP</button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <h1 class="title-h1">🎯 KHO 230+ THIẾT BỊ</h1>
+          <div class="sub-title">Chọn máy để xem bộ thông số kéo tâm chuẩn:</div>
+
+          <div class="search-box">
+            <span style="color:var(--primary); font-size:14px;">🔍</span>
+            <input type="text" id="searchInput" placeholder="Tìm theo tên máy (vd: K70, iPhone 16, S24...)" oninput="filterDevices(this.value)">
+          </div>
+
+          <div id="deviceListArea" class="brand-grid">
+            ${renderBrandGridHtml()}
+          </div>
+        `;
+      }
+    } else if (currentTab === 'gen') {
+      container.innerHTML = `
+        <h1 class="title-h1">⚡ TẠO ĐỘ NHẠY MA TRẬN 5D</h1>
+        <div class="sub-title">Thuật toán 5 chiều: Dòng máy • Tần số quét • Lực vuốt • Phụ kiện • Vũ khí tủ</div>
+
+        <div style="font-size:11px; font-weight:900; color:var(--secondary); text-transform:uppercase; margin-bottom:6px;">1. Phân khúc thiết bị</div>
+        <div class="chip-group" id="genDevChips">
+          <div class="chip active" onclick="selectChip(this)">iPhone / iPad</div>
+          <div class="chip" onclick="selectChip(this)">Android Flagship</div>
+          <div class="chip" onclick="selectChip(this)">Android Tầm Trung</div>
+          <div class="chip" onclick="selectChip(this)">Máy Cấu Hình Yếu</div>
+        </div>
+
+        <div style="font-size:11px; font-weight:900; color:var(--secondary); text-transform:uppercase; margin-bottom:6px;">2. Tần số quét màn hình</div>
+        <div class="chip-group" id="genHzChips">
+          <div class="chip" onclick="selectChip(this)">60Hz (Cơ Bản)</div>
+          <div class="chip" onclick="selectChip(this)">90Hz (Mượt)</div>
+          <div class="chip active" onclick="selectChip(this)">120Hz+ (Esports)</div>
+          <div class="chip" onclick="selectChip(this)">144Hz - 165Hz</div>
+        </div>
+
+        <div style="font-size:11px; font-weight:900; color:var(--secondary); text-transform:uppercase; margin-bottom:6px;">3. Lực vuốt tay của bạn</div>
+        <div class="chip-group" id="genForceChips">
+          <div class="chip" onclick="selectChip(this)">Vuốt Mạnh (Dứt Khoát)</div>
+          <div class="chip active" onclick="selectChip(this)">Vuốt Vừa (Chuẩn)</div>
+          <div class="chip" onclick="selectChip(this)">Vuốt Nhẹ (Lười Vuốt)</div>
+        </div>
+
+        <div style="font-size:11px; font-weight:900; color:var(--secondary); text-transform:uppercase; margin-bottom:6px;">4. Bề mặt tiếp xúc màn hình</div>
+        <div class="chip-group" id="genFrictionChips">
+          <div class="chip active" onclick="selectChip(this)">Kính Bóng Thường</div>
+          <div class="chip" onclick="selectChip(this)">Cường Lực Nhám</div>
+          <div class="chip" onclick="selectChip(this)">Bao Ngón Tay Gaming</div>
+          <div class="chip" onclick="selectChip(this)">Màn Hình Trần</div>
+        </div>
+
+        <div style="font-size:11px; font-weight:900; color:var(--secondary); text-transform:uppercase; margin-bottom:6px;">5. Vũ khí sở trường</div>
+        <div class="chip-group" id="genWeaponChips">
+          <div class="chip active" onclick="selectChip(this)">Shotgun (M1887, M1014)</div>
+          <div class="chip" onclick="selectChip(this)">SMG Sấy (MP40, UMP)</div>
+          <div class="chip" onclick="selectChip(this)">Súng Trường (AK, Scar)</div>
+          <div class="chip" onclick="selectChip(this)">Gõ 1 Viên (Woodpecker)</div>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%; margin-top:8px; padding:14px;" onclick="runAIGenerator()">
+          ⚡ TÍNH TOÁN MA TRẬN 5D CHIẾN THUẬT
+        </button>
+        <div id="aiResultArea"></div>
+      `;
+    } else if (currentTab === 'account') {
+      const filtered = savedConfigs.filter(item => {
+        if (!savedSearchQuery) return true;
+        const q = savedSearchQuery.toLowerCase();
+        const t = (item.customTitle || item.name || '').toLowerCase();
+        return t.includes(q);
+      });
+
+      container.innerHTML = `
+        <h1 class="title-h1">👤 HỒ SƠ & BỘ NHỚ</h1>
+        <div class="sub-title">Quản lý không giới hạn các cấu hình đã lưu và tùy chỉnh tên riêng</div>
+
+        <div class="scifi-panel" style="margin-bottom:16px;">
+          <div class="brand-card-left">
+            <div style="width:48px; height:48px; background:linear-gradient(135deg, var(--primary), var(--secondary)); clip-path:polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px); display:flex; align-items:center; justify-content:center; font-weight:900; font-size:18px; color:#07050E; box-shadow:0 0 15px var(--secondary-glow);">
+              FF
+            </div>
+            <div>
+              <div style="font-weight:900; font-size:15px; color:#fff;">Xạ Thủ Free Fire Pro</div>
+              <div style="color:var(--secondary); font-size:11px; font-weight:700;">Đại Cao Thủ ★ 50 • OB 2026</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="font-size:14px; font-weight:900; color:var(--secondary);">
+            ⭐ CẤU HÌNH ĐÃ LƯU (${savedConfigs.length})
+          </h3>
+          <span style="font-size:10px; color:var(--cyan); font-weight:900;">KHÔNG GIỚI HẠN</span>
+        </div>
+
+        ${savedConfigs.length > 2 ? `
+          <div class="search-box" style="margin-bottom:12px;">
+            <span style="color:var(--secondary); font-size:13px;">🔍</span>
+            <input type="text" placeholder="Tìm kiếm trong cấu hình đã lưu..." value="${savedSearchQuery}" oninput="savedSearchQuery=this.value; render();">
+          </div>
+        ` : ''}
+
+        ${filtered.length === 0 ? `
+          <div style="text-align:center; padding:35px 20px; color:var(--text-muted); font-size:12px; background:var(--card); clip-path:polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px); border:1px solid var(--border);">
+            ${savedConfigs.length === 0 ? `
+              📂 Bạn chưa lưu cấu hình nào.<br>
+              Hãy bấm nút bên dưới để tạo cấu hình AI theo tay và lưu nhé!
+              <button class="btn btn-primary" style="margin:14px auto 0 auto; width:auto; padding:8px 16px;" onclick="switchTab('gen')">⚡ TẠO CẤU HÌNH AI NGAY</button>
+            ` : `
+              🔍 Không tìm thấy cấu hình khớp với từ khóa tìm kiếm.
+            `}
+          </div>
+        ` : filtered.map((item) => `
+          <div class="scifi-panel" style="padding:12px; margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div>
+                <div style="font-size:14px; font-weight:900; color:var(--secondary);">${item.customTitle || item.name}</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">
+                  Nhìn: <b style="color:#fff;">${item.gen}</b> | RedDot: <b style="color:#fff;">${item.red}</b> | Nút: <b style="color:var(--primary);">${item.btn}%</b>
+                </div>
+                <div style="font-size:10px; color:var(--cyan); margin-top:2px;">
+                  🎯 ${item.drag} • DPI: ${item.dpi}
+                </div>
+              </div>
+            </div>
+            <div style="display:flex; gap:6px; margin-top:10px;">
+              <button class="btn btn-primary" style="padding:6px 10px; font-size:10px;" onclick='openDeviceById("${item.id}")'>👁️ XEM</button>
+              <button class="btn btn-outline" style="padding:6px 10px; font-size:10px; color:var(--secondary);" onclick='openRenameModal("${item.id}")'>✏️ ĐỔI TÊN</button>
+              <button class="btn btn-outline" style="padding:6px 10px; font-size:10px;" onclick='copyConfig(${JSON.stringify(item)})'>📋 CHÉP</button>
+              <button class="btn btn-outline" style="padding:6px 8px; font-size:10px; color:var(--red);" onclick='deleteSaved("${item.id}")'>🗑️</button>
+            </div>
+          </div>
+        `).join('')}
+      `;
+    }
+  }
+
+  // Initial render
+  render();
+</script>
+
+</body>
+</html>
