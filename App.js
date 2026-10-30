@@ -16,11 +16,13 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS } from './src/theme/colors';
 import { BRANDS, SUB_SERIES_MAP, MOCK_DATA, PRO_TIPS } from './src/data/sensitivityData';
+import AimTrainer from './src/components/AimTrainer';
+import HudAndDpiStudio from './src/components/HudAndDpiStudio';
 
 export default function App() {
   // Navigation & Screen State
   const [currentScreen, setCurrentScreen] = useState('Splash'); // Splash, Auth, MainApp
-  const [activeTab, setActiveTab] = useState('HomeTab'); // HomeTab, SensitivityTab, GeneratorTab, AccountTab
+  const [activeTab, setActiveTab] = useState('HomeTab'); // HomeTab, SensitivityTab, AimTrainerTab, HudDpiTab, AccountTab
 
   // Sensitivity Navigation
   const [sensSubScreen, setSensSubScreen] = useState('BrandList'); // BrandList, SubSeriesList, DeviceList, DetailView
@@ -29,6 +31,8 @@ export default function App() {
   const [selectedConfig, setSelectedConfig] = useState(null);
   const [globalSearchQuery, setGlobalSearchQuery] = useState('');
   const [deviceSearchQuery, setDeviceSearchQuery] = useState('');
+  const [brandListFilter, setBrandListFilter] = useState('ALL'); // 'ALL' | '2026'
+  const [hudDpiMode, setHudDpiMode] = useState('STUDIO'); // 'STUDIO' | 'GENERATOR_5D'
 
   // Storage & Profiles
   const [savedConfigs, setSavedConfigs] = useState([]);
@@ -40,6 +44,11 @@ export default function App() {
     avatarLetter: 'FF',
     isLoggedIn: false,
   });
+
+  // Top 2026 Devices Memo
+  const devices2026 = useMemo(() => {
+    return MOCK_DATA.filter((item) => item.is2026);
+  }, []);
 
   // Generator Tool State (5D Matrix)
   const [genDeviceType, setGenDeviceType] = useState('Android Trung');
@@ -492,26 +501,52 @@ export default function App() {
             </View>
 
             {/* Quick Access Tools */}
-            <Text style={styles.sectionTitle}>🛠️ CÔNG CỤ TÁC CHIẾN</Text>
+            <Text style={styles.sectionTitle}>🛠️ CÔNG CỤ TÁC CHIẾN ESPORTS</Text>
             <View style={styles.quickToolsRow}>
               <TouchableOpacity
                 style={styles.toolCard}
                 onPress={() => {
-                  setActiveTab('GeneratorTab');
+                  setActiveTab('AimTrainerTab');
                 }}>
-                <Text style={styles.toolIcon}>⚡</Text>
-                <Text style={styles.toolTitle}>Tạo Độ Nhạy 5D</Text>
-                <Text style={styles.toolDesc}>Cá nhân hóa theo tay & máy</Text>
+                <Text style={styles.toolIcon}>🎯</Text>
+                <Text style={styles.toolTitle}>Giả Lập Kéo Tâm</Text>
+                <Text style={styles.toolDesc}>Đo tốc độ, phản xạ & phân tích Sweet Spot</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={styles.toolCard}
                 onPress={() => {
-                  setActiveTab('AccountTab');
+                  setActiveTab('HudDpiTab');
+                  setHudDpiMode('STUDIO');
                 }}>
-                <Text style={styles.toolIcon}>💾</Text>
-                <Text style={styles.toolTitle}>Cấu Hình Đã Lưu ({savedConfigs.length})</Text>
-                <Text style={styles.toolDesc}>Đổi tên & quản lý không giới hạn</Text>
+                <Text style={styles.toolIcon}>📐</Text>
+                <Text style={styles.toolTitle}>Studio Nút Bắn & DPI</Text>
+                <Text style={styles.toolDesc}>HUD trực quan & thước đo DPI an toàn</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={[styles.quickToolsRow, { marginTop: 10 }]}>
+              <TouchableOpacity
+                style={styles.toolCard}
+                onPress={() => {
+                  setActiveTab('SensitivityTab');
+                  setSensSubScreen('BrandList');
+                  setBrandListFilter('2026');
+                }}>
+                <Text style={styles.toolIcon}>⚡</Text>
+                <Text style={styles.toolTitle}>Kho Máy 2026 ({devices2026.length})</Text>
+                <Text style={styles.toolDesc}>Chuẩn Esports OB mới nhất</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.toolCard}
+                onPress={() => {
+                  setActiveTab('HudDpiTab');
+                  setHudDpiMode('GENERATOR_5D');
+                }}>
+                <Text style={styles.toolIcon}>⚡</Text>
+                <Text style={styles.toolTitle}>Tạo Ma Trận 5D</Text>
+                <Text style={styles.toolDesc}>Cá nhân hóa theo tay & máy</Text>
               </TouchableOpacity>
             </View>
 
@@ -577,7 +612,14 @@ export default function App() {
                         setSensSubScreen('DetailView');
                       }}>
                       <View style={{ flex: 1 }}>
-                        <Text style={styles.deviceBrandBadge}>{item.brand}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                          <Text style={styles.deviceBrandBadge}>{item.brand}</Text>
+                          {item.is2026 && (
+                            <View style={styles.badge2026Mini}>
+                              <Text style={styles.badge2026MiniText}>⚡ 2026 ESPORTS</Text>
+                            </View>
+                          )}
+                        </View>
                         <Text style={styles.deviceItemTitle}>{item.deviceName}</Text>
                         <Text style={styles.deviceItemSubtitle}>
                           🎯 {item.dragType}  •  ⚡ DPI: {item.dpi}
@@ -590,31 +632,84 @@ export default function App() {
                   )}
                 />
               ) : (
-                <FlatList
-                  data={BRANDS}
-                  keyExtractor={(item) => item.id}
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{ paddingBottom: 100 }}
-                  renderItem={({ item }) => (
+                <View style={{ flex: 1 }}>
+                  {/* Filter Switcher: 16 Brands vs 2026 Flagships */}
+                  <View style={styles.filterTabRow}>
                     <TouchableOpacity
-                      style={styles.brandItemCard}
-                      onPress={() => {
-                        setSelectedBrand(item.name);
-                        setSensSubScreen('SubSeriesList');
-                      }}>
-                      <View style={styles.brandCardLeft}>
-                        <View style={styles.brandIconCircle}>
-                          <Text style={styles.brandIconText}>{item.icon}</Text>
-                        </View>
-                        <View>
-                          <Text style={styles.brandTitleText}>{item.name}</Text>
-                          <Text style={styles.brandSubText}>{item.badge}</Text>
-                        </View>
-                      </View>
-                      <Text style={styles.brandArrow}>➔</Text>
+                      style={[styles.filterTabBtn, brandListFilter === 'ALL' && styles.filterTabBtnActive]}
+                      onPress={() => setBrandListFilter('ALL')}>
+                      <Text style={[styles.filterTabBtnText, brandListFilter === 'ALL' && styles.filterTabBtnTextActive]}>
+                        🏢 16 Hãng Máy
+                      </Text>
                     </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.filterTabBtn, brandListFilter === '2026' && styles.filterTabBtnActive]}
+                      onPress={() => setBrandListFilter('2026')}>
+                      <Text style={[styles.filterTabBtnText, brandListFilter === '2026' && styles.filterTabBtnTextActive]}>
+                        🔥 Top Máy 2026 ({devices2026.length})
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {brandListFilter === '2026' ? (
+                    <FlatList
+                      data={devices2026}
+                      keyExtractor={(item) => item.id}
+                      showsVerticalScrollIndicator={false}
+                      contentContainerStyle={{ paddingBottom: 100 }}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          style={styles.deviceItemCard}
+                          onPress={() => {
+                            setSelectedConfig(item);
+                            setSensSubScreen('DetailView');
+                          }}>
+                          <View style={{ flex: 1 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                              <Text style={styles.deviceBrandBadge}>{item.brand}</Text>
+                              <View style={styles.badge2026Mini}>
+                                <Text style={styles.badge2026MiniText}>⚡ 2026 ESPORTS</Text>
+                              </View>
+                            </View>
+                            <Text style={styles.deviceItemTitle}>{item.deviceName}</Text>
+                            <Text style={styles.deviceItemSubtitle}>
+                              🎯 {item.dragType}  •  ⚡ DPI: {item.dpi}
+                            </Text>
+                          </View>
+                          <View style={styles.scorePill}>
+                            <Text style={styles.scorePillText}>{item.general}</Text>
+                          </View>
+                        </TouchableOpacity>
+                      )}
+                    />
+                  ) : (
+                    <FlatList
+                      data={BRANDS}
+                      keyExtractor={(item) => item.id}
+                      showsVerticalScrollIndicator={false}
+                      contentContainerStyle={{ paddingBottom: 100 }}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          style={styles.brandItemCard}
+                          onPress={() => {
+                            setSelectedBrand(item.name);
+                            setSensSubScreen('SubSeriesList');
+                          }}>
+                          <View style={styles.brandCardLeft}>
+                            <View style={styles.brandIconCircle}>
+                              <Text style={styles.brandIconText}>{item.icon}</Text>
+                            </View>
+                            <View>
+                              <Text style={styles.brandTitleText}>{item.name}</Text>
+                              <Text style={styles.brandSubText}>{item.badge}</Text>
+                            </View>
+                          </View>
+                          <Text style={styles.brandArrow}>➔</Text>
+                        </TouchableOpacity>
+                      )}
+                    />
                   )}
-                />
+                </View>
               )}
             </View>
           );
@@ -696,7 +791,14 @@ export default function App() {
                       setSensSubScreen('DetailView');
                     }}>
                     <View style={{ flex: 1 }}>
-                      <Text style={styles.deviceBrandBadge}>{item.brand}</Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                        <Text style={styles.deviceBrandBadge}>{item.brand}</Text>
+                        {item.is2026 && (
+                          <View style={styles.badge2026Mini}>
+                            <Text style={styles.badge2026MiniText}>⚡ 2026 ESPORTS</Text>
+                          </View>
+                        )}
+                      </View>
                       <Text style={styles.deviceItemTitle}>{item.deviceName}</Text>
                       <Text style={styles.deviceItemSubtitle}>
                         🎯 {item.dragType}  •  Nút: {item.buttonSize}%
@@ -740,7 +842,14 @@ export default function App() {
               <View style={styles.detailHeaderCard}>
                 <View style={styles.tacticalCornerTL} />
                 <View style={styles.tacticalCornerBR} />
-                <Text style={styles.detailBrandTag}>{selectedConfig.brand}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                  <Text style={styles.detailBrandTag}>{selectedConfig.brand}</Text>
+                  {selectedConfig.is2026 && (
+                    <View style={styles.badge2026Header}>
+                      <Text style={styles.badge2026HeaderText}>⚡ BẢN CHUẨN ESPORTS 2026</Text>
+                    </View>
+                  )}
+                </View>
                 <Text style={styles.detailTitle}>{selectedConfig.deviceName}</Text>
                 <Text style={styles.detailAuthor}>Hiệu chuẩn: Esports Headshot Lab 2026</Text>
               </View>
@@ -829,10 +938,53 @@ export default function App() {
         }
         return null;
 
-      // ---------------- TAB 3: TẠO ĐỘ NHẠY BẰNG AI (MA TRẬN 5D) ----------------
+      // ---------------- TAB: GIẢ LẬP LUYỆN KÉO TÂM (AIM TRAINER) ----------------
+      case 'AimTrainerTab':
+        return (
+          <AimTrainer
+            onApplyToGenerator={(dragForce) => {
+              setGenDragForce(dragForce);
+              setActiveTab('HudDpiTab');
+              setHudDpiMode('GENERATOR_5D');
+            }}
+          />
+        );
+
+      // ---------------- TAB: STUDIO NÚT BẮN HUD & THƯỚC ĐO DPI & MA TRẬN 5D ----------------
+      case 'HudDpiTab':
       case 'GeneratorTab':
         return (
-          <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
+          <View style={{ flex: 1 }}>
+            {/* Top Mode Switcher */}
+            <View style={styles.hudDpiSwitcher}>
+              <TouchableOpacity
+                style={[styles.hudDpiBtn, hudDpiMode === 'STUDIO' && styles.hudDpiBtnActive]}
+                onPress={() => setHudDpiMode('STUDIO')}>
+                <Text
+                  style={[
+                    styles.hudDpiBtnText,
+                    hudDpiMode === 'STUDIO' && styles.hudDpiBtnTextActive,
+                  ]}>
+                  🎯 Studio Nút Bắn & DPI
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.hudDpiBtn, hudDpiMode === 'GENERATOR_5D' && styles.hudDpiBtnActive]}
+                onPress={() => setHudDpiMode('GENERATOR_5D')}>
+                <Text
+                  style={[
+                    styles.hudDpiBtnText,
+                    hudDpiMode === 'GENERATOR_5D' && styles.hudDpiBtnTextActive,
+                  ]}>
+                  ⚡ Tạo Độ Nhạy 5D
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {hudDpiMode === 'STUDIO' ? (
+              <HudAndDpiStudio />
+            ) : (
+              <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
             <Text style={styles.screenMainTitle}>⚡ BỘ TẠO ĐỘ NHẠY MA TRẬN 5D</Text>
             <Text style={styles.screenSubTitle}>
               Thuật toán 5 chiều: Loại máy • Tần số quét • Lực vuốt tay • Phụ kiện • Vũ khí tủ
@@ -1016,6 +1168,8 @@ export default function App() {
 
             <View style={{ height: 100 }} />
           </ScrollView>
+            )}
+          </View>
         );
 
       // ---------------- TAB 4: TÀI KHOẢN & QUẢN LÝ CẤU HÌNH (MULTI-SAVE) ----------------
@@ -1206,21 +1360,42 @@ export default function App() {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navItem} onPress={() => setActiveTab('GeneratorTab')}>
-          <Text style={[styles.navIcon, activeTab === 'GeneratorTab' && styles.activeNavText]}>
-            ⚡
+        <TouchableOpacity style={styles.navItem} onPress={() => setActiveTab('AimTrainerTab')}>
+          <Text style={[styles.navIcon, activeTab === 'AimTrainerTab' && styles.activeNavText]}>
+            🔥
           </Text>
-          <Text style={[styles.navLabel, activeTab === 'GeneratorTab' && styles.activeNavText]}>
-            Tạo 5D
+          <Text style={[styles.navLabel, activeTab === 'AimTrainerTab' && styles.activeNavText]}>
+            Luyện Tâm
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => {
+            setActiveTab('HudDpiTab');
+          }}>
+          <Text
+            style={[
+              styles.navIcon,
+              (activeTab === 'HudDpiTab' || activeTab === 'GeneratorTab') && styles.activeNavText,
+            ]}>
+            🛠️
+          </Text>
+          <Text
+            style={[
+              styles.navLabel,
+              (activeTab === 'HudDpiTab' || activeTab === 'GeneratorTab') && styles.activeNavText,
+            ]}>
+            HUD & DPI
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navItem} onPress={() => setActiveTab('AccountTab')}>
           <Text style={[styles.navIcon, activeTab === 'AccountTab' && styles.activeNavText]}>
-            👤
+            💾
           </Text>
           <Text style={[styles.navLabel, activeTab === 'AccountTab' && styles.activeNavText]}>
-            Tài Khoản
+            Đã Lưu
           </Text>
         </TouchableOpacity>
       </View>
@@ -2570,5 +2745,91 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
     paddingHorizontal: 30,
+  },
+
+  // 2026 Badges & Filters
+  badge2026Mini: {
+    backgroundColor: 'rgba(255, 98, 0, 0.25)',
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+    borderRadius: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+  },
+  badge2026MiniText: {
+    color: COLORS.primary,
+    fontSize: 9,
+    fontWeight: '800',
+  },
+  badge2026Header: {
+    backgroundColor: 'rgba(0, 240, 255, 0.15)',
+    borderWidth: 1,
+    borderColor: COLORS.cyanTactical,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    alignSelf: 'flex-start',
+    marginBottom: 8,
+  },
+  badge2026HeaderText: {
+    color: COLORS.cyanTactical,
+    fontSize: 11,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
+  filterTabRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 12,
+  },
+  filterTabBtn: {
+    flex: 1,
+    backgroundColor: COLORS.surfaceCard,
+    paddingVertical: 9,
+    borderRadius: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  filterTabBtnActive: {
+    backgroundColor: 'rgba(255, 98, 0, 0.2)',
+    borderColor: COLORS.primary,
+  },
+  filterTabBtnText: {
+    color: COLORS.textMuted,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  filterTabBtnTextActive: {
+    color: COLORS.primary,
+  },
+  hudDpiSwitcher: {
+    flexDirection: 'row',
+    backgroundColor: COLORS.surfaceCard,
+    padding: 4,
+    borderRadius: 12,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    marginHorizontal: 16,
+    marginTop: 8,
+  },
+  hudDpiBtn: {
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  hudDpiBtnActive: {
+    backgroundColor: COLORS.primary,
+  },
+  hudDpiBtnText: {
+    color: COLORS.textMuted,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  hudDpiBtnTextActive: {
+    color: '#FFF',
+    fontWeight: '800',
   },
 });
