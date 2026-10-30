@@ -18,6 +18,7 @@ import { COLORS } from './src/theme/colors';
 import { BRANDS, SUB_SERIES_MAP, MOCK_DATA, PRO_TIPS } from './src/data/sensitivityData';
 import AimTrainer from './src/components/AimTrainer';
 import HudAndDpiStudio from './src/components/HudAndDpiStudio';
+import AiSensitivityCoach from './src/components/AiSensitivityCoach';
 
 export default function App() {
   // Navigation & Screen State
@@ -541,12 +542,23 @@ export default function App() {
               <TouchableOpacity
                 style={styles.toolCard}
                 onPress={() => {
-                  setActiveTab('HudDpiTab');
-                  setHudDpiMode('GENERATOR_5D');
+                  setActiveTab('AiCoachTab');
                 }}>
-                <Text style={styles.toolIcon}>⚡</Text>
-                <Text style={styles.toolTitle}>Tạo Ma Trận 5D</Text>
-                <Text style={styles.toolDesc}>Cá nhân hóa theo tay & máy</Text>
+                <Text style={styles.toolIcon}>🤖</Text>
+                <Text style={styles.toolTitle}>Trợ Lý AI Coach</Text>
+                <Text style={styles.toolDesc}>Chẩn đoán dính ngực & vọt đầu V2</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={[styles.quickToolsRow, { marginTop: 10 }]}>
+              <TouchableOpacity
+                style={styles.toolCard}
+                onPress={() => {
+                  setActiveTab('AccountTab');
+                }}>
+                <Text style={styles.toolIcon}>💾</Text>
+                <Text style={styles.toolTitle}>Cấu Hình Đã Lưu ({savedConfigs.length})</Text>
+                <Text style={styles.toolDesc}>Quản lý & đổi tên không giới hạn</Text>
               </TouchableOpacity>
             </View>
 
@@ -723,7 +735,8 @@ export default function App() {
               <TouchableOpacity
                 style={styles.backButtonRow}
                 onPress={() => setSensSubScreen('BrandList')}>
-                <Text style={styles.backButtonText}>← Quay Lại Hãng Khác</Text>
+                <Text style={styles.backButtonIcon}>←</Text>
+                <Text style={styles.backButtonText}>QUAY LẠI CHỌN HÃNG KHÁC</Text>
               </TouchableOpacity>
 
               <Text style={styles.screenMainTitle}>Hãng: {selectedBrand}</Text>
@@ -761,7 +774,8 @@ export default function App() {
               <TouchableOpacity
                 style={styles.backButtonRow}
                 onPress={() => setSensSubScreen('SubSeriesList')}>
-                <Text style={styles.backButtonText}>← Quay Lại Phân Khúc</Text>
+                <Text style={styles.backButtonIcon}>←</Text>
+                <Text style={styles.backButtonText}>QUAY LẠI PHÂN KHÚC DÒNG MÁY</Text>
               </TouchableOpacity>
 
               <Text style={styles.screenMainTitle}>Danh Sách Máy ({filteredData.length})</Text>
@@ -836,7 +850,8 @@ export default function App() {
                     setSensSubScreen('DeviceList');
                   }
                 }}>
-                <Text style={styles.backButtonText}>← Quay Lại Danh Sách</Text>
+                <Text style={styles.backButtonIcon}>←</Text>
+                <Text style={styles.backButtonText}>QUAY LẠI DANH SÁCH MÁY</Text>
               </TouchableOpacity>
 
               <View style={styles.detailHeaderCard}>
@@ -942,234 +957,28 @@ export default function App() {
       case 'AimTrainerTab':
         return (
           <AimTrainer
+            onBack={() => setActiveTab('HomeTab')}
             onApplyToGenerator={(dragForce) => {
               setGenDragForce(dragForce);
-              setActiveTab('HudDpiTab');
-              setHudDpiMode('GENERATOR_5D');
+              setActiveTab('AiCoachTab');
             }}
           />
         );
 
-      // ---------------- TAB: STUDIO NÚT BẮN HUD & THƯỚC ĐO DPI & MA TRẬN 5D ----------------
+      // ---------------- TAB: STUDIO NÚT BẮN HUD & THƯỚC ĐO DPI & ĐỒ HỌA ----------------
       case 'HudDpiTab':
+        return (
+          <HudAndDpiStudio onBack={() => setActiveTab('HomeTab')} />
+        );
+
+      // ---------------- TAB: TRỢ LÝ AI TẠO ĐỘ NHẠY V2 (QUANTUM HEADSHOT) ----------------
+      case 'AiCoachTab':
       case 'GeneratorTab':
         return (
-          <View style={{ flex: 1 }}>
-            {/* Top Mode Switcher */}
-            <View style={styles.hudDpiSwitcher}>
-              <TouchableOpacity
-                style={[styles.hudDpiBtn, hudDpiMode === 'STUDIO' && styles.hudDpiBtnActive]}
-                onPress={() => setHudDpiMode('STUDIO')}>
-                <Text
-                  style={[
-                    styles.hudDpiBtnText,
-                    hudDpiMode === 'STUDIO' && styles.hudDpiBtnTextActive,
-                  ]}>
-                  🎯 Studio Nút Bắn & DPI
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.hudDpiBtn, hudDpiMode === 'GENERATOR_5D' && styles.hudDpiBtnActive]}
-                onPress={() => setHudDpiMode('GENERATOR_5D')}>
-                <Text
-                  style={[
-                    styles.hudDpiBtnText,
-                    hudDpiMode === 'GENERATOR_5D' && styles.hudDpiBtnTextActive,
-                  ]}>
-                  ⚡ Tạo Độ Nhạy 5D
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            {hudDpiMode === 'STUDIO' ? (
-              <HudAndDpiStudio />
-            ) : (
-              <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
-            <Text style={styles.screenMainTitle}>⚡ BỘ TẠO ĐỘ NHẠY MA TRẬN 5D</Text>
-            <Text style={styles.screenSubTitle}>
-              Thuật toán 5 chiều: Loại máy • Tần số quét • Lực vuốt tay • Phụ kiện • Vũ khí tủ
-            </Text>
-
-            {/* 1. Chọn Dòng Máy */}
-            <Text style={styles.fieldSectionTitle}>1. Phân loại cấu hình thiết bị</Text>
-            <View style={styles.chipRow}>
-              {['iPhone / iPad', 'Android Flagship', 'Android Trung', 'Máy Cấu Hình Yếu'].map(
-                (item) => (
-                  <TouchableOpacity
-                    key={item}
-                    style={[styles.chip, genDeviceType === item && styles.activeChip]}
-                    onPress={() => setGenDeviceType(item)}>
-                    <Text
-                      style={[
-                        styles.chipText,
-                        genDeviceType === item && styles.activeChipText,
-                      ]}>
-                      {item}
-                    </Text>
-                  </TouchableOpacity>
-                )
-              )}
-            </View>
-
-            {/* 2. Chọn Tần Số Quét */}
-            <Text style={styles.fieldSectionTitle}>2. Tần số quét màn hình (Hz)</Text>
-            <View style={styles.chipRow}>
-              {['60Hz', '90Hz', '120Hz+', '144Hz'].map((item) => (
-                <TouchableOpacity
-                  key={item}
-                  style={[styles.chip, genRefreshRate === item && styles.activeChip]}
-                  onPress={() => setGenRefreshRate(item)}>
-                  <Text
-                    style={[
-                      styles.chipText,
-                      genRefreshRate === item && styles.activeChipText,
-                    ]}>
-                    {item}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            {/* 3. Lực vuốt tay của người chơi */}
-            <Text style={styles.fieldSectionTitle}>3. Lực vuốt tay thực tế của bạn</Text>
-            <View style={styles.chipRow}>
-              {['Vuốt Mạnh (Dứt Khoát)', 'Vuốt Vừa (Chuẩn)', 'Vuốt Nhẹ (Lười Vuốt)'].map(
-                (item) => (
-                  <TouchableOpacity
-                    key={item}
-                    style={[styles.chip, genDragForce === item && styles.activeChip]}
-                    onPress={() => setGenDragForce(item)}>
-                    <Text
-                      style={[
-                        styles.chipText,
-                        genDragForce === item && styles.activeChipText,
-                      ]}>
-                      {item}
-                    </Text>
-                  </TouchableOpacity>
-                )
-              )}
-            </View>
-
-            {/* 4. Phụ kiện bề mặt màn hình */}
-            <Text style={styles.fieldSectionTitle}>4. Phụ kiện & Độ trơn màn hình</Text>
-            <View style={styles.chipRow}>
-              {['Kính Bóng Thường', 'Cường Lực Nhám', 'Bao Ngón Tay Gaming', 'Màn Hình Trần'].map(
-                (item) => (
-                  <TouchableOpacity
-                    key={item}
-                    style={[styles.chip, genFriction === item && styles.activeChip]}
-                    onPress={() => setGenFriction(item)}>
-                    <Text
-                      style={[
-                        styles.chipText,
-                        genFriction === item && styles.activeChipText,
-                      ]}>
-                      {item}
-                    </Text>
-                  </TouchableOpacity>
-                )
-              )}
-            </View>
-
-            {/* 5. Dòng súng sở trường */}
-            <Text style={styles.fieldSectionTitle}>5. Vũ khí tủ của bạn</Text>
-            <View style={styles.chipRow}>
-              {[
-                'Shotgun (M1887, M1014)',
-                'SMG Sấy (MP40, UMP)',
-                'Súng Trường (AK, Scar)',
-                'Gõ 1 Viên (Woodpecker, SVD)',
-              ].map((item) => (
-                <TouchableOpacity
-                  key={item}
-                  style={[styles.chip, genWeapon === item && styles.activeChip]}
-                  onPress={() => setGenWeapon(item)}>
-                  <Text
-                    style={[
-                      styles.chipText,
-                      genWeapon === item && styles.activeChipText,
-                    ]}>
-                    {item}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            {/* Nút Tạo */}
-            <TouchableOpacity style={styles.calcButton} onPress={calculateAutoSensitivity}>
-              <Text style={styles.calcButtonText}>⚡ TÍNH TOÁN ĐỘ NHẠY MA TRẬN 5D</Text>
-            </TouchableOpacity>
-
-            {/* Kết quả AI */}
-            {generatedResult && (
-              <View style={styles.generatedResultCard}>
-                <View style={styles.tacticalCornerTL} />
-                <View style={styles.tacticalCornerBR} />
-
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <View style={styles.generatedBadge}>
-                    <Text style={styles.generatedBadgeText}>KẾT QUẢ AI TỐI ƯU</Text>
-                  </View>
-                  <Text style={{ color: COLORS.accentGreen, fontSize: 11, fontWeight: 'bold' }}>
-                    {generatedResult.headshotRate}
-                  </Text>
-                </View>
-                <Text style={styles.generatedTitle}>{generatedResult.deviceName}</Text>
-
-                <View style={styles.generatedGrid}>
-                  <View style={styles.genGridItem}>
-                    <Text style={styles.genGridLabel}>Nhìn xung quanh</Text>
-                    <Text style={styles.genGridValue}>{generatedResult.general}</Text>
-                  </View>
-                  <View style={styles.genGridItem}>
-                    <Text style={styles.genGridLabel}>Red Dot Sight</Text>
-                    <Text style={styles.genGridValue}>{generatedResult.redDot}</Text>
-                  </View>
-                  <View style={styles.genGridItem}>
-                    <Text style={styles.genGridLabel}>Ống ngắm 2X / 4X</Text>
-                    <Text style={styles.genGridValue}>{generatedResult.scope2x} / {generatedResult.scope4x}</Text>
-                  </View>
-                  <View style={styles.genGridItem}>
-                    <Text style={styles.genGridLabel}>Nút Bắn Chuẩn</Text>
-                    <Text style={styles.genGridValue}>{generatedResult.buttonSize}%</Text>
-                  </View>
-                </View>
-
-                <View style={styles.genDragBox}>
-                  <Text style={styles.genDragLabel}>DPI Khuyên Dùng:</Text>
-                  <Text style={[styles.genDragValue, { color: COLORS.secondary }]}>{generatedResult.dpi}</Text>
-                </View>
-
-                <View style={styles.genDragBox}>
-                  <Text style={styles.genDragLabel}>Vị trí nút (HUD):</Text>
-                  <Text style={styles.genDragValue}>{generatedResult.hudPos}</Text>
-                </View>
-
-                <View style={styles.genDragBox}>
-                  <Text style={styles.genDragLabel}>Kỹ thuật vuốt:</Text>
-                  <Text style={[styles.genDragValue, { color: COLORS.accentGreen }]}>{generatedResult.dragType}</Text>
-                </View>
-
-                <View style={styles.actionButtonGroup}>
-                  <TouchableOpacity
-                    style={styles.saveActionButton}
-                    onPress={() => handleOpenSaveModal(generatedResult)}>
-                    <Text style={styles.actionButtonText}>💾 LƯU CẤU HÌNH (ĐẶT TÊN)</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.shareActionButton}
-                    onPress={() => handleShareSensitivity(generatedResult)}>
-                    <Text style={styles.shareActionButtonText}>📤 CHIA SẺ</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
-
-            <View style={{ height: 100 }} />
-          </ScrollView>
-            )}
-          </View>
+          <AiSensitivityCoach
+            onSaveConfig={(cfg) => handleOpenSaveModal(cfg)}
+            onGoToTrainer={() => setActiveTab('AimTrainerTab')}
+          />
         );
 
       // ---------------- TAB 4: TÀI KHOẢN & QUẢN LÝ CẤU HÌNH (MULTI-SAVE) ----------------
@@ -1390,12 +1199,24 @@ export default function App() {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navItem} onPress={() => setActiveTab('AccountTab')}>
-          <Text style={[styles.navIcon, activeTab === 'AccountTab' && styles.activeNavText]}>
-            💾
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => {
+            setActiveTab('AiCoachTab');
+          }}>
+          <Text
+            style={[
+              styles.navIcon,
+              (activeTab === 'AiCoachTab' || activeTab === 'GeneratorTab') && styles.activeNavText,
+            ]}>
+            🤖
           </Text>
-          <Text style={[styles.navLabel, activeTab === 'AccountTab' && styles.activeNavText]}>
-            Đã Lưu
+          <Text
+            style={[
+              styles.navLabel,
+              (activeTab === 'AiCoachTab' || activeTab === 'GeneratorTab') && styles.activeNavText,
+            ]}>
+            AI Coach
           </Text>
         </TouchableOpacity>
       </View>
@@ -1732,21 +1553,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 
-  // Cosmic Galaxy Cyber Banner
+  // Cosmic Galaxy Cyber Banner (Liquid Glass)
   cyberBanner: {
-    backgroundColor: '#120926',
-    borderRadius: 4,
-    padding: 16,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: 24,
+    padding: 18,
     borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.glassBorderHighlight,
     borderLeftWidth: 5,
-    borderLeftColor: COLORS.primary,
+    borderLeftColor: COLORS.primaryBright,
     marginBottom: 16,
     shadowColor: COLORS.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 12,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.45,
+    shadowRadius: 16,
+    elevation: 8,
   },
   tacticalDecalRow: {
     flexDirection: 'row',
@@ -1756,52 +1577,52 @@ const styles = StyleSheet.create({
   },
   tacticalDecalText: {
     color: COLORS.secondary,
-    fontSize: 10,
-    fontWeight: 'bold',
+    fontSize: 11,
+    fontWeight: '800',
     letterSpacing: 1,
   },
   bannerBadge: {
     backgroundColor: COLORS.primary,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 2,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 8,
   },
   bannerBadgeText: {
     color: '#FFF',
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: '900',
     letterSpacing: 0.5,
   },
   bannerTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '900',
     color: '#FFF',
-    marginBottom: 4,
+    marginBottom: 6,
     letterSpacing: 0.5,
   },
   bannerDesc: {
-    fontSize: 12,
+    fontSize: 13,
     color: COLORS.textSecondary,
-    lineHeight: 18,
-    marginBottom: 12,
+    lineHeight: 19,
+    marginBottom: 14,
   },
   bannerActionBtn: {
     backgroundColor: COLORS.primary,
     alignSelf: 'flex-start',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: COLORS.secondary,
   },
   bannerActionBtnText: {
     color: '#FFF',
-    fontWeight: 'bold',
-    fontSize: 11,
+    fontWeight: '900',
+    fontSize: 12,
     letterSpacing: 0.5,
   },
 
-  // Stats
+  // Stats (Liquid Glass Rounded)
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -1809,26 +1630,26 @@ const styles = StyleSheet.create({
   },
   statBox: {
     flex: 1,
-    backgroundColor: COLORS.surfaceCard,
-    padding: 12,
-    borderRadius: 4,
+    backgroundColor: COLORS.glassCard,
+    padding: 14,
+    borderRadius: 18,
     marginHorizontal: 3,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
-    borderBottomWidth: 2,
-    borderBottomColor: COLORS.primary,
+    borderWidth: 1.5,
+    borderColor: COLORS.glassBorder,
+    borderBottomWidth: 3,
+    borderBottomColor: COLORS.primaryBright,
   },
   statNumber: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '900',
-    color: COLORS.primary,
+    color: COLORS.primaryBright,
   },
   statLabel: {
-    fontSize: 10,
+    fontSize: 11,
     color: COLORS.textMuted,
     marginTop: 2,
-    fontWeight: '600',
+    fontWeight: '700',
     textTransform: 'uppercase',
   },
 
@@ -1847,38 +1668,39 @@ const styles = StyleSheet.create({
   },
   toolCard: {
     flex: 1,
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4,
-    padding: 14,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: 20,
+    padding: 16,
     marginHorizontal: 4,
     borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
-    borderLeftWidth: 3,
-    borderLeftColor: COLORS.primary,
+    borderColor: COLORS.glassBorder,
+    borderLeftWidth: 4,
+    borderLeftColor: COLORS.primaryBright,
   },
   toolIcon: {
-    fontSize: 22,
+    fontSize: 24,
     marginBottom: 6,
   },
   toolTitle: {
-    color: COLORS.text,
-    fontSize: 13,
-    fontWeight: 'bold',
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '800',
     marginBottom: 2,
   },
   toolDesc: {
-    color: COLORS.textMuted,
-    fontSize: 10,
+    color: COLORS.textSecondary,
+    fontSize: 11,
+    lineHeight: 15,
   },
 
-  // Tips
+  // Tips (Kính lỏng)
   tipCard: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4,
-    padding: 14,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: 20,
+    padding: 16,
     marginBottom: 10,
-    borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
+    borderWidth: 1.5,
+    borderColor: COLORS.glassBorder,
   },
   tipHeader: {
     flexDirection: 'row',
@@ -1886,21 +1708,21 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   tipBadge: {
-    backgroundColor: 'rgba(255, 184, 0, 0.2)',
+    backgroundColor: 'rgba(255, 183, 0, 0.2)',
     color: COLORS.secondary,
-    fontSize: 9,
-    fontWeight: 'bold',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 2,
+    fontSize: 10,
+    fontWeight: '800',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
     marginRight: 8,
     borderWidth: 1,
     borderColor: COLORS.secondary,
   },
   tipTitleText: {
-    color: COLORS.text,
-    fontSize: 13,
-    fontWeight: 'bold',
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '800',
     flex: 1,
   },
   tipDescText: {
@@ -1911,15 +1733,15 @@ const styles = StyleSheet.create({
 
   // Common Screen Titles
   screenMainTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '900',
-    color: COLORS.primary,
+    color: COLORS.primaryBright,
     marginBottom: 4,
     marginTop: 6,
-    letterSpacing: 1,
+    letterSpacing: 0.5,
   },
   screenSubTitle: {
-    fontSize: 12,
+    fontSize: 13,
     color: COLORS.textSecondary,
     marginBottom: 14,
   },
@@ -1928,171 +1750,186 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4,
-    paddingHorizontal: 12,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: 22,
+    paddingHorizontal: 16,
     borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.glassBorder,
     marginBottom: 14,
   },
   searchIcon: {
-    fontSize: 15,
+    fontSize: 16,
     marginRight: 8,
   },
   searchInput: {
     flex: 1,
-    color: COLORS.text,
-    paddingVertical: 10,
-    fontSize: 13,
+    color: '#FFF',
+    paddingVertical: 12,
+    fontSize: 14,
+    fontWeight: '600',
   },
 
-  // Brand Cards
+  // Brand Cards (Liquid Glass Bo Tròn Mềm Mại)
   brandItemCard: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: 20,
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10,
     borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
-    borderLeftWidth: 3,
-    borderLeftColor: COLORS.secondary,
+    borderColor: COLORS.glassBorder,
+    borderLeftWidth: 4,
+    borderLeftColor: COLORS.primaryBright,
   },
   brandCardLeft: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   brandIconCircle: {
-    width: 38,
-    height: 38,
-    borderRadius: 4,
-    backgroundColor: COLORS.surface,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255, 94, 0, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: 14,
     borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.primary,
   },
   brandIconText: {
-    fontSize: 18,
+    fontSize: 22,
   },
   brandTitleText: {
-    color: COLORS.text,
-    fontSize: 15,
-    fontWeight: 'bold',
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '800',
   },
   brandSubText: {
     color: COLORS.textMuted,
-    fontSize: 11,
+    fontSize: 12,
     marginTop: 2,
+    fontWeight: '600',
   },
   brandArrow: {
-    color: COLORS.primary,
-    fontSize: 15,
+    color: COLORS.primaryBright,
+    fontSize: 18,
     fontWeight: 'bold',
   },
 
-  // Back Button
+  // Nút Quay Lại Cực To Dễ Bấm
   backButtonRow: {
-    marginBottom: 12,
-    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.glassCardElevated,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderRadius: 24,
+    borderWidth: 1.5,
+    borderColor: COLORS.glassBorderHighlight,
+    marginBottom: 16,
+  },
+  backButtonIcon: {
+    color: COLORS.primaryBright,
+    fontSize: 22,
+    fontWeight: '900',
+    marginRight: 10,
   },
   backButtonText: {
-    color: COLORS.secondary,
-    fontSize: 13,
-    fontWeight: 'bold',
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '800',
     letterSpacing: 0.5,
   },
 
-  // Device List Cards
+  // Device List Cards (Kính Lỏng Bo Tròn)
   deviceItemCard: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4,
-    padding: 14,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: 20,
+    padding: 16,
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
     borderLeftWidth: 4,
     borderLeftColor: COLORS.primary,
-    borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
+    borderWidth: 1.5,
+    borderColor: COLORS.glassBorder,
   },
   deviceBrandBadge: {
     color: COLORS.secondary,
-    fontSize: 9,
-    fontWeight: 'bold',
+    fontSize: 10,
+    fontWeight: '800',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   deviceItemTitle: {
-    color: COLORS.text,
-    fontSize: 14,
-    fontWeight: 'bold',
+    color: '#FFF',
+    fontSize: 15,
+    fontWeight: '800',
     marginTop: 2,
   },
   deviceItemSubtitle: {
     color: COLORS.textSecondary,
-    fontSize: 11,
+    fontSize: 12,
     marginTop: 3,
   },
   scorePill: {
-    backgroundColor: 'rgba(255, 98, 0, 0.15)',
-    paddingHorizontal: 10,
+    backgroundColor: 'rgba(255, 94, 0, 0.2)',
+    paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 4,
+    borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: COLORS.primary,
+    borderColor: COLORS.primaryBright,
   },
   scorePillText: {
-    color: COLORS.primary,
+    color: COLORS.primaryBright,
     fontWeight: '900',
     fontSize: 15,
   },
 
-  // Detail View Cards
+  // Detail View Cards (Liquid Glass)
   detailHeaderCard: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4,
-    padding: 16,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: 22,
+    padding: 18,
     borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.primary,
+    borderColor: COLORS.glassBorderHighlight,
+    borderLeftWidth: 5,
+    borderLeftColor: COLORS.primaryBright,
     marginBottom: 16,
     position: 'relative',
   },
   detailBrandTag: {
     color: COLORS.secondary,
-    fontSize: 10,
-    fontWeight: 'bold',
+    fontSize: 11,
+    fontWeight: '800',
     textTransform: 'uppercase',
     letterSpacing: 1,
     marginBottom: 4,
   },
   detailTitle: {
     color: '#FFF',
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '900',
     marginBottom: 4,
   },
   detailAuthor: {
     color: COLORS.textMuted,
-    fontSize: 11,
+    fontSize: 12,
   },
 
   // Sliders Panel
   inGamePanel: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4,
-    padding: 16,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: 22,
+    padding: 18,
     borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.glassBorder,
     marginBottom: 16,
   },
   ffSliderContainer: {
-    marginBottom: 14,
+    marginBottom: 16,
   },
   sliderHeaderRow: {
     flexDirection: 'row',
@@ -2101,64 +1938,65 @@ const styles = StyleSheet.create({
   },
   ffSliderLabel: {
     color: COLORS.textSecondary,
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 13,
+    fontWeight: '700',
   },
   ffSliderValue: {
-    color: COLORS.secondary,
-    fontSize: 13,
-    fontWeight: 'bold',
+    color: COLORS.primaryBright,
+    fontSize: 15,
+    fontWeight: '900',
   },
   ffTrackBackground: {
-    height: 8,
-    backgroundColor: '#0F0922',
-    borderRadius: 2,
+    height: 10,
+    backgroundColor: 'rgba(18, 10, 5, 0.9)',
+    borderRadius: 5,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.glassBorder,
   },
   ffTrackProgress: {
     height: '100%',
-    backgroundColor: COLORS.primary,
-    borderRadius: 2,
+    backgroundColor: COLORS.primaryBright,
+    borderRadius: 5,
   },
 
   // Hardware Card
   hardwareCard: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4,
-    padding: 16,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: 22,
+    padding: 18,
     borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.glassBorder,
     marginBottom: 16,
   },
   hardwareRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(85, 54, 150, 0.3)',
+    borderBottomColor: 'rgba(255, 115, 0, 0.15)',
   },
   hardwareLabel: {
     color: COLORS.textSecondary,
-    fontSize: 12,
+    fontSize: 13,
+    fontWeight: '600',
   },
   hardwareValue: {
     color: COLORS.secondary,
-    fontSize: 13,
-    fontWeight: 'bold',
+    fontSize: 14,
+    fontWeight: '800',
   },
 
   // HUD Simulator Box
   hudSimulatorBox: {
-    backgroundColor: '#0A0518',
-    borderRadius: 4,
+    backgroundColor: 'rgba(18, 10, 5, 0.95)',
+    borderRadius: 22,
     padding: 22,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.glassBorderHighlight,
     marginBottom: 20,
     minHeight: 180,
   },
@@ -2474,32 +2312,32 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   savedConfigCard: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4,
-    padding: 12,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: 18,
+    padding: 14,
     marginBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
-    borderLeftWidth: 3,
-    borderLeftColor: COLORS.primary,
+    borderColor: COLORS.glassBorder,
+    borderLeftWidth: 4,
+    borderLeftColor: COLORS.primaryBright,
     position: 'relative',
   },
   savedItemTitle: {
-    color: COLORS.primary,
-    fontSize: 13,
-    fontWeight: 'bold',
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '800',
   },
   savedItemDate: {
     color: COLORS.textMuted,
-    fontSize: 10,
+    fontSize: 11,
     marginTop: 2,
   },
   savedItemStats: {
     color: COLORS.textSecondary,
-    fontSize: 11,
+    fontSize: 12,
     marginTop: 3,
   },
   savedCardActions: {
@@ -2508,40 +2346,42 @@ const styles = StyleSheet.create({
   },
   viewBtn: {
     backgroundColor: COLORS.primary,
-    paddingHorizontal: 9,
-    paddingVertical: 5,
-    borderRadius: 2,
-    marginRight: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 10,
+    marginRight: 6,
   },
   viewBtnText: {
     color: '#FFF',
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '900',
   },
   renameBtn: {
-    backgroundColor: '#321D5E',
-    paddingHorizontal: 8,
-    paddingVertical: 5,
-    borderRadius: 2,
-    marginRight: 4,
+    backgroundColor: COLORS.glassCardElevated,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
+    marginRight: 6,
     borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.glassBorderHighlight,
   },
   renameBtnText: {
     color: COLORS.secondary,
-    fontSize: 10,
-    fontWeight: 'bold',
+    fontSize: 11,
+    fontWeight: '800',
   },
   delBtn: {
-    backgroundColor: '#4D1515',
-    paddingHorizontal: 8,
-    paddingVertical: 5,
-    borderRadius: 2,
+    backgroundColor: 'rgba(255, 42, 66, 0.25)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: COLORS.accentRed,
   },
   delBtnText: {
-    color: '#FF6B6B',
-    fontSize: 10,
-    fontWeight: 'bold',
+    color: COLORS.accentRed,
+    fontSize: 11,
+    fontWeight: '900',
   },
   toggleSavedBtn: {
     alignSelf: 'center',
@@ -2549,53 +2389,53 @@ const styles = StyleSheet.create({
   },
   toggleSavedBtnText: {
     color: COLORS.secondary,
-    fontSize: 11,
-    fontWeight: 'bold',
+    fontSize: 12,
+    fontWeight: '800',
     textDecorationLine: 'underline',
   },
   menuList: {
     marginTop: 10,
   },
   menuRow: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4,
-    padding: 14,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: 18,
+    padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 8,
     borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.glassBorder,
   },
   menuRowText: {
-    color: COLORS.text,
-    fontSize: 12,
-    fontWeight: '600',
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '700',
   },
   logoutButton: {
-    backgroundColor: '#2A0E18',
-    borderWidth: 1,
-    borderColor: '#731C34',
-    paddingVertical: 12,
-    borderRadius: 4,
+    backgroundColor: 'rgba(255, 42, 66, 0.15)',
+    borderWidth: 1.5,
+    borderColor: COLORS.accentRed,
+    paddingVertical: 14,
+    borderRadius: 20,
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 20,
   },
   logoutButtonText: {
-    color: '#FF6B8B',
-    fontWeight: 'bold',
-    fontSize: 12,
+    color: COLORS.accentRed,
+    fontWeight: '900',
+    fontSize: 13,
     letterSpacing: 0.5,
   },
 
-  // Bottom Navigation Bar
+  // Bottom Navigation Bar (Liquid Glassmorphism Orange)
   bottomBar: {
     flexDirection: 'row',
-    height: 64,
-    backgroundColor: COLORS.surface,
+    height: 68,
+    backgroundColor: 'rgba(26, 14, 8, 0.96)',
     borderTopWidth: 1.5,
-    borderTopColor: COLORS.borderHighlight,
+    borderTopColor: 'rgba(255, 115, 0, 0.35)',
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingBottom: 6,
@@ -2606,17 +2446,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   navIcon: {
-    fontSize: 18,
+    fontSize: 20,
     color: COLORS.textMuted,
     marginBottom: 2,
   },
   navLabel: {
-    fontSize: 10,
+    fontSize: 11,
     color: COLORS.textMuted,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   activeNavText: {
-    color: COLORS.activeTab,
+    color: COLORS.primaryBright,
+    fontWeight: '900',
   },
 
   // Modals
@@ -2627,102 +2468,105 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalCard: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4,
-    padding: 20,
+    backgroundColor: 'rgba(38, 18, 8, 0.98)',
+    borderRadius: 24,
+    padding: 22,
     borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.primary,
+    borderColor: COLORS.glassBorderHighlight,
+    borderLeftWidth: 5,
+    borderLeftColor: COLORS.primaryBright,
     position: 'relative',
     shadowColor: COLORS.primary,
-    shadowRadius: 15,
-    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    shadowOpacity: 0.6,
   },
   modalTitle: {
-    color: COLORS.primary,
-    fontSize: 16,
+    color: '#FFF',
+    fontSize: 18,
     fontWeight: '900',
     marginBottom: 6,
     letterSpacing: 0.5,
   },
   modalSubDesc: {
     color: COLORS.textSecondary,
-    fontSize: 11,
-    marginBottom: 14,
-    lineHeight: 16,
+    fontSize: 12,
+    marginBottom: 16,
+    lineHeight: 18,
   },
   modalFieldLabel: {
     color: COLORS.textSecondary,
-    fontSize: 11,
-    fontWeight: 'bold',
+    fontSize: 12,
+    fontWeight: '800',
     marginBottom: 6,
     textTransform: 'uppercase',
   },
   modalInput: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    backgroundColor: 'rgba(18, 10, 5, 0.9)',
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
     color: '#FFF',
-    borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
-    marginBottom: 12,
-    fontSize: 13,
+    borderWidth: 1.5,
+    borderColor: COLORS.glassBorder,
+    marginBottom: 14,
+    fontSize: 14,
+    fontWeight: '600',
   },
   tagSectionLabel: {
     color: COLORS.textMuted,
-    fontSize: 10,
-    fontWeight: 'bold',
+    fontSize: 11,
+    fontWeight: '800',
     marginBottom: 6,
   },
   tagRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 14,
+    marginBottom: 16,
+    gap: 6,
   },
   tagPill: {
-    backgroundColor: '#20123D',
+    backgroundColor: COLORS.glassCardElevated,
     borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 2,
-    marginRight: 6,
-    marginBottom: 6,
+    borderColor: COLORS.glassBorderHighlight,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
+    marginRight: 4,
+    marginBottom: 4,
   },
   tagPillText: {
     color: COLORS.secondary,
-    fontSize: 10,
-    fontWeight: '600',
+    fontSize: 11,
+    fontWeight: '800',
   },
   modalButtonsRow: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    marginTop: 8,
+    marginTop: 10,
   },
   modalCancelBtn: {
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingVertical: 10,
     marginRight: 8,
+    borderRadius: 12,
   },
   modalCancelText: {
     color: COLORS.textMuted,
-    fontWeight: 'bold',
-    fontSize: 12,
+    fontWeight: '800',
+    fontSize: 13,
   },
   modalSaveBtn: {
     backgroundColor: COLORS.primary,
-    paddingHorizontal: 18,
-    paddingVertical: 8,
-    borderRadius: 2,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: COLORS.secondary,
   },
   modalSaveText: {
     color: '#FFF',
-    fontWeight: 'bold',
-    fontSize: 12,
+    fontWeight: '900',
+    fontSize: 13,
   },
 
   // Empty Search States

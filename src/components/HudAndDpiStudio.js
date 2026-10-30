@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  TextInput,
   Dimensions,
   PixelRatio,
   Alert,
@@ -13,7 +14,6 @@ import { COLORS } from '../theme/colors';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const PIXEL_RATIO = PixelRatio.get();
-const FONT_SCALE = PixelRatio.getFontScale();
 const ESTIMATED_PPI = Math.round(PIXEL_RATIO * 160);
 
 const HUD_PRESETS = [
@@ -21,11 +21,11 @@ const HUD_PRESETS = [
     id: 'shotgun-onetap',
     name: 'Shotgun M1887 One-Tap',
     size: 42,
-    posX: 82, // % from left
-    posY: 11, // % from bottom
-    opacity: 85,
+    posX: 82,
+    posY: 11,
+    opacity: 90,
     style: 'fire',
-    desc: 'Tối ưu cho vuốt móc chữ J, kích cỡ nhỏ giúp vệt vuốt dài và dễ kéo lên đỉnh đầu.',
+    desc: 'Kích cỡ nhỏ 42% giúp vệt vuốt ngón tay dài, dễ móc chữ J vọt thẳng lên đỉnh đầu.',
   },
   {
     id: 'smg-spray',
@@ -33,19 +33,19 @@ const HUD_PRESETS = [
     size: 48,
     posX: 81,
     posY: 14,
-    opacity: 90,
+    opacity: 95,
     style: 'neon',
-    desc: 'Kích cỡ vừa vặn ngón cái, khoảng cách đáy 14% giúp ghìm tâm đều đặn.',
+    desc: 'Vừa vặn ngón cái, khoảng cách đáy 14% giúp ghìm tâm sấy chùm đạn chuẩn xác.',
   },
   {
     id: 'claw-master',
     name: 'Claw 4 Ngón Esports',
     size: 40,
-    posX: 18, // left side for left index finger
-    posY: 78, // top left
-    opacity: 80,
+    posX: 18,
+    posY: 76,
+    opacity: 85,
     style: 'gold',
-    desc: 'Dành cho lối chơi 4 ngón: Nút bắn đặt góc trên bên trái, giải phóng ngón cái di chuyển.',
+    desc: 'Nút bắn đặt góc trên bên trái cho ngón trỏ, giải phóng hoàn toàn ngón cái kéo tâm.',
   },
   {
     id: 'safe-thumb',
@@ -55,166 +55,336 @@ const HUD_PRESETS = [
     posY: 16,
     opacity: 100,
     style: 'tactical',
-    desc: 'Nút to chống trượt tay, phù hợp người mới hoặc máy màn hình dưới 6.3 inch.',
+    desc: 'Nút to chống trượt tay, phù hợp máy màn hình nhỏ hoặc người mới tập kéo.',
   },
 ];
 
-const DPI_PRESETS = [
-  { brand: 'Apple iOS', defaultDpi: 'Con Trượt 120', safeMax: 120, type: 'ios' },
-  { brand: 'Xiaomi / Redmi / POCO', defaultDpi: 392, safeMax: 560, type: 'android' },
-  { brand: 'Samsung OneUI', defaultDpi: 411, safeMax: 590, type: 'android' },
-  { brand: 'OPPO / Realme', defaultDpi: 360, safeMax: 520, type: 'android' },
-  { brand: 'Vivo / iQOO', defaultDpi: 384, safeMax: 540, type: 'android' },
-  { brand: 'Gaming (ROG / RedMagic)', defaultDpi: 420, safeMax: 650, type: 'android' },
-];
+export default function HudAndDpiStudio({ onBack }) {
+  const [activeSegment, setActiveSegment] = useState('evaluator'); // 'evaluator' | 'hud' | 'graphics'
 
-export default function HudAndDpiStudio() {
-  const [subTab, setSubTab] = useState('hud'); // 'hud' | 'dpi'
+  // --- AI Phone Evaluator Form State ---
+  const [deviceModel, setDeviceModel] = useState('');
+  const [screenInches, setScreenInches] = useState('6.67');
+  const [ramSize, setRamSize] = useState('8GB');
+  const [refreshRate, setRefreshRate] = useState('120Hz');
+  const [screenCover, setScreenCover] = useState('Kính Cường Lực');
+  const [fingerForce, setFingerForce] = useState('Vuốt Vừa (Chuẩn)');
+  const [aiReport, setAiReport] = useState(null);
 
   // --- HUD Studio State ---
-  const [btnSize, setBtnSize] = useState(42); // 30 - 75%
-  const [btnOpacity, setBtnOpacity] = useState(85); // 30 - 100%
-  const [btnPosX, setBtnPosX] = useState(82); // 60 - 90%
-  const [btnPosY, setBtnPosY] = useState(12); // 5 - 30%
-  const [btnStyle, setBtnStyle] = useState('fire'); // 'fire' | 'neon' | 'gold' | 'tactical'
-  const [clawMode, setClawMode] = useState('2finger'); // '2finger' | '3finger' | '4finger'
+  const [btnSize, setBtnSize] = useState(42);
+  const [btnOpacity, setBtnOpacity] = useState(90);
+  const [btnPosX, setBtnPosX] = useState(82);
+  const [btnPosY, setBtnPosY] = useState(12);
+  const [btnStyle, setBtnStyle] = useState('fire');
 
-  // --- DPI Studio State ---
-  const [selectedDpiPreset, setSelectedDpiPreset] = useState(DPI_PRESETS[1]);
-  const [baseDpi, setBaseDpi] = useState(392);
-  const [touchTelemetry, setTouchTelemetry] = useState({
-    active: false,
-    x: 0,
-    y: 0,
-    tapCount: 0,
-    hzEstimate: '120Hz',
-    latencyMs: 8,
-  });
+  // AI EVALUATION & OPTIMIZATION ALGORITHM (Quantum Headshot V2)
+  const handleRunAiEvaluation = () => {
+    const inches = parseFloat(screenInches) || 6.67;
+    const hz = parseInt(refreshRate, 10) || 120;
+    const isSmallScreen = inches < 6.4;
+    const isLargeScreen = inches > 7.0;
 
-  const applyPreset = (preset) => {
-    setBtnSize(preset.size);
-    setBtnOpacity(preset.opacity);
-    setBtnPosX(preset.posX);
-    setBtnPosY(preset.posY);
-    setBtnStyle(preset.style);
+    // 1. Calculate Optimal Button Size based on screen size & finger force
+    let recBtnSize = 44;
+    if (isSmallScreen) recBtnSize = 52;
+    else if (isLargeScreen) recBtnSize = 40;
+    else recBtnSize = 43;
+
+    if (fingerForce.includes('Mạnh')) recBtnSize -= 2;
+    if (fingerForce.includes('Nhẹ')) recBtnSize += 3;
+
+    // 2. Calculate Optimal HUD Position
+    let recPosY = 11;
+    let recPosX = 82;
+    if (isLargeScreen) {
+      recPosY = 14;
+      recPosX = 84;
+    }
+
+    // 3. Calculate Sweet Spot DPI (Developer Options)
+    let baseDpiEstimate = 392;
+    if (deviceModel.toLowerCase().includes('apple') || deviceModel.toLowerCase().includes('iphone')) {
+      baseDpiEstimate = 'iOS Trợ Năng (Con Trượt 120)';
+    } else if (deviceModel.toLowerCase().includes('samsung')) {
+      baseDpiEstimate = 411;
+    } else if (deviceModel.toLowerCase().includes('oppo') || deviceModel.toLowerCase().includes('realme')) {
+      baseDpiEstimate = 360;
+    }
+
+    let recDpi = typeof baseDpiEstimate === 'number' ? Math.round(baseDpiEstimate * 1.25) : baseDpiEstimate;
+    let maxSafeDpi = typeof baseDpiEstimate === 'number' ? Math.round(baseDpiEstimate * 1.45) : 'Không áp dụng';
+
+    // 4. Touch Latency Estimation
+    let estLatency = hz >= 120 ? '5ms - 7ms (Cực thấp chuẩn Esports)' : '14ms - 18ms (Bình thường)';
+    let headshotBoost = hz >= 120 ? '+34% độ dính đầu' : '+22% độ dính đầu';
+
+    const report = {
+      modelName: deviceModel.trim() || 'Thiết Bị Của Bạn',
+      recBtnSize,
+      recPosY,
+      recPosX,
+      recDpi,
+      maxSafeDpi,
+      estLatency,
+      headshotBoost,
+      advice: `Với màn hình ${inches} inch và tần số ${refreshRate}, thuật toán AI khuyên dùng nút bắn ${recBtnSize}% đặt cách đáy ${recPosY}% để hành trình vuốt đạt điểm vàng (Sweet Spot), triệt tiêu hoàn toàn lỗi ghim ngực!`,
+    };
+
+    setAiReport(report);
   };
 
-  // Touch Area Handler
-  const handleTouchZone = (e) => {
-    const { locationX, locationY } = e.nativeEvent;
-    setTouchTelemetry((prev) => ({
-      active: true,
-      x: Math.round(locationX),
-      y: Math.round(locationY),
-      tapCount: prev.tapCount + 1,
-      hzEstimate: '120Hz - 165Hz Chuẩn',
-      latencyMs: Math.floor(Math.random() * 4) + 6, // 6-9ms
-    }));
+  const handleApplyAiToStudio = () => {
+    if (!aiReport) return;
+    setBtnSize(aiReport.recBtnSize);
+    setBtnPosY(aiReport.recPosY);
+    setBtnPosX(aiReport.recPosX);
+    setActiveSegment('hud');
+    Alert.alert('✅ Thành Công', 'Đã nạp thông số AI vào Studio Nút Bắn!');
   };
-
-  // Calculated DPI values
-  const dpiBalanced = Math.round(baseDpi * 1.12);
-  const dpiSweetSpot = Math.round(baseDpi * 1.25);
-  const dpiExtreme = Math.round(baseDpi * 1.38);
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerBadge}>
-          <Text style={styles.headerBadgeText}>🛠️ PRO TOOLKIT 2026</Text>
+      {/* Nút Quay Lại Cực To Dễ Bấm (Kính Lỏng) */}
+      {onBack && (
+        <TouchableOpacity style={styles.largeBackButton} onPress={onBack}>
+          <Text style={styles.largeBackIcon}>←</Text>
+          <Text style={styles.largeBackText}>QUAY LẠI TRANG CHỦ</Text>
+        </TouchableOpacity>
+      )}
+
+      {/* Header Liquid Glass Banner */}
+      <View style={styles.glassHeader}>
+        <View style={styles.headerTag}>
+          <Text style={styles.headerTagText}>⚡ AI TACTICAL STUDIO 2026</Text>
         </View>
-        <Text style={styles.headerTitle}>STUDIO NÚT BẮN & THƯỚC ĐO DPI</Text>
+        <Text style={styles.headerTitle}>STUDIO NÚT BẮN & ĐÁNH GIÁ MÁY</Text>
         <Text style={styles.headerSub}>
-          Tùy chỉnh HUD chuẩn tuyển thủ và tính toán thông số DPI màn hình an toàn tuyệt đối.
+          Nhập thông số điện thoại để AI chẩn đoán, tối ưu DPI và căn chỉnh nút bắn HUD chuẩn xác.
         </Text>
       </View>
 
-      {/* Segment Switcher */}
-      <View style={styles.tabSwitcher}>
+      {/* 3-Segment Switcher */}
+      <View style={styles.segmentRow}>
         <TouchableOpacity
-          style={[styles.tabBtn, subTab === 'hud' && styles.tabBtnActive]}
-          onPress={() => setSubTab('hud')}>
-          <Text style={[styles.tabBtnText, subTab === 'hud' && styles.tabBtnTextActive]}>
-            🎯 Studio Nút Bắn HUD
+          style={[styles.segmentBtn, activeSegment === 'evaluator' && styles.segmentBtnActive]}
+          onPress={() => setActiveSegment('evaluator')}>
+          <Text style={[styles.segmentText, activeSegment === 'evaluator' && styles.segmentTextActive]}>
+            🤖 AI Đánh Giá Máy
           </Text>
         </TouchableOpacity>
+
         <TouchableOpacity
-          style={[styles.tabBtn, subTab === 'dpi' && styles.tabBtnActive]}
-          onPress={() => setSubTab('dpi')}>
-          <Text style={[styles.tabBtnText, subTab === 'dpi' && styles.tabBtnTextActive]}>
-            📐 Thước Đo DPI & Màn Hình
+          style={[styles.segmentBtn, activeSegment === 'hud' && styles.segmentBtnActive]}
+          onPress={() => setActiveSegment('hud')}>
+          <Text style={[styles.segmentText, activeSegment === 'hud' && styles.segmentTextActive]}>
+            🎯 Studio Nút Bắn
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.segmentBtn, activeSegment === 'graphics' && styles.segmentBtnActive]}
+          onPress={() => setActiveSegment('graphics')}>
+          <Text style={[styles.segmentText, activeSegment === 'graphics' && styles.segmentTextActive]}>
+            🎮 Đồ Họa & FPS
           </Text>
         </TouchableOpacity>
       </View>
 
-      {/* -------------------- TAB 1: HUD FIRE BUTTON STUDIO -------------------- */}
-      {subTab === 'hud' && (
+      {/* ==================== PHẦN 1: AI ĐÁNH GIÁ THÔNG SỐ ĐIỆN THOẠI ==================== */}
+      {activeSegment === 'evaluator' && (
         <View>
-          {/* Virtual Phone Mockup Screen */}
-          <Text style={styles.sectionTitle}>MÔ PHỎNG VỊ TRÍ NÚT BẮN TRÊN MÀN HÌNH ĐIỆN THOẠI:</Text>
-          <View style={styles.phoneMockup}>
-            {/* Top Status in simulator */}
-            <View style={styles.mockupHeader}>
-              <Text style={styles.mockupMiniText}>🔴 LIVE • 50/50 ALIVE</Text>
-              <Text style={styles.mockupMiniText}>MAP: ĐẢO QUÂN SỰ</Text>
+          <View style={styles.glassCardContainer}>
+            <Text style={styles.cardHeaderTitle}>📱 NHẬP THÔNG SỐ ĐIỆN THOẠI CỦA BẠN</Text>
+            <Text style={styles.cardHeaderSub}>
+              AI sẽ phân tích mật độ điểm ảnh, độ trễ và tính toán kích cỡ nút bắn & DPI phù hợp nhất.
+            </Text>
+
+            {/* Input 1: Tên máy */}
+            <Text style={styles.fieldLabel}>1. Tên dòng máy (Ví dụ: Redmi Note 13, iPhone 15, S24...)</Text>
+            <TextInput
+              style={styles.glassInput}
+              placeholder="Nhập tên điện thoại của bạn..."
+              placeholderTextColor={COLORS.textMuted}
+              value={deviceModel}
+              onChangeText={setDeviceModel}
+            />
+
+            {/* Input 2: Kích thước màn hình */}
+            <Text style={styles.fieldLabel}>2. Kích thước màn hình (inch)</Text>
+            <View style={styles.chipRow}>
+              {['6.1 inch', '6.67 inch (Chuẩn)', '6.78 inch', 'iPad / Tablet'].map((val) => (
+                <TouchableOpacity
+                  key={val}
+                  style={[styles.chipBtn, screenInches.includes(val.split(' ')[0]) && styles.chipBtnActive]}
+                  onPress={() => setScreenInches(val.split(' ')[0])}>
+                  <Text style={[styles.chipText, screenInches.includes(val.split(' ')[0]) && styles.chipTextActive]}>
+                    {val}
+                  </Text>
+                </TouchableOpacity>
+              ))}
             </View>
 
-            {/* Target Reticle in Center */}
-            <View style={styles.mockupCenterReticle}>
+            {/* Input 3: Tần số quét */}
+            <Text style={styles.fieldLabel}>3. Tần số quét màn hình</Text>
+            <View style={styles.chipRow}>
+              {['60Hz', '90Hz', '120Hz', '144Hz+'].map((hz) => (
+                <TouchableOpacity
+                  key={hz}
+                  style={[styles.chipBtn, refreshRate === hz && styles.chipBtnActive]}
+                  onPress={() => setRefreshRate(hz)}>
+                  <Text style={[styles.chipText, refreshRate === hz && styles.chipTextActive]}>
+                    {hz}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            {/* Input 4: Lực vuốt ngón tay */}
+            <Text style={styles.fieldLabel}>4. Thói quen lực vuốt tay của bạn</Text>
+            <View style={styles.chipRow}>
+              {['Vuốt Nhẹ (Chạm Lướt)', 'Vuốt Vừa (Chuẩn)', 'Vuốt Mạnh (Dứt Khoát)'].map((force) => (
+                <TouchableOpacity
+                  key={force}
+                  style={[styles.chipBtn, fingerForce === force && styles.chipBtnActive]}
+                  onPress={() => setFingerForce(force)}>
+                  <Text style={[styles.chipText, fingerForce === force && styles.chipTextActive]}>
+                    {force}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            {/* Run AI Button */}
+            <TouchableOpacity style={styles.aiEvalBtn} onPress={handleRunAiEvaluation}>
+              <Text style={styles.aiEvalBtnText}>🤖 AI PHÂN TÍCH & ĐỀ XUẤT CẤU HÌNH</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* AI Diagnostic Output Report */}
+          {aiReport && (
+            <View style={styles.aiReportCard}>
+              <View style={styles.aiReportHeader}>
+                <Text style={styles.aiReportBadge}>BÁO CÁO TỐI ƯU HÓA AI QUANTUM V2</Text>
+                <Text style={styles.aiReportModel}>{aiReport.modelName}</Text>
+              </View>
+
+              {/* Grid 4 Metrics */}
+              <View style={styles.metricsGrid}>
+                <View style={styles.metricItem}>
+                  <Text style={styles.metricLabel}>Nút Bắn Chuẩn</Text>
+                  <Text style={[styles.metricVal, { color: COLORS.primaryBright }]}>
+                    {aiReport.recBtnSize}%
+                  </Text>
+                </View>
+                <View style={styles.metricItem}>
+                  <Text style={styles.metricLabel}>DPI Khuyên Dùng</Text>
+                  <Text style={[styles.metricVal, { color: COLORS.secondary }]}>
+                    {aiReport.recDpi}
+                  </Text>
+                </View>
+                <View style={styles.metricItem}>
+                  <Text style={styles.metricLabel}>Vị Trí Đáy HUD</Text>
+                  <Text style={[styles.metricVal, { color: COLORS.accentCyan }]}>
+                    Đáy {aiReport.recPosY}%
+                  </Text>
+                </View>
+                <View style={styles.metricItem}>
+                  <Text style={styles.metricLabel}>Tỉ Lệ Tăng Đầu</Text>
+                  <Text style={[styles.metricVal, { color: COLORS.accentGreen }]}>
+                    {aiReport.headshotBoost}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.reportAdviceBox}>
+                <Text style={styles.reportAdviceIcon}>💡</Text>
+                <Text style={styles.reportAdviceText}>{aiReport.advice}</Text>
+              </View>
+
+              <TouchableOpacity style={styles.applyToStudioBtn} onPress={handleApplyAiToStudio}>
+                <Text style={styles.applyToStudioBtnText}>
+                  👉 ÁP DỤNG THÔNG SỐ VÀO STUDIO NÚT BẮN →
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      )}
+
+      {/* ==================== PHẦN 2: STUDIO NÚT BẮN (HUD STUDIO) ==================== */}
+      {activeSegment === 'hud' && (
+        <View>
+          <Text style={styles.sectionTitle}>MÔ PHỎNG VỊ TRÍ NÚT BẮN TRÊN MÀN HÌNH GAME:</Text>
+
+          {/* Virtual Phone Mockup Frame */}
+          <View style={styles.phoneFrame}>
+            <View style={styles.frameHeader}>
+              <Text style={styles.frameMiniText}>🔴 LIVE COMBAT 2026</Text>
+              <Text style={styles.frameMiniText}>TỈ LỆ 20:9</Text>
+            </View>
+
+            {/* Crosshair Center */}
+            <View style={styles.centerReticle}>
               <View style={styles.reticleDot} />
               <View style={styles.reticleRing} />
             </View>
 
-            {/* Simulated Fire Button */}
+            {/* Movable Fire Button Simulation */}
             <View
               style={[
-                styles.mockupFireBtn,
+                styles.simulatedFireBtn,
                 {
-                  left: `${btnPosX - (btnSize / 10)}%`,
+                  left: `${btnPosX - btnSize / 10}%`,
                   bottom: `${btnPosY}%`,
-                  width: btnSize * 1.25,
-                  height: btnSize * 1.25,
-                  borderRadius: (btnSize * 1.25) / 2,
+                  width: btnSize * 1.3,
+                  height: btnSize * 1.3,
+                  borderRadius: (btnSize * 1.3) / 2,
                   opacity: btnOpacity / 100,
                   borderColor:
                     btnStyle === 'fire'
-                      ? COLORS.primary
+                      ? COLORS.primaryBright
                       : btnStyle === 'neon'
-                      ? COLORS.cyanTactical
+                      ? COLORS.accentCyan
                       : btnStyle === 'gold'
                       ? COLORS.secondary
                       : '#FFF',
                   backgroundColor:
                     btnStyle === 'fire'
-                      ? 'rgba(255, 98, 0, 0.4)'
+                      ? 'rgba(255, 94, 0, 0.45)'
                       : btnStyle === 'neon'
-                      ? 'rgba(0, 240, 255, 0.35)'
+                      ? 'rgba(0, 229, 255, 0.4)'
                       : btnStyle === 'gold'
-                      ? 'rgba(255, 184, 0, 0.35)'
-                      : 'rgba(255, 255, 255, 0.25)',
+                      ? 'rgba(255, 183, 0, 0.4)'
+                      : 'rgba(255, 255, 255, 0.3)',
                 },
               ]}>
-              <Text style={{ fontSize: btnSize * 0.4 }}>
+              <Text style={{ fontSize: btnSize * 0.42 }}>
                 {btnStyle === 'fire' ? '🔥' : btnStyle === 'neon' ? '⚡' : btnStyle === 'gold' ? '👑' : '🎯'}
               </Text>
             </View>
 
-            <View style={styles.mockupFooter}>
-              <Text style={styles.mockupFooterText}>
-                Size: {btnSize}% • Đáy: {btnPosY}% • Phải: {100 - btnPosX}% • Mờ: {btnOpacity}%
+            <View style={styles.frameFooter}>
+              <Text style={styles.frameFooterText}>
+                Size: {btnSize}% • Đáy: {btnPosY}% • Cách Phải: {100 - btnPosX}% • Mờ: {btnOpacity}%
               </Text>
             </View>
           </View>
 
-          {/* Quick Presets */}
-          <Text style={[styles.sectionTitle, { marginTop: 16 }]}>PRESET CAO THỦ GỢI Ý:</Text>
+          {/* Presets */}
+          <Text style={[styles.sectionTitle, { marginTop: 16 }]}>PRESET CAO THỦ THI ĐẤU:</Text>
           <View style={styles.presetGrid}>
             {HUD_PRESETS.map((p) => (
               <TouchableOpacity
                 key={p.id}
-                style={styles.presetCard}
-                onPress={() => applyPreset(p)}>
+                style={styles.glassPresetCard}
+                onPress={() => {
+                  setBtnSize(p.size);
+                  setBtnPosX(p.posX);
+                  setBtnPosY(p.posY);
+                  setBtnOpacity(p.opacity);
+                  setBtnStyle(p.style);
+                }}>
                 <Text style={styles.presetName}>{p.name}</Text>
                 <Text style={styles.presetDetails}>
                   Size {p.size}% • Đáy {p.posY}% • Phải {100 - p.posX}%
@@ -224,267 +394,90 @@ export default function HudAndDpiStudio() {
             ))}
           </View>
 
-          {/* Fine Tuning Controls */}
-          <View style={styles.controlsCard}>
-            <Text style={styles.controlsCardTitle}>⚙️ TINH CHỈNH CHI TIẾT NÚT BẮN</Text>
-
-            {/* Button Size */}
-            <View style={styles.sliderRow}>
-              <View style={styles.sliderInfo}>
-                <Text style={styles.sliderLabel}>Kích Thước Nút Bắn</Text>
-                <Text style={styles.sliderValue}>{btnSize}%</Text>
-              </View>
-              <View style={styles.stepBtnRow}>
-                {[38, 42, 48, 55, 62].map((s) => (
-                  <TouchableOpacity
-                    key={s}
-                    style={[styles.stepBtn, btnSize === s && styles.stepBtnActive]}
-                    onPress={() => setBtnSize(s)}>
-                    <Text style={[styles.stepBtnText, btnSize === s && styles.stepBtnTextActive]}>
-                      {s}%
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-              <Text style={styles.sliderHint}>
-                {btnSize <= 42
-                  ? '⚡ Rất nhỏ: Tối ưu khoảng vuốt dài, chuyên vuốt One-shot M1887.'
-                  : btnSize <= 50
-                  ? '🎯 Vừa vặn chuẩn: Cân bằng hoàn hảo giữa sấy MP40 và kéo Shotgun.'
-                  : '🛡️ To dễ bấm: Chống trượt tay, phù hợp máy nhỏ hoặc người mới.'}
-              </Text>
+          {/* Quick Size Controls */}
+          <View style={styles.glassCardContainer}>
+            <Text style={styles.cardHeaderTitle}>⚙️ ĐIỀU CHỈNH KÍCH THƯỚC NÚT BẮN</Text>
+            <View style={styles.sliderInfoRow}>
+              <Text style={styles.sliderInfoLabel}>Kích Cỡ Nút Bắn Hiện Tại</Text>
+              <Text style={styles.sliderInfoVal}>{btnSize}%</Text>
+            </View>
+            <View style={styles.stepBtnRow}>
+              {[38, 42, 48, 54, 62].map((s) => (
+                <TouchableOpacity
+                  key={s}
+                  style={[styles.stepBtn, btnSize === s && styles.stepBtnActive]}
+                  onPress={() => setBtnSize(s)}>
+                  <Text style={[styles.stepBtnText, btnSize === s && styles.stepBtnTextActive]}>
+                    {s}%
+                  </Text>
+                </TouchableOpacity>
+              ))}
             </View>
 
-            {/* Vertical Position */}
-            <View style={styles.sliderRow}>
-              <View style={styles.sliderInfo}>
-                <Text style={styles.sliderLabel}>Khoảng Cách Đáy Màn Hình</Text>
-                <Text style={styles.sliderValue}>{btnPosY}%</Text>
-              </View>
-              <View style={styles.stepBtnRow}>
-                {[8, 11, 14, 18, 22].map((y) => (
-                  <TouchableOpacity
-                    key={y}
-                    style={[styles.stepBtn, btnPosY === y && styles.stepBtnActive]}
-                    onPress={() => setBtnPosY(y)}>
-                    <Text style={[styles.stepBtnText, btnPosY === y && styles.stepBtnTextActive]}>
-                      {y}%
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-              <Text style={styles.sliderHint}>
-                Đặt nút bắn càng sát đáy (10-12%) thì ngón tay càng có nhiều khoảng trống để vuốt lên đầu!
-              </Text>
-            </View>
-
-            {/* Horizontal Position */}
-            <View style={styles.sliderRow}>
-              <View style={styles.sliderInfo}>
-                <Text style={styles.sliderLabel}>Vị Trí Trục Ngang (Cách Trái)</Text>
-                <Text style={styles.sliderValue}>{btnPosX}%</Text>
-              </View>
-              <View style={styles.stepBtnRow}>
-                {[18, 72, 78, 82, 86].map((x) => (
-                  <TouchableOpacity
-                    key={x}
-                    style={[styles.stepBtn, btnPosX === x && styles.stepBtnActive]}
-                    onPress={() => setBtnPosX(x)}>
-                    <Text style={[styles.stepBtnText, btnPosX === x && styles.stepBtnTextActive]}>
-                      {x === 18 ? 'Trái 18%' : `${x}%`}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-
-            {/* Button Style */}
-            <View style={styles.sliderRow}>
-              <Text style={styles.sliderLabel}>Hiệu Ứng Giao Diện Nút Bắn</Text>
-              <View style={styles.stepBtnRow}>
-                {[
-                  { id: 'fire', label: '🔥 Rực Lửa' },
-                  { id: 'neon', label: '⚡ Cyber Neon' },
-                  { id: 'gold', label: '👑 Esports Gold' },
-                  { id: 'tactical', label: '🎯 Tối Giản' },
-                ].map((st) => (
-                  <TouchableOpacity
-                    key={st.id}
-                    style={[styles.styleBtn, btnStyle === st.id && styles.styleBtnActive]}
-                    onPress={() => setBtnStyle(st.id)}>
-                    <Text style={[styles.styleBtnText, btnStyle === st.id && styles.styleBtnTextActive]}>
-                      {st.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+            <Text style={[styles.sliderInfoLabel, { marginTop: 14 }]}>Khoảng Cách Đáy Màn Hình</Text>
+            <View style={styles.stepBtnRow}>
+              {[8, 11, 14, 18, 22].map((y) => (
+                <TouchableOpacity
+                  key={y}
+                  style={[styles.stepBtn, btnPosY === y && styles.stepBtnActive]}
+                  onPress={() => setBtnPosY(y)}>
+                  <Text style={[styles.stepBtnText, btnPosY === y && styles.stepBtnTextActive]}>
+                    {y}%
+                  </Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
         </View>
       )}
 
-      {/* -------------------- TAB 2: DPI CALCULATOR & SCREEN TELEMETRY -------------------- */}
-      {subTab === 'dpi' && (
+      {/* ==================== PHẦN 3: HƯỚNG DẪN CÀI ĐẶT ĐỒ HỌA & FPS ==================== */}
+      {activeSegment === 'graphics' && (
         <View>
-          {/* Current Device Screen Info */}
-          <View style={styles.deviceTelemetryCard}>
-            <Text style={styles.telemetryCardHeader}>📱 THÔNG SỐ MÀN HÌNH THỰC TẾ CỦA MÁY</Text>
-            <View style={styles.telemetryGrid}>
-              <View style={styles.telemetryCol}>
-                <Text style={styles.telemetrySmall}>Độ Phân Giải</Text>
-                <Text style={styles.telemetryLarge}>
-                  {Math.round(SCREEN_WIDTH * PIXEL_RATIO)} × {Math.round(SCREEN_HEIGHT * PIXEL_RATIO)}
-                </Text>
+          <View style={styles.glassCardContainer}>
+            <Text style={styles.cardHeaderTitle}>🎮 HƯỚNG DẪN TỐI ƯU ĐỒ HỌA FREE FIRE</Text>
+            <Text style={styles.cardHeaderSub}>
+              Cài đặt đồ họa chuẩn để giảm tối đa độ trễ cảm ứng và tránh drop FPS khi giao tranh đông.
+            </Text>
+
+            {/* Profile 1: Máy Yếu */}
+            <View style={styles.guideCard}>
+              <View style={styles.guideCardHeader}>
+                <Text style={styles.guideBadge}>MÁY CẤU HÌNH YẾU (2GB - 4GB RAM)</Text>
               </View>
-              <View style={styles.telemetryCol}>
-                <Text style={styles.telemetrySmall}>Mật Độ Điểm Ảnh</Text>
-                <Text style={[styles.telemetryLarge, { color: COLORS.cyanTactical }]}>
-                  ~{ESTIMATED_PPI} PPI
-                </Text>
-              </View>
-              <View style={styles.telemetryCol}>
-                <Text style={styles.telemetrySmall}>Tỉ Lệ Pixel</Text>
-                <Text style={[styles.telemetryLarge, { color: COLORS.secondary }]}>
-                  {PIXEL_RATIO.toFixed(1)}x
-                </Text>
-              </View>
+              <Text style={styles.guideItem}>• <Text style={styles.boldWhite}>Đồ Họa:</Text> Thấp (Mượt) - Giúp màn hình không bị nóng, ổn định khung hình.</Text>
+              <Text style={styles.guideItem}>• <Text style={styles.boldWhite}>Độ Phân Giải Cao:</Text> TẮT (Tiêu chuẩn).</Text>
+              <Text style={styles.guideItem}>• <Text style={styles.boldWhite}>Đổ Bóng:</Text> TẮT.</Text>
+              <Text style={styles.guideItem}>• <Text style={styles.boldHighlight}>FPS Cao (High FPS):</Text> LUÔN BẬT CAO! (Cực kỳ quan trọng để độ nhạy cảm ứng đạt 60fps mượt mà).</Text>
             </View>
-          </View>
 
-          {/* DPI Brand Presets */}
-          <Text style={[styles.sectionTitle, { marginTop: 14 }]}>CHỌN DÒNG MÁY CỦA BẠN ĐỂ TÍNH DPI:</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dpiBrandScroll}>
-            {DPI_PRESETS.map((p) => {
-              const isSelected = selectedDpiPreset.brand === p.brand;
-              return (
-                <TouchableOpacity
-                  key={p.brand}
-                  style={[styles.dpiBrandBtn, isSelected && styles.dpiBrandBtnActive]}
-                  onPress={() => {
-                    setSelectedDpiPreset(p);
-                    if (typeof p.defaultDpi === 'number') {
-                      setBaseDpi(p.defaultDpi);
-                    }
-                  }}>
-                  <Text style={[styles.dpiBrandText, isSelected && styles.dpiBrandTextActive]}>
-                    {p.brand}
-                  </Text>
-                  <Text style={styles.dpiBrandSub}>Mặc định: {p.defaultDpi}</Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-
-          {/* DPI Recommendations */}
-          <View style={styles.dpiCalcCard}>
-            <Text style={styles.dpiCalcTitle}>
-              ⚡ MỨC ĐỘ RỘNG NHỎ NHẤT (DPI) KHUYÊN DÙNG CHO {selectedDpiPreset.brand.toUpperCase()}
-            </Text>
-
-            {selectedDpiPreset.type === 'ios' ? (
-              <View style={styles.iosDpiBox}>
-                <Text style={styles.iosDpiTitle}>🍏 THIẾT BỊ APPLE (IPHONE / IPAD)</Text>
-                <Text style={styles.iosDpiDesc}>
-                  Hệ điều hành iOS đóng kín nên không có tùy chọn DPI số như Android. Để đạt độ nhạy kéo tâm tương đương 550 DPI:
-                </Text>
-                <View style={styles.iosStepList}>
-                  <Text style={styles.iosStepItem}>
-                    1️⃣ Vào <Text style={styles.boldText}>Cài Đặt → Trợ Năng → Điều Khiển Công Tắc</Text>
-                  </Text>
-                  <Text style={styles.iosStepItem}>
-                    2️⃣ Bật <Text style={styles.boldText}>Con Trượt Di Chuyển (Sliding Cursor)</Text>
-                  </Text>
-                  <Text style={styles.iosStepItem}>
-                    3️⃣ Chọn chế độ <Text style={styles.boldText}>Tinh Chỉnh</Text> và kéo tốc độ lên tối đa: <Text style={styles.boldText}>120</Text>
-                  </Text>
-                </View>
+            {/* Profile 2: Máy Tầm Trung */}
+            <View style={[styles.guideCard, styles.guideCardHighlight]}>
+              <View style={styles.guideCardHeader}>
+                <Text style={[styles.guideBadge, { color: COLORS.primaryBright }]}>MÁY TẦM TRUNG (6GB - 8GB RAM, 90Hz/120Hz)</Text>
               </View>
-            ) : (
-              <View>
-                {/* 3 Calculated Levels */}
-                <View style={styles.levelCard}>
-                  <View style={styles.levelHeader}>
-                    <Text style={styles.levelBadge}>🛡️ MỨC 1: CÂN BẰNG AN TOÀN</Text>
-                    <Text style={styles.levelDpiNum}>{dpiBalanced} DPI</Text>
-                  </View>
-                  <Text style={styles.levelDesc}>
-                    Tăng nhẹ 12% so với gốc. Giao diện chữ vẫn rõ nét, vuốt mượt mà hơn, hoàn toàn không sợ giật lag.
-                  </Text>
-                </View>
+              <Text style={styles.guideItem}>• <Text style={styles.boldWhite}>Đồ Họa:</Text> Tiêu Chuẩn (hoặc Cao nếu chip Snapdragon 7 series/Dimensity 8000 trở lên).</Text>
+              <Text style={styles.guideItem}>• <Text style={styles.boldWhite}>Độ Phân Giải Cao:</Text> BẬT CAO (giúp nhìn rõ đầu địch từ xa).</Text>
+              <Text style={styles.guideItem}>• <Text style={styles.boldWhite}>Đổ Bóng:</Text> TẮT (đỡ phân tâm khi kéo tâm).</Text>
+              <Text style={styles.guideItem}>• <Text style={styles.boldHighlight}>FPS Cao:</Text> LUÔN BẬT CAO (mở khóa 90-120fps).</Text>
+            </View>
 
-                <View style={[styles.levelCard, styles.levelCardSweet]}>
-                  <View style={styles.levelHeader}>
-                    <Text style={[styles.levelBadge, { color: COLORS.primary }]}>
-                      🔥 MỨC 2: CHUẨN KÉO TÂM ESPORTS (KHUYÊN DÙNG)
-                    </Text>
-                    <Text style={[styles.levelDpiNum, { color: COLORS.primary }]}>
-                      {dpiSweetSpot} DPI
-                    </Text>
-                  </View>
-                  <Text style={styles.levelDesc}>
-                    Điểm vàng kéo tâm: Tâm lướt cực nhẹ, vuốt nhích nhẹ là ăn ngay vào đầu địch. Phù hợp 95% game thủ.
-                  </Text>
-                </View>
-
-                <View style={styles.levelCard}>
-                  <View style={styles.levelHeader}>
-                    <Text style={[styles.levelBadge, { color: COLORS.secondary }]}>
-                      🚀 MỨC 3: THI ĐẤU CỰC HẠN
-                    </Text>
-                    <Text style={[styles.levelDpiNum, { color: COLORS.secondary }]}>
-                      {dpiExtreme} DPI
-                    </Text>
-                  </View>
-                  <Text style={styles.levelDesc}>
-                    Độ nhạy siêu cao dành cho cao thủ thích flick tâm 360 độ cực nhanh.
-                  </Text>
-                </View>
-
-                {/* Safe Warning */}
-                <View style={styles.warningBox}>
-                  <Text style={styles.warningTitle}>⚠️ CẢNH BÁO AN TOÀN TỪ HỆ THỐNG:</Text>
-                  <Text style={styles.warningDesc}>
-                    Ngưỡng DPI an toàn tối đa cho dòng máy này là{' '}
-                    <Text style={{ color: COLORS.accentRed, fontWeight: '900' }}>
-                      {selectedDpiPreset.safeMax} DPI
-                    </Text>
-                    . Tuyệt đối KHÔNG chỉnh quá mức này để tránh lỗi đen màn hình hoặc tự khởi động lại máy!
-                  </Text>
-                </View>
-
-                {/* How to activate */}
-                <View style={styles.guideBox}>
-                  <Text style={styles.guideTitle}>📖 CÁCH CHỈNH TRÊN ĐIỆN THOẠI ANDROID:</Text>
-                  <Text style={styles.guideStep}>
-                    1. Vào <Text style={styles.boldText}>Cài Đặt → Giới Thiệu Điện Thoại → Nhấn 7 lần vào "Số hiệu bản dựng" (Build Number)</Text> để mở Tùy chọn nhà phát triển.
-                  </Text>
-                  <Text style={styles.guideStep}>
-                    2. Tìm mục <Text style={styles.boldText}>Tùy chọn nhà phát triển → Độ rộng nhỏ nhất (Smallest Width)</Text>.
-                  </Text>
-                  <Text style={styles.guideStep}>
-                    3. Ghi lại số cũ, sau đó đổi thành <Text style={styles.boldText}>{dpiSweetSpot}</Text> và nhấn OK!
-                  </Text>
-                </View>
+            {/* Profile 3: Flagship Gaming */}
+            <View style={styles.guideCard}>
+              <View style={styles.guideCardHeader}>
+                <Text style={[styles.guideBadge, { color: COLORS.secondary }]}>FLAGSHIP & GAMING PHONE (12GB+ RAM, 120Hz-165Hz)</Text>
               </View>
-            )}
-          </View>
+              <Text style={styles.guideItem}>• <Text style={styles.boldWhite}>Đồ Họa:</Text> Cao (Max Settings).</Text>
+              <Text style={styles.guideItem}>• <Text style={styles.boldWhite}>Bộ Lọc Màu:</Text> Tươi Sáng (Rực Rỡ) - Giúp phát hiện địch ẩn nấp sau cỏ/bụi rậm nhanh hơn 0.5s.</Text>
+              <Text style={styles.guideItem}>• <Text style={styles.boldHighlight}>FPS Cao:</Text> BẬT TỐI ĐA (120Hz - 165Hz Pro).</Text>
+            </View>
 
-          {/* Interactive Touch Test Pad */}
-          <Text style={[styles.sectionTitle, { marginTop: 16 }]}>
-            🖐️ BÀN TEST CẢM ỨNG & ĐỘ TRỄ MÀN HÌNH:
-          </Text>
-          <View
-            style={styles.touchPad}
-            onStartShouldSetResponder={() => true}
-            onResponderGrant={handleTouchZone}>
-            <Text style={styles.touchPadPrompt}>
-              {touchTelemetry.active
-                ? `📍 Chạm tại: (${touchTelemetry.x}, ${touchTelemetry.y}) • Đã chạm: ${touchTelemetry.tapCount} lần`
-                : 'Chạm tay vào khung này để kiểm tra độ nhạy cảm ứng'}
-            </Text>
-            <View style={styles.touchTelemetryRow}>
-              <Text style={styles.telemetryPill}>⚡ Độ Trễ: {touchTelemetry.latencyMs}ms</Text>
-              <Text style={styles.telemetryPill}>🎯 Tần Số: {touchTelemetry.hzEstimate}</Text>
+            {/* Pro Tips for Settings */}
+            <View style={styles.proTipsBox}>
+              <Text style={styles.proTipsTitle}>💡 3 MẸO TĂNG TỐC CẢM ỨNG TRONG HỆ THỐNG MÁY:</Text>
+              <Text style={styles.proTipText}>1. Bật tính năng <Text style={styles.boldWhite}>Không Gian Trò Chơi (Game Turbo / Game Booster)</Text> và chọn chế độ Hiệu Năng Tối Đa.</Text>
+              <Text style={styles.proTipText}>2. Vào Cài Đặt Màn Hình → Chỉnh Tần Số Quét luôn ở mức cao nhất (120Hz hoặc 144Hz).</Text>
+              <Text style={styles.proTipText}>3. Thường xuyên lau sạch màn hình bằng khăn mềm hoặc dùng bao ngón tay chống mồ hôi để lực vuốt luôn đồng đều.</Text>
             </View>
           </View>
         </View>
@@ -501,28 +494,56 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
     paddingHorizontal: 16,
   },
-  header: {
+  largeBackButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.glassCardElevated,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderRadius: COLORS.rounded.lg,
+    borderWidth: 1.5,
+    borderColor: COLORS.glassBorderHighlight,
     marginTop: 12,
+    marginBottom: 8,
+  },
+  largeBackIcon: {
+    fontSize: 22,
+    color: COLORS.primaryBright,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  largeBackText: {
+    fontSize: 14,
+    color: '#FFF',
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  glassHeader: {
+    backgroundColor: COLORS.glassCard,
+    padding: 16,
+    borderRadius: COLORS.rounded.lg,
+    borderWidth: 1.5,
+    borderColor: COLORS.glassBorder,
     marginBottom: 14,
   },
-  headerBadge: {
+  headerTag: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255, 184, 0, 0.15)',
+    backgroundColor: COLORS.primaryLight,
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 8,
+    borderRadius: COLORS.rounded.sm,
     borderWidth: 1,
-    borderColor: COLORS.secondary,
+    borderColor: COLORS.primary,
     marginBottom: 6,
   },
-  headerBadgeText: {
-    color: COLORS.secondary,
+  headerTagText: {
+    color: COLORS.primaryBright,
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '900',
   },
   headerTitle: {
     color: COLORS.text,
-    fontSize: 22,
+    fontSize: 21,
     fontWeight: '900',
     letterSpacing: 0.5,
   },
@@ -532,61 +553,216 @@ const styles = StyleSheet.create({
     marginTop: 4,
     lineHeight: 18,
   },
-  tabSwitcher: {
+  segmentRow: {
     flexDirection: 'row',
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 12,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: COLORS.rounded.lg,
     padding: 4,
-    marginBottom: 16,
+    marginBottom: 14,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: COLORS.glassBorder,
   },
-  tabBtn: {
+  segmentBtn: {
     flex: 1,
     paddingVertical: 10,
-    borderRadius: 10,
+    borderRadius: COLORS.rounded.md,
     alignItems: 'center',
   },
-  tabBtnActive: {
+  segmentBtnActive: {
     backgroundColor: COLORS.primary,
   },
-  tabBtnText: {
+  segmentText: {
+    color: COLORS.textSecondary,
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  segmentTextActive: {
+    color: '#FFF',
+    fontWeight: '900',
+  },
+  glassCardContainer: {
+    backgroundColor: COLORS.glassCard,
+    borderRadius: COLORS.rounded.lg,
+    padding: 16,
+    borderWidth: 1.5,
+    borderColor: COLORS.glassBorder,
+    marginBottom: 14,
+  },
+  cardHeaderTitle: {
+    color: COLORS.text,
+    fontSize: 13,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
+  cardHeaderSub: {
+    color: COLORS.textSecondary,
+    fontSize: 12,
+    marginTop: 4,
+    marginBottom: 14,
+    lineHeight: 17,
+  },
+  fieldLabel: {
     color: COLORS.textSecondary,
     fontSize: 12,
     fontWeight: '700',
+    marginBottom: 6,
+    marginTop: 10,
   },
-  tabBtnTextActive: {
+  glassInput: {
+    backgroundColor: 'rgba(18, 10, 5, 0.85)',
+    borderRadius: COLORS.rounded.md,
+    borderWidth: 1.5,
+    borderColor: COLORS.glassBorder,
     color: '#FFF',
-    fontWeight: '800',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  chipBtn: {
+    backgroundColor: COLORS.glassCardElevated,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: COLORS.rounded.md,
+    borderWidth: 1,
+    borderColor: COLORS.glassBorder,
+  },
+  chipBtnActive: {
+    borderColor: COLORS.primaryBright,
+    backgroundColor: 'rgba(255, 94, 0, 0.25)',
+  },
+  chipText: {
+    color: COLORS.textSecondary,
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  chipTextActive: {
+    color: COLORS.primaryBright,
+    fontWeight: '900',
+  },
+  aiEvalBtn: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 14,
+    borderRadius: COLORS.rounded.lg,
+    alignItems: 'center',
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: COLORS.secondary,
+  },
+  aiEvalBtnText: {
+    color: '#FFF',
+    fontSize: 13,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
+  aiReportCard: {
+    backgroundColor: 'rgba(38, 18, 8, 0.95)',
+    borderRadius: COLORS.rounded.xl,
+    padding: 16,
+    borderWidth: 2,
+    borderColor: COLORS.glassBorderHighlight,
+    marginBottom: 16,
+  },
+  aiReportHeader: {
+    marginBottom: 12,
+  },
+  aiReportBadge: {
+    color: COLORS.primaryBright,
+    fontSize: 11,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
+  aiReportModel: {
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: '900',
+    marginTop: 2,
+  },
+  metricsGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: COLORS.glassCard,
+    padding: 12,
+    borderRadius: COLORS.rounded.md,
+    marginBottom: 12,
+  },
+  metricItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  metricLabel: {
+    color: COLORS.textMuted,
+    fontSize: 10,
+    marginBottom: 2,
+  },
+  metricVal: {
+    fontSize: 15,
+    fontWeight: '900',
+  },
+  reportAdviceBox: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255, 115, 0, 0.12)',
+    padding: 12,
+    borderRadius: COLORS.rounded.md,
+    alignItems: 'center',
+    gap: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: COLORS.primary,
+    marginBottom: 14,
+  },
+  reportAdviceIcon: {
+    fontSize: 20,
+  },
+  reportAdviceText: {
+    color: COLORS.textSecondary,
+    fontSize: 12,
+    lineHeight: 18,
+    flex: 1,
+  },
+  applyToStudioBtn: {
+    backgroundColor: COLORS.secondary,
+    paddingVertical: 12,
+    borderRadius: COLORS.rounded.md,
+    alignItems: 'center',
+  },
+  applyToStudioBtnText: {
+    color: '#0E0804',
+    fontSize: 12,
+    fontWeight: '900',
   },
   sectionTitle: {
     color: COLORS.textMuted,
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     letterSpacing: 0.8,
     marginBottom: 8,
   },
-  phoneMockup: {
-    backgroundColor: '#090518',
-    borderRadius: 18,
+  phoneFrame: {
+    backgroundColor: 'rgba(18, 10, 5, 0.95)',
+    borderRadius: COLORS.rounded.xl,
     borderWidth: 2,
-    borderColor: COLORS.borderHighlight,
-    height: 220,
+    borderColor: COLORS.glassBorderHighlight,
+    height: 230,
     position: 'relative',
     overflow: 'hidden',
     justifyContent: 'space-between',
     padding: 10,
   },
-  mockupHeader: {
+  frameHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  mockupMiniText: {
+  frameMiniText: {
     color: COLORS.textMuted,
     fontSize: 9,
     fontWeight: '700',
   },
-  mockupCenterReticle: {
+  centerReticle: {
     position: 'absolute',
     top: '40%',
     left: '48%',
@@ -605,35 +781,35 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255, 42, 66, 0.4)',
+    borderColor: 'rgba(255, 42, 66, 0.5)',
   },
-  mockupFireBtn: {
+  simulatedFireBtn: {
     position: 'absolute',
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  mockupFooter: {
+  frameFooter: {
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     paddingVertical: 3,
     borderRadius: 6,
   },
-  mockupFooterText: {
+  frameFooterText: {
     color: COLORS.textSecondary,
     fontSize: 10,
     fontWeight: '700',
   },
   presetGrid: {
     gap: 8,
-    marginBottom: 16,
+    marginBottom: 14,
   },
-  presetCard: {
-    backgroundColor: COLORS.surfaceCard,
+  glassPresetCard: {
+    backgroundColor: COLORS.glassCard,
     padding: 12,
-    borderRadius: 12,
+    borderRadius: COLORS.rounded.md,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: COLORS.glassBorder,
   },
   presetName: {
     color: COLORS.text,
@@ -641,7 +817,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   presetDetails: {
-    color: COLORS.primary,
+    color: COLORS.primaryBright,
     fontSize: 11,
     fontWeight: '700',
     marginTop: 2,
@@ -650,36 +826,20 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     fontSize: 11,
     marginTop: 4,
-    lineHeight: 15,
+    lineHeight: 16,
   },
-  controlsCard: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 16,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  controlsCardTitle: {
-    color: COLORS.text,
-    fontSize: 13,
-    fontWeight: '800',
-    marginBottom: 14,
-  },
-  sliderRow: {
-    marginBottom: 14,
-  },
-  sliderInfo: {
+  sliderInfoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 6,
   },
-  sliderLabel: {
+  sliderInfoLabel: {
     color: COLORS.textSecondary,
     fontSize: 12,
     fontWeight: '600',
   },
-  sliderValue: {
-    color: COLORS.primary,
+  sliderInfoVal: {
+    color: COLORS.primaryBright,
     fontSize: 13,
     fontWeight: '800',
   },
@@ -689,16 +849,16 @@ const styles = StyleSheet.create({
   },
   stepBtn: {
     flex: 1,
-    backgroundColor: COLORS.surfaceCardElevated,
+    backgroundColor: COLORS.glassCardElevated,
     paddingVertical: 8,
-    borderRadius: 8,
+    borderRadius: COLORS.rounded.sm,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: COLORS.glassBorder,
   },
   stepBtnActive: {
-    backgroundColor: 'rgba(255, 98, 0, 0.2)',
-    borderColor: COLORS.primary,
+    backgroundColor: 'rgba(255, 94, 0, 0.3)',
+    borderColor: COLORS.primaryBright,
   },
   stepBtnText: {
     color: COLORS.textMuted,
@@ -706,231 +866,61 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   stepBtnTextActive: {
-    color: COLORS.primary,
-  },
-  sliderHint: {
-    color: COLORS.textMuted,
-    fontSize: 11,
-    marginTop: 4,
-    fontStyle: 'italic',
-  },
-  styleBtn: {
-    flex: 1,
-    backgroundColor: COLORS.surfaceCardElevated,
-    paddingVertical: 8,
-    borderRadius: 8,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  styleBtnActive: {
-    borderColor: COLORS.cyanTactical,
-    backgroundColor: 'rgba(0, 240, 255, 0.15)',
-  },
-  styleBtnText: {
-    color: COLORS.textMuted,
-    fontSize: 10,
-    fontWeight: '700',
-  },
-  styleBtnTextActive: {
-    color: COLORS.cyanTactical,
-  },
-  deviceTelemetryCard: {
-    backgroundColor: COLORS.surfaceCardTactical,
-    borderRadius: 14,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
-  },
-  telemetryCardHeader: {
-    color: COLORS.text,
-    fontSize: 12,
-    fontWeight: '800',
-    marginBottom: 10,
-  },
-  telemetryGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  telemetryCol: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  telemetrySmall: {
-    color: COLORS.textMuted,
-    fontSize: 10,
-    marginBottom: 2,
-  },
-  telemetryLarge: {
-    color: COLORS.text,
-    fontSize: 13,
-    fontWeight: '900',
-  },
-  dpiBrandScroll: {
-    marginBottom: 14,
-  },
-  dpiBrandBtn: {
-    backgroundColor: COLORS.surfaceCard,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 12,
-    marginRight: 8,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  dpiBrandBtnActive: {
-    borderColor: COLORS.primary,
-    backgroundColor: 'rgba(255, 98, 0, 0.15)',
-  },
-  dpiBrandText: {
-    color: COLORS.textSecondary,
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  dpiBrandTextActive: {
-    color: COLORS.primary,
-  },
-  dpiBrandSub: {
-    color: COLORS.textMuted,
-    fontSize: 10,
-    marginTop: 2,
-  },
-  dpiCalcCard: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 16,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  dpiCalcTitle: {
-    color: COLORS.text,
-    fontSize: 12,
-    fontWeight: '800',
-    marginBottom: 12,
-    letterSpacing: 0.5,
-  },
-  levelCard: {
-    backgroundColor: COLORS.surfaceCardTactical,
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  levelCardSweet: {
-    borderColor: COLORS.primary,
-    backgroundColor: 'rgba(255, 98, 0, 0.08)',
-  },
-  levelHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  levelBadge: {
-    color: COLORS.textSecondary,
-    fontSize: 11,
-    fontWeight: '800',
-  },
-  levelDpiNum: {
-    color: COLORS.text,
-    fontSize: 16,
-    fontWeight: '900',
-  },
-  levelDesc: {
-    color: COLORS.textMuted,
-    fontSize: 11,
-    lineHeight: 16,
-  },
-  warningBox: {
-    backgroundColor: 'rgba(255, 42, 66, 0.12)',
-    borderRadius: 10,
-    padding: 10,
-    marginTop: 6,
-    marginBottom: 12,
-    borderLeftWidth: 3,
-    borderLeftColor: COLORS.accentRed,
-  },
-  warningTitle: {
-    color: COLORS.accentRed,
-    fontSize: 11,
-    fontWeight: '800',
-    marginBottom: 2,
-  },
-  warningDesc: {
-    color: COLORS.textSecondary,
-    fontSize: 11,
-    lineHeight: 16,
-  },
-  guideBox: {
-    backgroundColor: COLORS.surfaceCardElevated,
-    borderRadius: 10,
-    padding: 12,
-  },
-  guideTitle: {
-    color: COLORS.cyanTactical,
-    fontSize: 11,
-    fontWeight: '800',
-    marginBottom: 6,
-  },
-  guideStep: {
-    color: COLORS.textSecondary,
-    fontSize: 11,
-    lineHeight: 16,
-    marginBottom: 4,
-  },
-  boldText: {
     color: '#FFF',
-    fontWeight: '700',
+    fontWeight: '900',
   },
-  iosDpiBox: {
-    paddingVertical: 6,
+  guideCard: {
+    backgroundColor: COLORS.glassCardElevated,
+    padding: 14,
+    borderRadius: COLORS.rounded.md,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: COLORS.glassBorder,
   },
-  iosDpiTitle: {
-    color: COLORS.accentGreen,
-    fontSize: 13,
-    fontWeight: '800',
+  guideCardHighlight: {
+    borderColor: COLORS.primary,
+    borderWidth: 1.5,
+  },
+  guideCardHeader: {
     marginBottom: 6,
   },
-  iosDpiDesc: {
+  guideBadge: {
     color: COLORS.textSecondary,
-    fontSize: 12,
-    lineHeight: 17,
-    marginBottom: 8,
+    fontSize: 11,
+    fontWeight: '900',
   },
-  iosStepList: {
-    gap: 6,
-  },
-  iosStepItem: {
+  guideItem: {
     color: COLORS.textSecondary,
     fontSize: 12,
     lineHeight: 18,
+    marginBottom: 4,
   },
-  touchPad: {
-    backgroundColor: '#0A051A',
-    height: 100,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderStyle: 'dashed',
-    borderColor: COLORS.cyanTactical,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
+  boldWhite: {
+    color: '#FFF',
+    fontWeight: '800',
   },
-  touchPadPrompt: {
-    color: COLORS.cyanTactical,
-    fontSize: 11,
-    fontWeight: '700',
-    textAlign: 'center',
+  boldHighlight: {
+    color: COLORS.primaryBright,
+    fontWeight: '900',
   },
-  touchTelemetryRow: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 6,
+  proTipsBox: {
+    backgroundColor: 'rgba(255, 183, 0, 0.1)',
+    borderRadius: COLORS.rounded.md,
+    padding: 14,
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: COLORS.secondary,
   },
-  telemetryPill: {
-    color: COLORS.textMuted,
-    fontSize: 10,
-    fontWeight: '600',
+  proTipsTitle: {
+    color: COLORS.secondary,
+    fontSize: 12,
+    fontWeight: '900',
+    marginBottom: 6,
+  },
+  proTipText: {
+    color: COLORS.textSecondary,
+    fontSize: 12,
+    lineHeight: 18,
+    marginBottom: 4,
   },
 });

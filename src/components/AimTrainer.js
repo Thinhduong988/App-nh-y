@@ -7,46 +7,67 @@ import {
   ScrollView,
   Animated,
   Dimensions,
+  Platform,
 } from 'react-native';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import { COLORS } from '../theme/colors';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+import { SOUNDS } from '../utils/soundEffects';
 
 const WEAPONS = [
   {
     id: 'shotgun',
     name: 'Shotgun (M1887 / M1014)',
     icon: '💥',
-    desc: 'Cần vuốt dứt khoát hoặc móc chữ J nhanh',
-    idealSpeed: [1100, 2400],
+    desc: 'Giật tức thì cực mạnh, cần vuốt móc chữ J dứt khoát lên đầu',
+    idealSpeed: [1200, 2400],
     idealDistance: [90, 210],
     damage: 288,
+    recoilKick: 38,
+    spread: 32,
   },
   {
     id: 'smg',
     name: 'SMG (MP40 / UMP)',
     icon: '⚡',
-    desc: 'Kéo thẳng tốc độ cao, nhịp đều',
-    idealSpeed: [850, 1850],
-    idealDistance: [75, 175],
+    desc: 'Sấy tốc độ cao 18v/s, tâm giật leo dốc cần kéo thẳng ghìm đều tay',
+    idealSpeed: [900, 1900],
+    idealDistance: [80, 180],
     damage: 168,
+    recoilKick: 22,
+    spread: 20,
   },
   {
     id: 'rifle',
-    name: 'Súng Trường (AK / SCAR)',
+    name: 'Súng Trường (AK47 / SCAR)',
     icon: '🎯',
-    desc: 'Vuốt êm, ghìm tâm giữ cự ly vừa & xa',
-    idealSpeed: [600, 1400],
-    idealDistance: [55, 140],
-    damage: 132,
+    desc: 'Giật dọc lớn, cần vuốt êm ghìm tâm giữ cự ly tầm trung & xa',
+    idealSpeed: [650, 1450],
+    idealDistance: [60, 150],
+    damage: 142,
+    recoilKick: 28,
+    spread: 24,
+  },
+  {
+    id: 'sniper',
+    name: 'Trường Tầm Xa (AWM / Woodpecker)',
+    icon: '🔭',
+    desc: 'Uy lực 1 viên chết ngay, flick tâm dứt khoát vào đầu rồi delay nạp đạn',
+    idealSpeed: [1000, 2200],
+    idealDistance: [70, 170],
+    damage: 300,
+    recoilKick: 45,
+    spread: 12,
   },
 ];
 
-export default function AimTrainer({ onApplyToGenerator }) {
+export default function AimTrainer({ onBack, onApplyToGenerator }) {
+  const [windowDimensions, setWindowDimensions] = useState(Dimensions.get('window'));
+  const [isLandscape, setIsLandscape] = useState(false);
   const [selectedWeapon, setSelectedWeapon] = useState(WEAPONS[0]);
   const [gameMode, setGameMode] = useState('practice'); // 'practice' | 'challenge'
   const [timeLeft, setTimeLeft] = useState(30);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isDragging, setIsDragging] = useState(false); // To freeze parent ScrollView
 
   // Statistics
   const [stats, setStats] = useState({
@@ -61,19 +82,48 @@ export default function AimTrainer({ onApplyToGenerator }) {
     lastTimeMs: 0,
   });
 
-  // Feedback State
-  const [lastFeedback, setLastFeedback] = useState(null); // { type: 'HEAD'|'BODY'|'MISS', text: '', damage: 0, advice: '' }
+  const [lastFeedback, setLastFeedback] = useState(null);
 
-  // Drag Gesture State
+  // Drag Gesture Ref
   const dragStartRef = useRef({ x: 0, y: 0, time: 0 });
   const [currentDragVector, setCurrentDragVector] = useState({ dx: 0, dy: 0, active: false });
 
-  // Animations
+  // Recoil & Animation States
   const damageAnim = useRef(new Animated.Value(0)).current;
   const targetScale = useRef(new Animated.Value(1)).current;
-  const targetColorFlash = useRef(new Animated.Value(0)).current;
+  const recoilOffset = useRef(new Animated.Value(0)).current;
+  const crosshairSpread = useRef(new Animated.Value(24)).current;
 
-  // Challenge Mode Timer
+  // Window Resize Listener
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setWindowDimensions(window);
+      setIsLandscape(window.width > window.height);
+    });
+    return () => {
+      subscription?.remove();
+      // Reset orientation back to portrait when unmounting
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).catch(() => {});
+    };
+  }, []);
+
+  // Landscape Mode Toggle
+  const handleToggleOrientation = async () => {
+    try {
+      if (isLandscape) {
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+        setIsLandscape(false);
+      } else {
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+        setIsLandscape(true);
+      }
+    } catch (err) {
+      // Fallback for web or devices that don't support locking
+      setIsLandscape(!isLandscape);
+    }
+  };
+
+  // Challenge Timer
   useEffect(() => {
     let timer;
     if (isPlaying && gameMode === 'challenge' && timeLeft > 0) {
@@ -107,25 +157,9 @@ export default function AimTrainer({ onApplyToGenerator }) {
     setIsPlaying(true);
   };
 
-  const handleReset = () => {
-    setIsPlaying(false);
-    setTimeLeft(30);
-    setStats({
-      shots: 0,
-      headshots: 0,
-      bodyshots: 0,
-      misses: 0,
-      streak: 0,
-      maxStreak: 0,
-      lastSpeed: 0,
-      lastDistance: 0,
-      lastTimeMs: 0,
-    });
-    setLastFeedback(null);
-  };
-
-  // Touch handlers on the Fire Button
+  // TOUCH INTERACTION ON FIRE BUTTON (CRITICAL FIX: NO SCROLL INTERFERENCE)
   const handleTouchStart = (e) => {
+    setIsDragging(true);
     if (gameMode === 'challenge' && !isPlaying) {
       setIsPlaying(true);
     }
@@ -136,6 +170,25 @@ export default function AimTrainer({ onApplyToGenerator }) {
       time: Date.now(),
     };
     setCurrentDragVector({ dx: 0, dy: 0, active: true });
+
+    // 1. Play Weapon Gunshot Audio
+    SOUNDS.playWeaponShot(selectedWeapon.id);
+
+    // 2. Trigger Weapon Recoil Kick & Crosshair Bloom
+    recoilOffset.setValue(selectedWeapon.recoilKick);
+    crosshairSpread.setValue(selectedWeapon.spread * 1.5);
+    Animated.parallel([
+      Animated.timing(recoilOffset, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+      Animated.timing(crosshairSpread, {
+        toValue: selectedWeapon.spread,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+    ]).start();
   };
 
   const handleTouchMove = (e) => {
@@ -146,6 +199,7 @@ export default function AimTrainer({ onApplyToGenerator }) {
   };
 
   const handleTouchEnd = (e) => {
+    setIsDragging(false);
     const touch = e.nativeEvent;
     const endTime = Date.now();
     const duration = Math.max(35, endTime - dragStartRef.current.time);
@@ -153,7 +207,7 @@ export default function AimTrainer({ onApplyToGenerator }) {
     const dy = touch.pageY - dragStartRef.current.y;
     setCurrentDragVector({ dx: 0, dy: 0, active: false });
 
-    // Since pulling up to the head means moving towards the top of screen, dy is negative.
+    // Invert dy: pulling upwards means negative dy -> positive drag distance
     const dragDistance = Math.max(0, -dy);
     const speed = Math.round((dragDistance / duration) * 1000); // px/sec
 
@@ -167,45 +221,49 @@ export default function AimTrainer({ onApplyToGenerator }) {
     let resultType = 'BODY';
     let damage = 45;
     let feedbackTitle = '🟡 GHIM NGỰC';
-    let advice = 'Lực kéo còn yếu hoặc quá chậm. Cần vuốt nhanh & dứt khoát hơn!';
+    let advice = 'Lực kéo chưa đủ dứt khoát! Vuốt nhanh hơn để tâm bay thoát ngực.';
 
-    // Evaluation logic
-    if (distance < 30 || speed < 350) {
-      // Too short / barely dragged
+    if (distance < 25 || speed < 350) {
       resultType = 'BODY';
       damage = 38;
-      feedbackTitle = '🟡 GHIM NGỰC (TÂM NẰM DƯỚI)';
-      advice = 'Tâm dính chặt ở ngực địch! Hãy tăng tốc độ vuốt ngón tay lên.';
-    } else if (distance > maxDist * 1.35 || speed > maxSpeed * 1.3) {
-      // Over-drag: went over the head
+      feedbackTitle = '🟡 DÍNH CHẶT Ở NGỰC (QUÁ CHẬM)';
+      advice = 'Tâm bị hút chặt vào ngực! Tăng độ nhạy Red Dot +6 và vẩy ngón tay nhanh hơn.';
+    } else if (distance > maxDist * 1.35 || speed > maxSpeed * 1.35) {
       resultType = 'MISS';
       damage = 0;
-      feedbackTitle = '⚪ VỌT QUA ĐẦU (TRƯỢT)';
-      advice = 'Lực kéo quá trớn bay lên trời! Hãy kéo êm hơn hoặc giảm độ nhạy nhìn xung quanh.';
+      feedbackTitle = '⚪ VỌT QUA ĐẦU (LÊN TRỜI)';
+      advice = 'Lực kéo quá đà bay lên trời! Hãy giảm độ nhạy nhìn xung quanh 3-5 điểm hoặc tăng kích thước nút bắn.';
     } else if (
       distance >= minDist * 0.85 &&
-      distance <= maxDist * 1.2 &&
+      distance <= maxDist * 1.25 &&
       speed >= minSpeed * 0.85 &&
-      speed <= maxSpeed * 1.2
+      speed <= maxSpeed * 1.25
     ) {
-      // Sweet Spot -> HEADSHOT!
+      // 🎯 PERFECT HEADSHOT!
       resultType = 'HEAD';
       damage = selectedWeapon.damage;
       feedbackTitle = '🔴 HEADSHOT ĐỎ CHÓI (100% ĐẦU)';
-      advice = 'Hoàn hảo! Tốc độ vuốt và điểm dừng đạt chuẩn tuyển thủ Esports.';
+      advice = 'Tuyệt hảo! Tốc độ vuốt và điểm dừng đối trọng ghìm tâm đạt chuẩn tuyển thủ Esports.';
+
+      // Play Free Fire Headshot Ding/Crit sound!
+      SOUNDS.playHeadshotCrit();
+
+      Animated.sequence([
+        Animated.timing(targetScale, { toValue: 1.25, duration: 80, useNativeDriver: true }),
+        Animated.spring(targetScale, { toValue: 1, friction: 3, useNativeDriver: true }),
+      ]).start();
     } else if (distance < minDist) {
       resultType = 'BODY';
-      damage = 52;
-      feedbackTitle = '🟡 GHIM CỔ / NGỰC TRÊN';
-      advice = 'Gần tới đầu rồi! Vuốt thêm một khoảng ngắn nữa là dính trọn đầu.';
+      damage = 58;
+      feedbackTitle = '🟡 DÍNH CỔ / NGỰC TRÊN';
+      advice = 'Sắp dính đầu rồi! Nhích thêm 1 đoạn ngắn nữa là dính trọn cụm số đỏ.';
     } else {
       resultType = 'MISS';
       damage = 0;
-      feedbackTitle = '⚪ TRƯỢT LỆCH TÂM';
-      advice = 'Đường vuốt bị lệch khỏi trục ngắm. Chú ý hướng vuốt thẳng lên đỉnh đầu.';
+      feedbackTitle = '⚪ LỆCH HƯỚNG TÂM';
+      advice = 'Đường vuốt bị lệch khỏi trục đỉnh đầu. Hãy vuốt thẳng theo trục bia ngắm.';
     }
 
-    // Trigger Animations
     damageAnim.setValue(0);
     Animated.spring(damageAnim, {
       toValue: 1,
@@ -213,14 +271,6 @@ export default function AimTrainer({ onApplyToGenerator }) {
       useNativeDriver: true,
     }).start();
 
-    if (resultType === 'HEAD') {
-      Animated.sequence([
-        Animated.timing(targetScale, { toValue: 1.2, duration: 80, useNativeDriver: true }),
-        Animated.spring(targetScale, { toValue: 1, friction: 3, useNativeDriver: true }),
-      ]).start();
-    }
-
-    // Update Statistics
     setStats((prev) => {
       const isHead = resultType === 'HEAD';
       const isBody = resultType === 'BODY';
@@ -255,68 +305,102 @@ export default function AimTrainer({ onApplyToGenerator }) {
   const headshotRate = stats.shots > 0 ? Math.round((stats.headshots / stats.shots) * 100) : 0;
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Header Banner */}
-      <View style={styles.header}>
-        <View style={styles.headerTag}>
-          <Text style={styles.headerTagText}>🎯 AIM TRAINER ESPORTS 2026</Text>
+    <ScrollView
+      style={styles.container}
+      scrollEnabled={!isDragging} // CRITICAL FIX: Disable scroll while dragging fire button
+      showsVerticalScrollIndicator={false}>
+      {/* Nút Quay Lại Cực To Dễ Bấm (Kính Lỏng) */}
+      {onBack && (
+        <TouchableOpacity style={styles.largeBackButton} onPress={onBack}>
+          <Text style={styles.largeBackIcon}>←</Text>
+          <Text style={styles.largeBackText}>QUAY LẠI TRANG CHỦ</Text>
+        </TouchableOpacity>
+      )}
+
+      {/* Header Liquid Glass Banner */}
+      <View style={styles.glassHeader}>
+        <View style={styles.headerTopRow}>
+          <View style={styles.headerBadge}>
+            <Text style={styles.headerBadgeText}>🔥 AIM TRAINER PRO 2026</Text>
+          </View>
+
+          {/* Toggle Screen Orientation (Landscape Gaming Mode) */}
+          <TouchableOpacity style={styles.orientBtn} onPress={handleToggleOrientation}>
+            <Text style={styles.orientBtnIcon}>{isLandscape ? '📱' : '🎮'}</Text>
+            <Text style={styles.orientBtnText}>
+              {isLandscape ? 'Màn Hình Dọc' : 'Quay Ngang Chơi Game'}
+            </Text>
+          </TouchableOpacity>
         </View>
-        <Text style={styles.headerTitle}>GIẢ LẬP LUYỆN TẬP KÉO TÂM</Text>
+
+        <Text style={styles.headerTitle}>GIẢ LẬP KÉO TÂM & GHÌM VẬT LÝ</Text>
         <Text style={styles.headerSub}>
-          Mô phỏng cảm biến chạm thực tế: Đo hành trình vuốt, tốc độ và phân tích độ chuẩn xác Headshot.
+          Mô phỏng cơ chế giật súng, âm thanh súng Free Fire chân thực và cảm biến đo vuốt ngón tay.
         </Text>
       </View>
 
       {/* Mode Selector */}
       <View style={styles.modeRow}>
         <TouchableOpacity
-          style={[styles.modeBtn, gameMode === 'practice' && styles.modeBtnActive]}
+          style={[styles.glassModeBtn, gameMode === 'practice' && styles.glassModeBtnActive]}
           onPress={() => {
             setGameMode('practice');
             setIsPlaying(false);
           }}>
-          <Text style={[styles.modeBtnText, gameMode === 'practice' && styles.modeBtnTextActive]}>
+          <Text style={[styles.modeText, gameMode === 'practice' && styles.modeTextActive]}>
             🥋 Luyện Tự Do
           </Text>
         </TouchableOpacity>
+
         <TouchableOpacity
-          style={[styles.modeBtn, gameMode === 'challenge' && styles.modeBtnActive]}
+          style={[styles.glassModeBtn, gameMode === 'challenge' && styles.glassModeBtnActive]}
           onPress={() => {
             setGameMode('challenge');
             handleStartChallenge();
           }}>
-          <Text style={[styles.modeBtnText, gameMode === 'challenge' && styles.modeBtnTextActive]}>
+          <Text style={[styles.modeText, gameMode === 'challenge' && styles.modeTextActive]}>
             ⏱️ Thử Thách 30s {gameMode === 'challenge' && `(${timeLeft}s)`}
           </Text>
         </TouchableOpacity>
       </View>
 
       {/* Weapon Selector */}
-      <Text style={styles.sectionLabel}>CHỌN VŨ KHÍ LUYỆN TẬP:</Text>
-      <View style={styles.weaponRow}>
+      <Text style={styles.sectionLabel}>CHỌN VŨ KHÍ FREE FIRE LUYỆN BẮN:</Text>
+      <View style={styles.weaponGrid}>
         {WEAPONS.map((w) => {
           const isSelected = selectedWeapon.id === w.id;
           return (
             <TouchableOpacity
               key={w.id}
-              style={[styles.weaponCard, isSelected && styles.weaponCardActive]}
-              onPress={() => setSelectedWeapon(w)}>
+              style={[styles.glassWeaponCard, isSelected && styles.glassWeaponCardActive]}
+              onPress={() => {
+                setSelectedWeapon(w);
+                SOUNDS.playWeaponShot(w.id);
+              }}>
               <Text style={styles.weaponIcon}>{w.icon}</Text>
               <Text style={[styles.weaponName, isSelected && styles.weaponNameActive]}>{w.name}</Text>
             </TouchableOpacity>
           );
         })}
       </View>
-      <Text style={styles.weaponDescText}>💡 {selectedWeapon.desc}</Text>
+      <Text style={styles.weaponNote}>💡 {selectedWeapon.desc}</Text>
 
-      {/* Interactive Combat Field */}
-      <View style={styles.combatArena}>
-        {/* Enemy Dummy Target */}
+      {/* INTERACTIVE COMBAT ARENA (NO SCROLL INTERFERENCE) */}
+      <View style={[styles.combatArena, isLandscape && styles.combatArenaLandscape]}>
+        {/* Recoil Status Badge */}
+        <View style={styles.arenaHeaderRow}>
+          <Text style={styles.recoilBadgeText}>
+            🔫 ĐỘ GIẬT: +{selectedWeapon.recoilKick}px • SÁT THƯƠNG: {selectedWeapon.damage}
+          </Text>
+          <Text style={styles.soundIndicator}>🔊 ÂM THANH BẬT</Text>
+        </View>
+
+        {/* Target Enemy Dummy with Physics Recoil */}
         <Animated.View
           style={[
-            styles.targetContainer,
+            styles.targetDummyWrapper,
             {
-              transform: [{ scale: targetScale }],
+              transform: [{ scale: targetScale }, { translateY: recoilOffset }],
             },
           ]}>
           <View
@@ -324,21 +408,30 @@ export default function AimTrainer({ onApplyToGenerator }) {
               styles.targetHead,
               lastFeedback?.type === 'HEAD' && styles.targetHeadHit,
             ]}>
-            <Text style={styles.headIcon}>💀</Text>
-            <View style={styles.crosshairH} />
-            <View style={styles.crosshairV} />
+            <Text style={styles.headSkull}>💀</Text>
+            {/* Dynamic Recoil Crosshair */}
+            <Animated.View
+              style={[
+                styles.dynamicCrosshair,
+                {
+                  width: crosshairSpread,
+                  height: crosshairSpread,
+                  borderRadius: crosshairSpread,
+                },
+              ]}
+            />
           </View>
           <View style={styles.targetNeck} />
           <View
             style={[
-              styles.targetBody,
-              lastFeedback?.type === 'BODY' && styles.targetBodyHit,
+              styles.targetTorso,
+              lastFeedback?.type === 'BODY' && styles.targetTorsoHit,
             ]}>
-            <Text style={styles.bodyArmorIcon}>🛡️</Text>
+            <Text style={styles.armorIcon}>🛡️</Text>
           </View>
         </Animated.View>
 
-        {/* Floating Damage Popup */}
+        {/* Damage Popup */}
         {lastFeedback && (
           <Animated.View
             style={[
@@ -349,7 +442,7 @@ export default function AimTrainer({ onApplyToGenerator }) {
                   {
                     translateY: damageAnim.interpolate({
                       inputRange: [0, 1],
-                      outputRange: [20, -35],
+                      outputRange: [15, -45],
                     }),
                   },
                 ],
@@ -362,22 +455,24 @@ export default function AimTrainer({ onApplyToGenerator }) {
                 lastFeedback.type === 'BODY' && styles.damageBody,
                 lastFeedback.type === 'MISS' && styles.damageMiss,
               ]}>
-              {lastFeedback.damage > 0 ? `-${lastFeedback.damage}` : 'MISS'}
+              {lastFeedback.damage > 0 ? `-${lastFeedback.damage}` : 'TRƯỢT'}
             </Text>
-            <Text style={styles.damageTypeBadge}>{lastFeedback.title}</Text>
+            <View style={styles.critPill}>
+              <Text style={styles.critPillText}>{lastFeedback.title}</Text>
+            </View>
           </Animated.View>
         )}
 
-        {/* Live Drag Trail Indicator */}
+        {/* Drag Vector Visualizer */}
         {currentDragVector.active && (
           <View
             style={[
-              styles.dragIndicatorLine,
+              styles.dragBeam,
               {
-                height: Math.min(180, Math.max(10, -currentDragVector.dy)),
+                height: Math.min(220, Math.max(10, -currentDragVector.dy)),
                 transform: [
                   {
-                    rotate: `${Math.round((currentDragVector.dx / (Math.abs(currentDragVector.dy) || 1)) * 30)}deg`,
+                    rotate: `${Math.round((currentDragVector.dx / (Math.abs(currentDragVector.dy) || 1)) * 35)}deg`,
                   },
                 ],
               },
@@ -385,101 +480,96 @@ export default function AimTrainer({ onApplyToGenerator }) {
           />
         )}
 
-        {/* Interactive Fire Button Area */}
-        <View style={styles.fireAreaContainer}>
-          <Text style={styles.firePrompt}>
-            👇 Đặt ngón tay vào nút và VUỐT NHANH LÊN ĐẦU
+        {/* FIRE BUTTON ZONE WITH FULL TOUCH CAPTURE */}
+        <View style={styles.fireZoneContainer}>
+          <Text style={styles.fireZoneHint}>
+            👇 Đặt ngón tay và VUỐT NHANH LÊN ĐẦU (Kèm âm thanh súng)
           </Text>
 
           <View
-            style={styles.fireButtonTouchable}
+            style={styles.fireButtonTouchArea}
             onStartShouldSetResponder={() => true}
             onMoveShouldSetResponder={() => true}
             onResponderGrant={handleTouchStart}
             onResponderMove={handleTouchMove}
             onResponderRelease={handleTouchEnd}>
-            <View style={styles.fireButtonOuter}>
-              <View style={styles.fireButtonInner}>
-                <Text style={styles.fireButtonIcon}>🔥</Text>
-                <Text style={styles.fireButtonLabel}>BẮN</Text>
+            <View style={styles.liquidFireButtonOuter}>
+              <View style={styles.liquidFireButtonInner}>
+                <Text style={styles.fireIcon}>🔥</Text>
+                <Text style={styles.fireLabel}>BẮN</Text>
               </View>
             </View>
           </View>
         </View>
       </View>
 
-      {/* Telemetry & Analysis Panel */}
+      {/* Realtime Telemetry Analysis Card */}
       {lastFeedback && (
-        <View style={styles.analysisCard}>
-          <Text style={styles.analysisTitle}>📊 PHÂN TÍCH LỰC VUỐT VỪA THỰC HIỆN</Text>
+        <View style={styles.telemetryCard}>
+          <Text style={styles.telemetryTitle}>📊 PHÂN TÍCH LỰC VUỐT VÀ GIA TỐC TAY</Text>
           <View style={styles.telemetryGrid}>
-            <View style={styles.telemetryItem}>
-              <Text style={styles.telemetryLabel}>Tốc Độ Vuốt</Text>
-              <Text style={[styles.telemetryValue, { color: COLORS.cyanTactical }]}>
+            <View style={styles.telemetryBox}>
+              <Text style={styles.telemetryBoxLabel}>Tốc Độ Vuốt</Text>
+              <Text style={[styles.telemetryBoxVal, { color: COLORS.primaryBright }]}>
                 {lastFeedback.speed} px/s
               </Text>
             </View>
-            <View style={styles.telemetryItem}>
-              <Text style={styles.telemetryLabel}>Độ Dài Vuốt</Text>
-              <Text style={[styles.telemetryValue, { color: COLORS.secondary }]}>
+            <View style={styles.telemetryBox}>
+              <Text style={styles.telemetryBoxLabel}>Độ Dài Vuốt</Text>
+              <Text style={[styles.telemetryBoxVal, { color: COLORS.secondary }]}>
                 {lastFeedback.distance} px
               </Text>
             </View>
-            <View style={styles.telemetryItem}>
-              <Text style={styles.telemetryLabel}>Thời Gian Kéo</Text>
-              <Text style={[styles.telemetryValue, { color: COLORS.plasmaPurple }]}>
+            <View style={styles.telemetryBox}>
+              <Text style={styles.telemetryBoxLabel}>Thời Gian</Text>
+              <Text style={[styles.telemetryBoxVal, { color: COLORS.accentCyan }]}>
                 {lastFeedback.duration} ms
               </Text>
             </View>
           </View>
 
-          <View style={styles.adviceBox}>
-            <Text style={styles.adviceIcon}>💡</Text>
-            <Text style={styles.adviceText}>{lastFeedback.advice}</Text>
+          <View style={styles.aiAdviceRow}>
+            <Text style={styles.aiAdviceIcon}>🤖</Text>
+            <Text style={styles.aiAdviceText}>{lastFeedback.advice}</Text>
           </View>
         </View>
       )}
 
-      {/* Live Stats Scoreboard */}
-      <View style={styles.statsBoard}>
-        <View style={styles.statCol}>
-          <Text style={styles.statBigNum}>{stats.shots}</Text>
-          <Text style={styles.statSubText}>Lượt Bắn</Text>
+      {/* Score & Streak Bar */}
+      <View style={styles.scoreGlassBar}>
+        <View style={styles.scoreCol}>
+          <Text style={styles.scoreVal}>{stats.shots}</Text>
+          <Text style={styles.scoreLabel}>Đã Bắn</Text>
         </View>
-        <View style={styles.statCol}>
-          <Text style={[styles.statBigNum, { color: COLORS.accentRed }]}>{headshotRate}%</Text>
-          <Text style={styles.statSubText}>Tỉ Lệ Đỏ</Text>
+        <View style={styles.scoreCol}>
+          <Text style={[styles.scoreVal, { color: COLORS.accentRed }]}>{headshotRate}%</Text>
+          <Text style={styles.scoreLabel}>Tỉ Lệ Đỏ</Text>
         </View>
-        <View style={styles.statCol}>
-          <Text style={[styles.statBigNum, { color: COLORS.secondary }]}>{stats.streak}</Text>
-          <Text style={styles.statSubText}>Combo Đỏ</Text>
+        <View style={styles.scoreCol}>
+          <Text style={[styles.scoreVal, { color: COLORS.secondary }]}>{stats.streak}</Text>
+          <Text style={styles.scoreLabel}>Combo Đỏ</Text>
         </View>
-        <View style={styles.statCol}>
-          <Text style={[styles.statBigNum, { color: COLORS.accentGreen }]}>{stats.maxStreak}</Text>
-          <Text style={styles.statSubText}>Kỷ Lục</Text>
+        <View style={styles.scoreCol}>
+          <Text style={[styles.scoreVal, { color: COLORS.accentGreen }]}>{stats.maxStreak}</Text>
+          <Text style={styles.scoreLabel}>Kỷ Lục</Text>
         </View>
       </View>
 
-      {/* Action Buttons */}
-      <View style={styles.actionRow}>
-        <TouchableOpacity style={styles.resetBtn} onPress={handleReset}>
-          <Text style={styles.resetBtnText}>🔄 Làm Mới Thống Kê</Text>
+      {/* Quick Action Button to Pass to 5D Matrix */}
+      {onApplyToGenerator && (
+        <TouchableOpacity
+          style={styles.applyForceBtn}
+          onPress={() => {
+            let force = 'Vuốt Vừa (Chuẩn)';
+            if (stats.lastSpeed > 1700) force = 'Vuốt Nhanh / Mạnh (One-Shot)';
+            else if (stats.lastSpeed < 850) force = 'Vuốt Nhẹ / Chậm (Ghim Cận Chiến)';
+            onApplyToGenerator(force);
+          }}>
+          <Text style={styles.applyForceBtnText}>
+            ⚡ ĐƯA LỰC TAY ({stats.lastSpeed} px/s) VÀO BỘ TẠO 5D →
+          </Text>
         </TouchableOpacity>
-
-        {onApplyToGenerator && (
-          <TouchableOpacity
-            style={styles.applyBtn}
-            onPress={() => {
-              // Map speed to generator drag force
-              let force = 'Vuốt Vừa (Chuẩn)';
-              if (stats.lastSpeed > 1700) force = 'Vuốt Nhanh / Mạnh (One-Shot)';
-              else if (stats.lastSpeed < 800) force = 'Vuốt Nhẹ / Chậm (Ghim Cận Chiến)';
-              onApplyToGenerator(force);
-            }}>
-            <Text style={styles.applyBtnText}>⚡ Đưa Lực Vào Bộ Tạo 5D →</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      )}
 
       <View style={{ height: 120 }} />
     </ScrollView>
@@ -492,29 +582,81 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
     paddingHorizontal: 16,
   },
-  header: {
+  // Nút quay lại to rõ ràng
+  largeBackButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.glassCardElevated,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderRadius: COLORS.rounded.lg,
+    borderWidth: 1.5,
+    borderColor: COLORS.glassBorderHighlight,
     marginTop: 12,
-    marginBottom: 14,
+    marginBottom: 8,
   },
-  headerTag: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255, 98, 0, 0.15)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.primary,
-    marginBottom: 6,
+  largeBackIcon: {
+    fontSize: 22,
+    color: COLORS.primaryBright,
+    fontWeight: 'bold',
+    marginRight: 10,
   },
-  headerTagText: {
-    color: COLORS.primary,
-    fontSize: 11,
+  largeBackText: {
+    fontSize: 14,
+    color: '#FFF',
     fontWeight: '800',
     letterSpacing: 0.5,
   },
+  glassHeader: {
+    backgroundColor: COLORS.glassCard,
+    padding: 16,
+    borderRadius: COLORS.rounded.lg,
+    borderWidth: 1.5,
+    borderColor: COLORS.glassBorder,
+    marginBottom: 14,
+  },
+  headerTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  headerBadge: {
+    backgroundColor: COLORS.primaryLight,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: COLORS.rounded.sm,
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+  },
+  headerBadgeText: {
+    color: COLORS.primaryBright,
+    fontSize: 11,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
+  orientBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 183, 0, 0.15)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: COLORS.rounded.md,
+    borderWidth: 1,
+    borderColor: COLORS.secondary,
+    gap: 4,
+  },
+  orientBtnIcon: {
+    fontSize: 14,
+  },
+  orientBtnText: {
+    color: COLORS.secondary,
+    fontSize: 11,
+    fontWeight: '800',
+  },
   headerTitle: {
     color: COLORS.text,
-    fontSize: 22,
+    fontSize: 21,
     fontWeight: '900',
     letterSpacing: 0.5,
   },
@@ -527,57 +669,61 @@ const styles = StyleSheet.create({
   modeRow: {
     flexDirection: 'row',
     gap: 10,
-    marginBottom: 16,
+    marginBottom: 14,
   },
-  modeBtn: {
+  glassModeBtn: {
     flex: 1,
-    backgroundColor: COLORS.surfaceCard,
-    paddingVertical: 10,
-    borderRadius: 12,
+    backgroundColor: COLORS.glassCard,
+    paddingVertical: 12,
+    borderRadius: COLORS.rounded.md,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: COLORS.glassBorder,
   },
-  modeBtnActive: {
-    backgroundColor: 'rgba(255, 98, 0, 0.18)',
+  glassModeBtnActive: {
+    backgroundColor: COLORS.primaryLight,
     borderColor: COLORS.primary,
+    borderWidth: 1.5,
   },
-  modeBtnText: {
+  modeText: {
     color: COLORS.textSecondary,
     fontSize: 13,
     fontWeight: '700',
   },
-  modeBtnTextActive: {
-    color: COLORS.primary,
+  modeTextActive: {
+    color: COLORS.primaryBright,
+    fontWeight: '900',
   },
   sectionLabel: {
     color: COLORS.textMuted,
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     letterSpacing: 0.8,
     marginBottom: 8,
   },
-  weaponRow: {
+  weaponGrid: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
     marginBottom: 6,
   },
-  weaponCard: {
-    flex: 1,
-    backgroundColor: COLORS.surfaceCard,
-    paddingVertical: 10,
-    paddingHorizontal: 6,
-    borderRadius: 12,
+  glassWeaponCard: {
+    width: '48.5%',
+    backgroundColor: COLORS.glassCard,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderRadius: COLORS.rounded.md,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: COLORS.glassBorder,
   },
-  weaponCardActive: {
-    backgroundColor: 'rgba(0, 240, 255, 0.12)',
-    borderColor: COLORS.cyanTactical,
+  glassWeaponCardActive: {
+    borderColor: COLORS.primary,
+    backgroundColor: 'rgba(255, 94, 0, 0.22)',
+    borderWidth: 1.5,
   },
   weaponIcon: {
-    fontSize: 20,
+    fontSize: 22,
     marginBottom: 4,
   },
   weaponName: {
@@ -587,187 +733,203 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   weaponNameActive: {
-    color: COLORS.cyanTactical,
+    color: '#FFF',
+    fontWeight: '900',
   },
-  weaponDescText: {
+  weaponNote: {
     color: COLORS.textSecondary,
     fontSize: 12,
-    marginBottom: 16,
     fontStyle: 'italic',
+    marginBottom: 14,
   },
   combatArena: {
-    backgroundColor: '#0C071E',
-    borderRadius: 20,
-    borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
-    height: 380,
+    backgroundColor: 'rgba(18, 10, 5, 0.92)',
+    borderRadius: COLORS.rounded.xl,
+    borderWidth: 2,
+    borderColor: COLORS.glassBorderHighlight,
+    height: 390,
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 16,
+    paddingVertical: 14,
     position: 'relative',
     overflow: 'hidden',
   },
-  targetContainer: {
+  combatArenaLandscape: {
+    height: 300,
+  },
+  arenaHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '92%',
+  },
+  recoilBadgeText: {
+    color: COLORS.secondary,
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  soundIndicator: {
+    color: COLORS.accentGreen,
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  targetDummyWrapper: {
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 6,
   },
   targetHead: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
-    backgroundColor: '#251545',
-    borderWidth: 2,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: 'rgba(55, 25, 12, 0.85)',
+    borderWidth: 2.5,
     borderColor: COLORS.accentRed,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
   },
   targetHeadHit: {
-    backgroundColor: 'rgba(255, 42, 66, 0.5)',
+    backgroundColor: 'rgba(255, 42, 66, 0.65)',
     borderColor: '#FFF',
-    borderWidth: 3,
+    borderWidth: 3.5,
   },
-  crosshairH: {
+  headSkull: {
+    fontSize: 28,
+  },
+  dynamicCrosshair: {
     position: 'absolute',
-    width: 76,
-    height: 1,
-    backgroundColor: 'rgba(255, 42, 66, 0.6)',
-  },
-  crosshairV: {
-    position: 'absolute',
-    width: 1,
-    height: 76,
-    backgroundColor: 'rgba(255, 42, 66, 0.6)',
-  },
-  headIcon: {
-    fontSize: 26,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 94, 0, 0.7)',
   },
   targetNeck: {
-    width: 14,
+    width: 16,
     height: 8,
-    backgroundColor: '#1E1038',
+    backgroundColor: '#261208',
   },
-  targetBody: {
-    width: 110,
-    height: 74,
-    backgroundColor: '#1C1033',
-    borderRadius: 14,
+  targetTorso: {
+    width: 116,
+    height: 76,
+    backgroundColor: 'rgba(38, 18, 8, 0.85)',
+    borderRadius: COLORS.rounded.md,
     borderWidth: 1.5,
-    borderColor: COLORS.border,
+    borderColor: COLORS.glassBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  targetBodyHit: {
-    backgroundColor: 'rgba(255, 184, 0, 0.4)',
+  targetTorsoHit: {
+    backgroundColor: 'rgba(255, 183, 0, 0.5)',
     borderColor: COLORS.secondary,
   },
-  bodyArmorIcon: {
+  armorIcon: {
     fontSize: 22,
   },
   damagePopup: {
     position: 'absolute',
-    top: 30,
+    top: 24,
     alignItems: 'center',
     zIndex: 99,
   },
   damageNumber: {
-    fontSize: 34,
+    fontSize: 36,
     fontWeight: '900',
-    textShadowColor: 'rgba(0,0,0,0.8)',
+    textShadowColor: 'rgba(0,0,0,0.9)',
     textShadowOffset: { width: 1, height: 2 },
-    textShadowRadius: 6,
+    textShadowRadius: 8,
   },
   damageHead: {
     color: '#FF2A42',
   },
   damageBody: {
-    color: '#FFB800',
+    color: '#FFB700',
   },
   damageMiss: {
     color: '#FFFFFF',
   },
-  damageTypeBadge: {
+  critPill: {
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 8,
+    marginTop: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  critPillText: {
+    color: '#FFF',
     fontSize: 12,
     fontWeight: '800',
-    color: '#FFF',
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
-    marginTop: 2,
   },
-  dragIndicatorLine: {
+  dragBeam: {
     position: 'absolute',
-    bottom: 95,
-    width: 4,
-    backgroundColor: COLORS.cyanTactical,
-    borderRadius: 2,
-    shadowColor: COLORS.cyanTactical,
+    bottom: 96,
+    width: 5,
+    backgroundColor: COLORS.primaryBright,
+    borderRadius: 3,
+    shadowColor: COLORS.primary,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.9,
-    shadowRadius: 8,
+    shadowRadius: 10,
   },
-  fireAreaContainer: {
+  fireZoneContainer: {
     alignItems: 'center',
     width: '100%',
   },
-  firePrompt: {
-    color: COLORS.textMuted,
+  fireZoneHint: {
+    color: COLORS.textSecondary,
     fontSize: 11,
     fontWeight: '700',
     marginBottom: 8,
   },
-  fireButtonTouchable: {
-    width: 92,
-    height: 92,
-    borderRadius: 46,
+  fireButtonTouchArea: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  fireButtonOuter: {
-    width: 86,
-    height: 86,
-    borderRadius: 43,
+  liquidFireButtonOuter: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
     borderWidth: 3,
-    borderColor: COLORS.primary,
-    backgroundColor: 'rgba(255, 98, 0, 0.2)',
+    borderColor: COLORS.primaryBright,
+    backgroundColor: 'rgba(255, 94, 0, 0.25)',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: COLORS.primary,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 12,
-    elevation: 8,
+    shadowOpacity: 0.85,
+    shadowRadius: 14,
+    elevation: 10,
   },
-  fireButtonInner: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
+  liquidFireButtonInner: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  fireButtonIcon: {
+  fireIcon: {
     fontSize: 22,
   },
-  fireButtonLabel: {
+  fireLabel: {
     color: '#FFF',
     fontSize: 10,
     fontWeight: '900',
     letterSpacing: 1,
     marginTop: -2,
   },
-  analysisCard: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 16,
+  telemetryCard: {
+    backgroundColor: COLORS.glassCard,
+    borderRadius: COLORS.rounded.lg,
     padding: 14,
     marginTop: 14,
-    borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
+    borderWidth: 1.5,
+    borderColor: COLORS.glassBorderHighlight,
   },
-  analysisTitle: {
+  telemetryTitle: {
     color: COLORS.text,
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '800',
     marginBottom: 10,
     letterSpacing: 0.5,
@@ -777,91 +939,76 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 12,
   },
-  telemetryItem: {
+  telemetryBox: {
     alignItems: 'center',
     flex: 1,
   },
-  telemetryLabel: {
+  telemetryBoxLabel: {
     color: COLORS.textMuted,
     fontSize: 11,
     marginBottom: 2,
   },
-  telemetryValue: {
+  telemetryBoxVal: {
     fontSize: 16,
     fontWeight: '900',
   },
-  adviceBox: {
+  aiAdviceRow: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(168, 85, 247, 0.12)',
-    borderRadius: 10,
+    backgroundColor: 'rgba(255, 115, 0, 0.12)',
+    borderRadius: COLORS.rounded.md,
     padding: 10,
     alignItems: 'center',
     gap: 8,
-    borderLeftWidth: 3,
-    borderLeftColor: COLORS.plasmaPurple,
+    borderLeftWidth: 3.5,
+    borderLeftColor: COLORS.primary,
   },
-  adviceIcon: {
-    fontSize: 18,
+  aiAdviceIcon: {
+    fontSize: 20,
   },
-  adviceText: {
-    color: COLORS.text,
+  aiAdviceText: {
+    color: COLORS.textSecondary,
     fontSize: 12,
-    lineHeight: 17,
+    lineHeight: 18,
     flex: 1,
+    fontWeight: '600',
   },
-  statsBoard: {
+  scoreGlassBar: {
     flexDirection: 'row',
-    backgroundColor: COLORS.surfaceCardTactical,
-    borderRadius: 14,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: COLORS.rounded.lg,
     paddingVertical: 12,
     paddingHorizontal: 8,
     marginTop: 14,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: COLORS.glassBorder,
   },
-  statCol: {
+  scoreCol: {
     flex: 1,
     alignItems: 'center',
   },
-  statBigNum: {
+  scoreVal: {
     color: COLORS.text,
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: '900',
   },
-  statSubText: {
+  scoreLabel: {
     color: COLORS.textMuted,
     fontSize: 11,
     marginTop: 2,
   },
-  actionRow: {
-    flexDirection: 'row',
-    gap: 10,
-    marginTop: 14,
-  },
-  resetBtn: {
-    flex: 1,
-    backgroundColor: COLORS.surfaceCard,
-    paddingVertical: 12,
-    borderRadius: 12,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  resetBtnText: {
-    color: COLORS.textSecondary,
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  applyBtn: {
-    flex: 1.3,
+  applyForceBtn: {
     backgroundColor: COLORS.primary,
-    paddingVertical: 12,
-    borderRadius: 12,
+    paddingVertical: 14,
+    borderRadius: COLORS.rounded.lg,
     alignItems: 'center',
+    marginTop: 14,
+    borderWidth: 1,
+    borderColor: COLORS.secondary,
   },
-  applyBtnText: {
+  applyForceBtnText: {
     color: '#FFF',
-    fontSize: 12,
-    fontWeight: '800',
+    fontSize: 13,
+    fontWeight: '900',
+    letterSpacing: 0.5,
   },
 });
