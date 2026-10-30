@@ -1,51 +1,52 @@
-// BẢNG MÀU CHỦ ĐẠO: CAM NEON RỰC LỬA & KÍNH LỎNG (LIQUID GLASSMORPHISM) 2026
+// BẢNG MÀU iOS 26 LIQUID GLASS (TỐI GIẢN, TINH TẾ, CAM ĐIỂM NHẤN CAO CẤP)
 export const COLORS = {
-  // Nền không gian kính tối có ánh cam hổ phách
-  background: '#0E0804',          // Đen nhung ánh cam hổ phách
-  backgroundAlt: '#160D07',       // Nền phụ nâu hổ phách
-  surface: '#1C1009',             // Bề mặt kính tối
+  // Nền đen chuẩn Apple OLED siêu sâu & sang trọng
+  background: '#090A0D',          // Đen titanium sâu thẳm
+  backgroundAlt: '#0F1015',       // Nền phụ đen ánh than
+  surface: '#14161D',             // Lớp nền bề mặt
+  surfaceCard: 'rgba(255, 255, 255, 0.04)',
+
+  // Hiệu ứng kính lỏng iOS 26 (Liquid Frosted Glass)
+  glassSurface: 'rgba(255, 255, 255, 0.04)',
+  glassCard: 'rgba(255, 255, 255, 0.05)',
+  glassCardElevated: 'rgba(255, 255, 255, 0.08)',
+  glassCardBright: 'rgba(255, 255, 255, 0.12)',
+  glassCardDark: 'rgba(12, 13, 18, 0.82)',
   
-  // Hiệu ứng kính lỏng (Liquid Glassmorphism)
-  glassSurface: 'rgba(34, 18, 9, 0.72)',
-  glassCard: 'rgba(46, 24, 12, 0.68)',
-  glassCardElevated: 'rgba(64, 34, 17, 0.82)',
-  glassCardBright: 'rgba(82, 42, 20, 0.88)',
-  glassBorder: 'rgba(255, 115, 0, 0.32)',
-  glassBorderHighlight: 'rgba(255, 153, 51, 0.6)',
-  glassGlow: 'rgba(255, 85, 0, 0.45)',
-  glassOverlay: 'rgba(14, 8, 4, 0.88)',
+  // Viền kính siêu mỏng & phản chiếu ánh sáng (Specular Rim Light)
+  glassBorder: 'rgba(255, 255, 255, 0.09)',
+  glassBorderHighlight: 'rgba(255, 255, 255, 0.18)',
+  glassBorderAccent: 'rgba(255, 106, 0, 0.45)', // Cam nhẹ chỉ dùng làm viền điểm nhấn
+  glassGlow: 'rgba(255, 106, 0, 0.25)',
+  glassOverlay: 'rgba(9, 10, 13, 0.85)',
 
-  // Tông màu cam Neon rực lửa Free Fire chủ đạo
-  primary: '#FF5E00',             // Cam Neon rực cháy
-  primaryBright: '#FF7700',       // Cam sáng phát quang
-  primaryGlow: 'rgba(255, 94, 0, 0.5)',
-  primaryLight: 'rgba(255, 94, 0, 0.16)',
-  
-  // Tông màu vàng kim bổ trợ (Gold Cyber)
-  secondary: '#FFB700',           // Vàng kim hổ phách
-  secondaryBright: '#FFC833',     // Vàng chói
-  secondaryGlow: 'rgba(255, 183, 0, 0.4)',
-  secondaryLight: 'rgba(255, 183, 0, 0.15)',
+  // Tương thích ngược (Backward-compatibility aliases)
+  border: 'rgba(255, 255, 255, 0.08)',
+  borderHighlight: 'rgba(255, 255, 255, 0.14)',
+  cyanTactical: '#0A84FF',
 
-  // Tông màu chiến thuật
-  accentRed: '#FF2A42',           // Đỏ Laser Headshot
-  accentGreen: '#00F59B',         // Xanh Lục Tín Hiệu Kết Nối
-  accentCyan: '#00E5FF',          // Xanh Radar HUD
+  // Màu cam điểm nhấn (Accent - dùng có chừng mực, tinh tế)
+  primary: '#FF6A00',             // Cam Apple Flame điểm nhấn
+  primaryBright: '#FF7D1A',       // Cam sáng khi tương tác
+  primaryGlow: 'rgba(255, 106, 0, 0.25)',
+  primaryLight: 'rgba(255, 106, 0, 0.10)',
 
-  // Chữ & Độ tương phản
-  text: '#FFFFFF',                // Trắng tinh
-  textSecondary: '#FFD9C2',       // Trắng kem ánh cam nhạt (rất dễ đọc)
-  textMuted: '#A68270',           // Nâu đất ánh cam xám
-  textDim: '#705344',             // Tối mờ
+  // Màu phụ trợ tối giản
+  secondary: '#FFB800',           // Vàng kim nhẹ
+  secondaryLight: 'rgba(255, 184, 0, 0.10)',
+  accentRed: '#FF3B30',           // Đỏ Apple Headshot chuẩn
+  accentGreen: '#34C759',         // Xanh Apple ổn định
+  accentCyan: '#0A84FF',          // Xanh dương iOS
 
-  // Viền bo tròn & Nút bấm
-  border: 'rgba(255, 115, 0, 0.25)',
-  borderHighlight: 'rgba(255, 140, 0, 0.55)',
-  borderNeon: '#FF5E00',
-  activeTab: '#FF7700',
+  // Kiểu chữ chuẩn iOS (Tương phản cao, sạch sẽ, không rối mắt)
+  text: '#FFFFFF',                // Trắng tinh khiết
+  textSecondary: '#EBEBF5',       // Trắng bạc dịu mắt
+  textMuted: '#8E8E93',           // Xám bạc iOS
+  textDim: '#48484A',             // Xám tối
 
-  // Bo góc chuẩn kính lỏng (Mềm mại, không vuông vức)
+  // Bo góc chuẩn Liquid Glass iOS 26 (Cực kỳ mềm mại, không vuông vức)
   rounded: {
+    xs: 10,
     sm: 14,
     md: 20,
     lg: 26,

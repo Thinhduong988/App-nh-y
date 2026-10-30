@@ -463,17 +463,16 @@ export default function App() {
               </TouchableOpacity>
             </View>
 
-            {/* Banner Vũ Trụ Sci-Fi Tactical */}
+            {/* Banner iOS 26 Liquid Glass */}
             <View style={styles.cyberBanner}>
               <View style={styles.tacticalDecalRow}>
-                <Text style={styles.tacticalDecalText}>/// GALAXY HEADSHOT CORE 2026 ///</Text>
                 <View style={styles.bannerBadge}>
-                  <Text style={styles.bannerBadgeText}>OB MỚI NHẤT</Text>
+                  <Text style={styles.bannerBadgeText}>⚡ iOS 26 • ESPORTS OB 2026</Text>
                 </View>
               </View>
-              <Text style={styles.bannerTitle}>THUẬT TOÁN MA TRẬN 5D</Text>
+              <Text style={styles.bannerTitle}>Thuật Toán Kéo Tâm Tự Động</Text>
               <Text style={styles.bannerDesc}>
-                Phân tích tần số quét, lực vuốt ngón tay và phụ kiện màn hình để khóa cứng tâm vào đầu địch.
+                Tối ưu hồng tâm và nút bắn cho hơn 250+ dòng máy, tự động bù trừ tần số quét và lực vuốt tay.
               </Text>
               <TouchableOpacity
                 style={styles.bannerActionBtn}
@@ -481,7 +480,7 @@ export default function App() {
                   setActiveTab('SensitivityTab');
                   setSensSubScreen('BrandList');
                 }}>
-                <Text style={styles.bannerActionBtnText}>CHỌN 230+ THIẾT BỊ →</Text>
+                <Text style={styles.bannerActionBtnText}>Khám phá 250+ thiết bị →</Text>
               </TouchableOpacity>
             </View>
 
@@ -735,8 +734,8 @@ export default function App() {
               <TouchableOpacity
                 style={styles.backButtonRow}
                 onPress={() => setSensSubScreen('BrandList')}>
-                <Text style={styles.backButtonIcon}>←</Text>
-                <Text style={styles.backButtonText}>QUAY LẠI CHỌN HÃNG KHÁC</Text>
+                <Text style={styles.backButtonIcon}>‹</Text>
+                <Text style={styles.backButtonText}>Quay lại chọn hãng</Text>
               </TouchableOpacity>
 
               <Text style={styles.screenMainTitle}>Hãng: {selectedBrand}</Text>
@@ -774,8 +773,8 @@ export default function App() {
               <TouchableOpacity
                 style={styles.backButtonRow}
                 onPress={() => setSensSubScreen('SubSeriesList')}>
-                <Text style={styles.backButtonIcon}>←</Text>
-                <Text style={styles.backButtonText}>QUAY LẠI PHÂN KHÚC DÒNG MÁY</Text>
+                <Text style={styles.backButtonIcon}>‹</Text>
+                <Text style={styles.backButtonText}>Quay lại phân khúc máy</Text>
               </TouchableOpacity>
 
               <Text style={styles.screenMainTitle}>Danh Sách Máy ({filteredData.length})</Text>
@@ -850,13 +849,11 @@ export default function App() {
                     setSensSubScreen('DeviceList');
                   }
                 }}>
-                <Text style={styles.backButtonIcon}>←</Text>
-                <Text style={styles.backButtonText}>QUAY LẠI DANH SÁCH MÁY</Text>
+                <Text style={styles.backButtonIcon}>‹</Text>
+                <Text style={styles.backButtonText}>Quay lại danh sách máy</Text>
               </TouchableOpacity>
 
               <View style={styles.detailHeaderCard}>
-                <View style={styles.tacticalCornerTL} />
-                <View style={styles.tacticalCornerBR} />
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                   <Text style={styles.detailBrandTag}>{selectedConfig.brand}</Text>
                   {selectedConfig.is2026 && (
@@ -1357,7 +1354,7 @@ export default function App() {
   );
 }
 
-// ================= STYLES: COSMIC GALAXY X FREE FIRE SCI-FI TACTICAL =================
+// ================= STYLES: iOS 26 LIQUID GLASS (MINIMALIST, FROSTED, ACCENT ORANGE) =================
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
@@ -1369,29 +1366,19 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
 
-  // Tactical Corner Accents (Hiệu ứng viền vát góc sắc nhọn Sci-Fi)
+  // Tactical Corner Accents: Tắt bỏ góc nhọn để UI mềm mại chuẩn iOS
   tacticalCornerTL: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: 8,
-    height: 8,
-    borderTopWidth: 2,
-    borderLeftWidth: 2,
-    borderColor: COLORS.secondary,
+    display: 'none',
+    width: 0,
+    height: 0,
   },
   tacticalCornerBR: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 8,
-    height: 8,
-    borderBottomWidth: 2,
-    borderRightWidth: 2,
-    borderColor: COLORS.primary,
+    display: 'none',
+    width: 0,
+    height: 0,
   },
 
-  // Auth Screen Styles
+  // Auth Screen Styles (iOS Frosted Glass)
   authContainer: {
     flex: 1,
     backgroundColor: COLORS.background,
@@ -1399,34 +1386,28 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   authCard: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4, // Sharp chamfered edges
-    padding: 24,
-    borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.primary,
+    backgroundColor: COLORS.glassCardElevated,
+    borderRadius: 28,
+    padding: 26,
+    borderWidth: 1,
+    borderColor: COLORS.glassBorderHighlight,
     alignItems: 'center',
-    shadowColor: COLORS.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.6,
-    shadowRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 20,
     elevation: 8,
-    position: 'relative',
   },
   authLogoBadge: {
     width: 68,
     height: 68,
-    borderRadius: 4,
-    backgroundColor: 'rgba(255, 98, 0, 0.2)',
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 106, 0, 0.12)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
-    borderWidth: 1.5,
-    borderColor: COLORS.primary,
-    shadowColor: COLORS.primary,
-    shadowRadius: 12,
-    shadowOpacity: 0.8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 106, 0, 0.35)',
   },
   authLogoIcon: {
     fontSize: 34,
@@ -1434,18 +1415,14 @@ const styles = StyleSheet.create({
   authTitle: {
     fontSize: 24,
     fontWeight: '900',
-    color: COLORS.primary,
-    letterSpacing: 1.5,
+    color: '#FFF',
+    letterSpacing: 0.5,
     marginBottom: 4,
-    textShadowColor: 'rgba(255, 98, 0, 0.7)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
   },
   authSubtitle: {
-    fontSize: 11,
-    color: COLORS.secondary,
-    fontWeight: '700',
-    letterSpacing: 1,
+    fontSize: 12,
+    color: COLORS.textMuted,
+    fontWeight: '600',
     marginBottom: 24,
     textAlign: 'center',
   },
@@ -1455,52 +1432,48 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     color: COLORS.textSecondary,
-    fontSize: 11,
-    fontWeight: 'bold',
+    fontSize: 12,
+    fontWeight: '700',
     marginBottom: 6,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
   },
   textInput: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderRadius: 16,
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    color: COLORS.text,
+    paddingVertical: 13,
+    color: '#FFF',
     borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.glassBorder,
     fontSize: 14,
   },
   primaryButton: {
     backgroundColor: COLORS.primary,
     width: '100%',
     paddingVertical: 14,
-    borderRadius: 4, // Sharp tactical
+    borderRadius: 24,
     alignItems: 'center',
-    marginTop: 8,
-    borderWidth: 1,
-    borderColor: COLORS.secondary,
+    marginTop: 10,
     shadowColor: COLORS.primary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 14,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 4,
   },
   primaryButtonText: {
     color: '#FFFFFF',
-    fontWeight: '900',
+    fontWeight: '800',
     fontSize: 14,
-    letterSpacing: 1,
+    letterSpacing: 0.5,
   },
   secondaryButton: {
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     width: '100%',
     paddingVertical: 12,
-    borderRadius: 4,
+    borderRadius: 24,
     alignItems: 'center',
     marginTop: 10,
     borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.glassBorder,
   },
   secondaryButtonText: {
     color: COLORS.textSecondary,
@@ -1520,77 +1493,68 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
-    marginTop: 6,
+    marginTop: 4,
   },
   greetingText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: COLORS.text,
+    fontSize: 19,
+    fontWeight: '800',
+    color: '#FFF',
   },
   rankBadgeText: {
     fontSize: 12,
     color: COLORS.secondary,
     fontWeight: '700',
     marginTop: 2,
-    letterSpacing: 0.5,
   },
   headerAvatar: {
     width: 44,
     height: 44,
-    borderRadius: 4, // Sharp sci-fi
-    backgroundColor: COLORS.surfaceCard,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1.5,
-    borderColor: COLORS.primary,
-    shadowColor: COLORS.primary,
-    shadowRadius: 8,
-    shadowOpacity: 0.6,
+    borderWidth: 1,
+    borderColor: COLORS.glassBorderHighlight,
   },
   headerAvatarText: {
-    color: COLORS.primary,
+    color: COLORS.primaryBright,
     fontWeight: '900',
     fontSize: 16,
   },
 
-  // Cosmic Galaxy Cyber Banner (Liquid Glass)
+  // Banner iOS 26 Liquid Glass
   cyberBanner: {
     backgroundColor: COLORS.glassCard,
-    borderRadius: 24,
-    padding: 18,
-    borderWidth: 1.5,
+    borderRadius: 26,
+    padding: 20,
+    borderWidth: 1,
     borderColor: COLORS.glassBorderHighlight,
-    borderLeftWidth: 5,
-    borderLeftColor: COLORS.primaryBright,
     marginBottom: 16,
-    shadowColor: COLORS.primary,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.45,
-    shadowRadius: 16,
-    elevation: 8,
   },
   tacticalDecalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   tacticalDecalText: {
-    color: COLORS.secondary,
+    color: COLORS.textMuted,
     fontSize: 11,
-    fontWeight: '800',
-    letterSpacing: 1,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   bannerBadge: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: 'rgba(255, 106, 0, 0.15)',
     paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 8,
+    paddingVertical: 4,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 106, 0, 0.35)',
   },
   bannerBadgeText: {
-    color: '#FFF',
-    fontSize: 10,
-    fontWeight: '900',
+    color: COLORS.primaryBright,
+    fontSize: 11,
+    fontWeight: '800',
     letterSpacing: 0.5,
   },
   bannerTitle: {
@@ -1598,84 +1562,76 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     color: '#FFF',
     marginBottom: 6,
-    letterSpacing: 0.5,
   },
   bannerDesc: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     lineHeight: 19,
     marginBottom: 14,
   },
   bannerActionBtn: {
     backgroundColor: COLORS.primary,
     alignSelf: 'flex-start',
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
     paddingVertical: 10,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: COLORS.secondary,
+    borderRadius: 20,
   },
   bannerActionBtnText: {
     color: '#FFF',
-    fontWeight: '900',
+    fontWeight: '800',
     fontSize: 12,
-    letterSpacing: 0.5,
   },
 
-  // Stats (Liquid Glass Rounded)
+  // Stats (Liquid Glass Minimalist)
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 18,
+    gap: 8,
   },
   statBox: {
     flex: 1,
     backgroundColor: COLORS.glassCard,
-    padding: 14,
-    borderRadius: 18,
-    marginHorizontal: 3,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    borderRadius: 20,
     alignItems: 'center',
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorder,
-    borderBottomWidth: 3,
-    borderBottomColor: COLORS.primaryBright,
   },
   statNumber: {
     fontSize: 20,
     fontWeight: '900',
-    color: COLORS.primaryBright,
+    color: '#FFF',
   },
   statLabel: {
     fontSize: 11,
     color: COLORS.textMuted,
     marginTop: 2,
     fontWeight: '700',
-    textTransform: 'uppercase',
   },
 
   // Quick Tools
   sectionTitle: {
     fontSize: 13,
-    fontWeight: '900',
-    color: COLORS.secondary,
-    marginVertical: 12,
-    letterSpacing: 1,
+    fontWeight: '800',
+    color: COLORS.textSecondary,
+    marginVertical: 10,
+    letterSpacing: 0.5,
   },
   quickToolsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 10,
+    gap: 8,
   },
   toolCard: {
     flex: 1,
     backgroundColor: COLORS.glassCard,
-    borderRadius: 20,
+    borderRadius: 22,
     padding: 16,
-    marginHorizontal: 4,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorder,
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.primaryBright,
   },
   toolIcon: {
     fontSize: 24,
@@ -1688,18 +1644,18 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   toolDesc: {
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontSize: 11,
     lineHeight: 15,
   },
 
-  // Tips (Kính lỏng)
+  // Tips (Liquid Glass)
   tipCard: {
     backgroundColor: COLORS.glassCard,
-    borderRadius: 20,
+    borderRadius: 22,
     padding: 16,
     marginBottom: 10,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorder,
   },
   tipHeader: {
@@ -1708,7 +1664,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   tipBadge: {
-    backgroundColor: 'rgba(255, 183, 0, 0.2)',
+    backgroundColor: 'rgba(255, 184, 0, 0.12)',
     color: COLORS.secondary,
     fontSize: 10,
     fontWeight: '800',
@@ -1717,7 +1673,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginRight: 8,
     borderWidth: 1,
-    borderColor: COLORS.secondary,
+    borderColor: 'rgba(255, 184, 0, 0.3)',
   },
   tipTitleText: {
     color: '#FFF',
@@ -1726,7 +1682,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tipDescText: {
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontSize: 12,
     lineHeight: 18,
   },
@@ -1735,25 +1691,24 @@ const styles = StyleSheet.create({
   screenMainTitle: {
     fontSize: 22,
     fontWeight: '900',
-    color: COLORS.primaryBright,
+    color: '#FFF',
     marginBottom: 4,
-    marginTop: 6,
-    letterSpacing: 0.5,
+    marginTop: 4,
   },
   screenSubTitle: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     marginBottom: 14,
   },
 
-  // Search Bar
+  // Search Bar (iOS Frosted Pill)
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.glassCard,
     borderRadius: 22,
     paddingHorizontal: 16,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorder,
     marginBottom: 14,
   },
@@ -1769,19 +1724,17 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  // Brand Cards (Liquid Glass Bo Tròn Mềm Mại)
+  // Brand Cards (Liquid Glass Bo Tròn)
   brandItemCard: {
     backgroundColor: COLORS.glassCard,
-    borderRadius: 20,
+    borderRadius: 22,
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorder,
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.primaryBright,
   },
   brandCardLeft: {
     flexDirection: 'row',
@@ -1791,12 +1744,12 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(255, 94, 0, 0.15)',
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 14,
     borderWidth: 1,
-    borderColor: COLORS.primary,
+    borderColor: COLORS.glassBorder,
   },
   brandIconText: {
     fontSize: 22,
@@ -1813,47 +1766,47 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   brandArrow: {
-    color: COLORS.primaryBright,
-    fontSize: 18,
+    color: COLORS.textMuted,
+    fontSize: 16,
     fontWeight: 'bold',
   },
 
-  // Nút Quay Lại Cực To Dễ Bấm
+  // Nút Quay Lại Cực To Dễ Bấm (iOS 26 Frosted Pill)
   backButtonRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.glassCardElevated,
-    paddingVertical: 14,
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    paddingVertical: 9,
     paddingHorizontal: 18,
     borderRadius: 24,
-    borderWidth: 1.5,
-    borderColor: COLORS.glassBorderHighlight,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.14)',
     marginBottom: 16,
+    marginTop: 2,
   },
   backButtonIcon: {
     color: COLORS.primaryBright,
-    fontSize: 22,
-    fontWeight: '900',
-    marginRight: 10,
+    fontSize: 26,
+    fontWeight: '300',
+    marginRight: 6,
+    marginTop: -2,
   },
   backButtonText: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '800',
-    letterSpacing: 0.5,
+    fontWeight: '700',
   },
 
-  // Device List Cards (Kính Lỏng Bo Tròn)
+  // Device List Cards
   deviceItemCard: {
     backgroundColor: COLORS.glassCard,
-    borderRadius: 20,
+    borderRadius: 22,
     padding: 16,
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.primary,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorder,
   },
   deviceBrandBadge: {
@@ -1870,17 +1823,17 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   deviceItemSubtitle: {
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontSize: 12,
     marginTop: 3,
   },
   scorePill: {
-    backgroundColor: 'rgba(255, 94, 0, 0.2)',
+    backgroundColor: 'rgba(255, 106, 0, 0.12)',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderColor: COLORS.primaryBright,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 106, 0, 0.3)',
   },
   scorePillText: {
     color: COLORS.primaryBright,
@@ -1888,17 +1841,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 
-  // Detail View Cards (Liquid Glass)
+  // Detail View Cards
   detailHeaderCard: {
     backgroundColor: COLORS.glassCard,
-    borderRadius: 22,
+    borderRadius: 24,
     padding: 18,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorderHighlight,
-    borderLeftWidth: 5,
-    borderLeftColor: COLORS.primaryBright,
     marginBottom: 16,
-    position: 'relative',
   },
   detailBrandTag: {
     color: COLORS.secondary,
@@ -1922,9 +1872,9 @@ const styles = StyleSheet.create({
   // Sliders Panel
   inGamePanel: {
     backgroundColor: COLORS.glassCard,
-    borderRadius: 22,
+    borderRadius: 24,
     padding: 18,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorder,
     marginBottom: 16,
   },
@@ -1947,25 +1897,23 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   ffTrackBackground: {
-    height: 10,
-    backgroundColor: 'rgba(18, 10, 5, 0.9)',
-    borderRadius: 5,
+    height: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 4,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: COLORS.glassBorder,
   },
   ffTrackProgress: {
     height: '100%',
     backgroundColor: COLORS.primaryBright,
-    borderRadius: 5,
+    borderRadius: 4,
   },
 
   // Hardware Card
   hardwareCard: {
     backgroundColor: COLORS.glassCard,
-    borderRadius: 22,
+    borderRadius: 24,
     padding: 18,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorder,
     marginBottom: 16,
   },
@@ -1975,28 +1923,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 115, 0, 0.15)',
+    borderBottomColor: 'rgba(255, 255, 255, 0.06)',
   },
   hardwareLabel: {
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontSize: 13,
     fontWeight: '600',
   },
   hardwareValue: {
-    color: COLORS.secondary,
+    color: '#FFF',
     fontSize: 14,
     fontWeight: '800',
   },
 
   // HUD Simulator Box
   hudSimulatorBox: {
-    backgroundColor: 'rgba(18, 10, 5, 0.95)',
-    borderRadius: 22,
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    borderRadius: 24,
     padding: 22,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1.5,
-    borderColor: COLORS.glassBorderHighlight,
+    borderWidth: 1,
+    borderColor: COLORS.glassBorder,
     marginBottom: 20,
     minHeight: 180,
   },
@@ -2026,15 +1974,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   simulatedFireButton: {
-    backgroundColor: 'rgba(255, 98, 0, 0.25)',
-    borderWidth: 2,
+    backgroundColor: 'rgba(255, 106, 0, 0.18)',
+    borderWidth: 1.5,
     borderColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 6,
-    shadowColor: COLORS.primary,
-    shadowRadius: 10,
-    shadowOpacity: 0.8,
   },
   fireIcon: {
     fontSize: 16,
@@ -2050,121 +1995,102 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
+    gap: 10,
   },
   saveActionButton: {
     flex: 1,
     backgroundColor: COLORS.primary,
     paddingVertical: 14,
-    borderRadius: 4,
+    borderRadius: 24,
     alignItems: 'center',
-    marginRight: 6,
-    borderWidth: 1,
-    borderColor: COLORS.secondary,
-    shadowColor: COLORS.primary,
-    shadowRadius: 8,
-    shadowOpacity: 0.7,
   },
   actionButtonText: {
     color: '#FFF',
-    fontWeight: '900',
-    fontSize: 12,
-    letterSpacing: 0.5,
+    fontWeight: '800',
+    fontSize: 13,
   },
   shareActionButton: {
     flex: 1,
-    backgroundColor: COLORS.surfaceCard,
-    borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderWidth: 1,
+    borderColor: COLORS.glassBorderHighlight,
     paddingVertical: 14,
-    borderRadius: 4,
+    borderRadius: 24,
     alignItems: 'center',
-    marginLeft: 6,
   },
   shareActionButtonText: {
-    color: COLORS.text,
-    fontWeight: 'bold',
-    fontSize: 12,
+    color: '#FFF',
+    fontWeight: '700',
+    fontSize: 13,
   },
 
   // Generator Tab Styles
   fieldSectionTitle: {
     fontSize: 12,
-    color: COLORS.textSecondary,
-    fontWeight: 'bold',
+    color: COLORS.textMuted,
+    fontWeight: '700',
     marginTop: 14,
     marginBottom: 8,
-    letterSpacing: 0.5,
   },
   chipRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    gap: 8,
   },
   chip: {
-    backgroundColor: COLORS.surfaceCard,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 4,
-    marginRight: 8,
-    marginBottom: 8,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.glassBorder,
   },
   activeChip: {
-    backgroundColor: 'rgba(255, 98, 0, 0.2)',
+    backgroundColor: 'rgba(255, 106, 0, 0.18)',
     borderColor: COLORS.primary,
   },
   chipText: {
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontSize: 11,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   activeChipText: {
-    color: COLORS.primary,
-    fontWeight: 'bold',
+    color: '#FFF',
+    fontWeight: '800',
   },
   calcButton: {
     backgroundColor: COLORS.primary,
     paddingVertical: 14,
-    borderRadius: 4,
+    borderRadius: 24,
     alignItems: 'center',
     marginTop: 18,
     marginBottom: 16,
-    borderWidth: 1,
-    borderColor: COLORS.secondary,
-    shadowColor: COLORS.primary,
-    shadowRadius: 12,
-    shadowOpacity: 0.8,
   },
   calcButtonText: {
     color: '#FFF',
-    fontWeight: '900',
+    fontWeight: '800',
     fontSize: 13,
-    letterSpacing: 1,
   },
   generatedResultCard: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: 24,
     padding: 16,
-    borderWidth: 1.5,
-    borderColor: COLORS.primary,
+    borderWidth: 1,
+    borderColor: COLORS.glassBorderHighlight,
     marginBottom: 20,
-    shadowColor: COLORS.primary,
-    shadowRadius: 15,
-    shadowOpacity: 0.6,
-    position: 'relative',
   },
   generatedBadge: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: 'rgba(255, 106, 0, 0.15)',
     alignSelf: 'flex-start',
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 2,
+    borderRadius: 8,
     marginBottom: 8,
   },
   generatedBadgeText: {
-    color: '#FFF',
-    fontSize: 9,
-    fontWeight: '900',
+    color: COLORS.primaryBright,
+    fontSize: 10,
+    fontWeight: '800',
   },
   generatedTitle: {
     color: '#FFF',
@@ -2180,32 +2106,32 @@ const styles = StyleSheet.create({
   },
   genGridItem: {
     width: '48%',
-    backgroundColor: '#0F0922',
-    padding: 10,
-    borderRadius: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    padding: 12,
+    borderRadius: 16,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.glassBorder,
   },
   genGridLabel: {
     color: COLORS.textMuted,
-    fontSize: 10,
+    fontSize: 11,
   },
   genGridValue: {
-    color: COLORS.secondary,
+    color: '#FFF',
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: '800',
     marginTop: 2,
   },
   genDragBox: {
-    backgroundColor: '#0F0922',
-    padding: 10,
-    borderRadius: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    padding: 12,
+    borderRadius: 16,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.glassBorder,
   },
   genDragLabel: {
     color: COLORS.textMuted,
@@ -2214,85 +2140,81 @@ const styles = StyleSheet.create({
   },
   genDragValue: {
     color: COLORS.accentGreen,
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 'bold',
   },
 
   // Account Tab Styles
   profileBox: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4,
-    padding: 16,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: 24,
+    padding: 18,
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.secondary,
+    borderWidth: 1,
+    borderColor: COLORS.glassBorder,
     marginBottom: 16,
-    position: 'relative',
   },
   profileAvatar: {
     width: 48,
     height: 48,
-    borderRadius: 4,
-    backgroundColor: COLORS.surface,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 14,
-    borderWidth: 1.5,
-    borderColor: COLORS.secondary,
+    borderWidth: 1,
+    borderColor: COLORS.glassBorderHighlight,
   },
   profileAvatarText: {
-    color: COLORS.secondary,
+    color: COLORS.primaryBright,
     fontSize: 18,
     fontWeight: '900',
   },
   profileName: {
     color: '#FFF',
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   profileRank: {
     color: COLORS.secondary,
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     marginTop: 2,
   },
   profileStatus: {
     color: COLORS.textMuted,
-    fontSize: 10,
+    fontSize: 11,
     marginTop: 2,
   },
   editProfileBtn: {
-    backgroundColor: COLORS.surface,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: COLORS.borderHighlight,
+    borderColor: COLORS.glassBorderHighlight,
   },
   editProfileBtnText: {
-    color: COLORS.textSecondary,
+    color: '#FFF',
     fontSize: 11,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   savedSectionHeader: {
     marginVertical: 10,
   },
   savedSectionTitle: {
-    color: COLORS.secondary,
+    color: COLORS.textSecondary,
     fontSize: 13,
-    fontWeight: '900',
-    letterSpacing: 1,
+    fontWeight: '800',
   },
   emptySavedBox: {
-    backgroundColor: COLORS.surfaceCard,
-    borderRadius: 4,
+    backgroundColor: COLORS.glassCard,
+    borderRadius: 24,
     padding: 24,
     alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: COLORS.borderHighlight,
+    borderWidth: 1,
+    borderColor: COLORS.glassBorder,
     marginBottom: 16,
   },
   emptySavedIcon: {
@@ -2300,30 +2222,27 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   emptySavedText: {
-    color: COLORS.text,
-    fontSize: 13,
+    color: '#FFF',
+    fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 4,
   },
   emptySavedSubText: {
     color: COLORS.textMuted,
-    fontSize: 11,
+    fontSize: 12,
     textAlign: 'center',
-    lineHeight: 16,
+    lineHeight: 18,
   },
   savedConfigCard: {
     backgroundColor: COLORS.glassCard,
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 14,
     marginBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorder,
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.primaryBright,
-    position: 'relative',
   },
   savedItemTitle: {
     color: '#FFF',
@@ -2336,106 +2255,103 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   savedItemStats: {
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontSize: 12,
     marginTop: 3,
   },
   savedCardActions: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 6,
   },
   viewBtn: {
     backgroundColor: COLORS.primary,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 10,
-    marginRight: 6,
+    borderRadius: 14,
   },
   viewBtnText: {
     color: '#FFF',
     fontSize: 11,
-    fontWeight: '900',
+    fontWeight: '800',
   },
   renameBtn: {
-    backgroundColor: COLORS.glassCardElevated,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
     paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 10,
-    marginRight: 6,
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: COLORS.glassBorderHighlight,
   },
   renameBtnText: {
-    color: COLORS.secondary,
+    color: '#FFF',
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '700',
   },
   delBtn: {
-    backgroundColor: 'rgba(255, 42, 66, 0.25)',
+    backgroundColor: 'rgba(255, 59, 48, 0.15)',
     paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 10,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: COLORS.accentRed,
+    borderColor: 'rgba(255, 59, 48, 0.3)',
   },
   delBtnText: {
     color: COLORS.accentRed,
     fontSize: 11,
-    fontWeight: '900',
+    fontWeight: '800',
   },
   toggleSavedBtn: {
     alignSelf: 'center',
     marginVertical: 10,
   },
   toggleSavedBtnText: {
-    color: COLORS.secondary,
+    color: COLORS.textMuted,
     fontSize: 12,
-    fontWeight: '800',
-    textDecorationLine: 'underline',
+    fontWeight: '700',
   },
   menuList: {
     marginTop: 10,
   },
   menuRow: {
     backgroundColor: COLORS.glassCard,
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 8,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorder,
   },
   menuRowText: {
     color: '#FFF',
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '600',
   },
   logoutButton: {
-    backgroundColor: 'rgba(255, 42, 66, 0.15)',
-    borderWidth: 1.5,
-    borderColor: COLORS.accentRed,
+    backgroundColor: 'rgba(255, 59, 48, 0.12)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 59, 48, 0.3)',
     paddingVertical: 14,
-    borderRadius: 20,
+    borderRadius: 24,
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 20,
   },
   logoutButtonText: {
     color: COLORS.accentRed,
-    fontWeight: '900',
+    fontWeight: '800',
     fontSize: 13,
-    letterSpacing: 0.5,
   },
 
-  // Bottom Navigation Bar (Liquid Glassmorphism Orange)
+  // Bottom Navigation Bar (iOS 26 Floating Frosted Bar)
   bottomBar: {
     flexDirection: 'row',
-    height: 68,
-    backgroundColor: 'rgba(26, 14, 8, 0.96)',
-    borderTopWidth: 1.5,
-    borderTopColor: 'rgba(255, 115, 0, 0.35)',
+    height: 70,
+    backgroundColor: 'rgba(12, 14, 18, 0.94)',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.08)',
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingBottom: 6,
@@ -2453,42 +2369,38 @@ const styles = StyleSheet.create({
   navLabel: {
     fontSize: 11,
     color: COLORS.textMuted,
-    fontWeight: '700',
+    fontWeight: '600',
   },
   activeNavText: {
     color: COLORS.primaryBright,
-    fontWeight: '900',
+    fontWeight: '800',
   },
 
-  // Modals
+  // Modals (iOS Liquid Glass Sheet)
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(7, 5, 14, 0.85)',
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
     justifyContent: 'center',
     padding: 20,
   },
   modalCard: {
-    backgroundColor: 'rgba(38, 18, 8, 0.98)',
-    borderRadius: 24,
+    backgroundColor: 'rgba(18, 20, 26, 0.96)',
+    borderRadius: 28,
     padding: 22,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorderHighlight,
-    borderLeftWidth: 5,
-    borderLeftColor: COLORS.primaryBright,
-    position: 'relative',
-    shadowColor: COLORS.primary,
+    shadowColor: '#000',
     shadowRadius: 20,
-    shadowOpacity: 0.6,
+    shadowOpacity: 0.5,
   },
   modalTitle: {
     color: '#FFF',
     fontSize: 18,
     fontWeight: '900',
     marginBottom: 6,
-    letterSpacing: 0.5,
   },
   modalSubDesc: {
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontSize: 12,
     marginBottom: 16,
     lineHeight: 18,
@@ -2496,17 +2408,16 @@ const styles = StyleSheet.create({
   modalFieldLabel: {
     color: COLORS.textSecondary,
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '700',
     marginBottom: 6,
-    textTransform: 'uppercase',
   },
   modalInput: {
-    backgroundColor: 'rgba(18, 10, 5, 0.9)',
-    borderRadius: 14,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderRadius: 16,
     paddingHorizontal: 14,
     paddingVertical: 12,
     color: '#FFF',
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorder,
     marginBottom: 14,
     fontSize: 14,
@@ -2515,7 +2426,7 @@ const styles = StyleSheet.create({
   tagSectionLabel: {
     color: COLORS.textMuted,
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '700',
     marginBottom: 6,
   },
   tagRow: {
@@ -2525,47 +2436,45 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   tagPill: {
-    backgroundColor: COLORS.glassCardElevated,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
     borderWidth: 1,
-    borderColor: COLORS.glassBorderHighlight,
+    borderColor: COLORS.glassBorder,
     paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 10,
+    borderRadius: 14,
     marginRight: 4,
     marginBottom: 4,
   },
   tagPillText: {
-    color: COLORS.secondary,
+    color: '#FFF',
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '700',
   },
   modalButtonsRow: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginTop: 10,
+    gap: 8,
   },
   modalCancelBtn: {
     paddingHorizontal: 16,
     paddingVertical: 10,
-    marginRight: 8,
-    borderRadius: 12,
+    borderRadius: 18,
   },
   modalCancelText: {
     color: COLORS.textMuted,
-    fontWeight: '800',
+    fontWeight: '700',
     fontSize: 13,
   },
   modalSaveBtn: {
     backgroundColor: COLORS.primary,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: COLORS.secondary,
+    borderRadius: 20,
   },
   modalSaveText: {
     color: '#FFF',
-    fontWeight: '900',
+    fontWeight: '800',
     fontSize: 13,
   },
 
@@ -2579,7 +2488,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   emptyTitle: {
-    color: COLORS.text,
+    color: '#FFF',
     fontSize: 15,
     fontWeight: 'bold',
     marginBottom: 4,
@@ -2593,33 +2502,32 @@ const styles = StyleSheet.create({
 
   // 2026 Badges & Filters
   badge2026Mini: {
-    backgroundColor: 'rgba(255, 98, 0, 0.25)',
+    backgroundColor: 'rgba(255, 106, 0, 0.15)',
     borderWidth: 1,
-    borderColor: COLORS.primary,
-    borderRadius: 6,
+    borderColor: 'rgba(255, 106, 0, 0.35)',
+    borderRadius: 8,
     paddingHorizontal: 6,
     paddingVertical: 1,
   },
   badge2026MiniText: {
-    color: COLORS.primary,
+    color: COLORS.primaryBright,
     fontSize: 9,
     fontWeight: '800',
   },
   badge2026Header: {
-    backgroundColor: 'rgba(0, 240, 255, 0.15)',
+    backgroundColor: 'rgba(10, 132, 255, 0.15)',
     borderWidth: 1,
-    borderColor: COLORS.cyanTactical,
-    borderRadius: 8,
+    borderColor: 'rgba(10, 132, 255, 0.35)',
+    borderRadius: 10,
     paddingHorizontal: 10,
     paddingVertical: 4,
     alignSelf: 'flex-start',
     marginBottom: 8,
   },
   badge2026HeaderText: {
-    color: COLORS.cyanTactical,
+    color: COLORS.accentCyan,
     fontSize: 11,
-    fontWeight: '900',
-    letterSpacing: 0.5,
+    fontWeight: '800',
   },
   filterTabRow: {
     flexDirection: 'row',
@@ -2628,15 +2536,15 @@ const styles = StyleSheet.create({
   },
   filterTabBtn: {
     flex: 1,
-    backgroundColor: COLORS.surfaceCard,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     paddingVertical: 9,
-    borderRadius: 10,
+    borderRadius: 16,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: COLORS.glassBorder,
   },
   filterTabBtnActive: {
-    backgroundColor: 'rgba(255, 98, 0, 0.2)',
+    backgroundColor: 'rgba(255, 106, 0, 0.18)',
     borderColor: COLORS.primary,
   },
   filterTabBtnText: {
@@ -2645,23 +2553,24 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   filterTabBtnTextActive: {
-    color: COLORS.primary,
+    color: '#FFF',
+    fontWeight: '800',
   },
   hudDpiSwitcher: {
     flexDirection: 'row',
-    backgroundColor: COLORS.surfaceCard,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     padding: 4,
-    borderRadius: 12,
+    borderRadius: 18,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: COLORS.glassBorder,
     marginHorizontal: 16,
     marginTop: 8,
   },
   hudDpiBtn: {
     flex: 1,
     paddingVertical: 8,
-    borderRadius: 8,
+    borderRadius: 14,
     alignItems: 'center',
   },
   hudDpiBtnActive: {
