@@ -980,6 +980,19 @@
         <!-- Link URL Input Box -->
         <div id="webLinkInputBox" class="scifi-panel" style="display:none; padding:12px; margin-bottom:12px; border-color:var(--cyan);">
           <div style="font-size:12px; font-weight:900; color:var(--cyan); margin-bottom:8px;">🔗 THÊM TỪ LINK VIDEO / NHẠC ONLINE</div>
+
+          <!-- Fast YouTube & TikTok Converter Box -->
+          <div style="background:rgba(255,106,0,0.08); border:1px solid rgba(255,106,0,0.3); border-radius:10px; padding:8px 10px; margin-bottom:10px;">
+            <div style="font-size:10px; font-weight:900; color:var(--primary); margin-bottom:3px;">🎬 BẠN CÓ LINK YOUTUBE HOẶC TIKTOK?</div>
+            <div style="font-size:9.5px; color:#d0d4e4; line-height:14px; margin-bottom:6px;">Link YouTube & TikTok là link web mã hóa. Bấm nút dưới để chuyển đổi tải nhanh file MP3 về máy:</div>
+            <div style="display:flex; gap:6px; margin-bottom:4px;">
+              <a href="https://y2mate.nu/en1/" target="_blank" class="btn" style="flex:1; background:rgba(255,0,0,0.25); border:1px solid #ff3333; color:#fff; font-size:9.5px; text-align:center; padding:5px 0; text-decoration:none;">🎬 Tải MP3 YouTube</a>
+              <a href="https://snaptik.app/" target="_blank" class="btn" style="flex:1; background:rgba(0,240,255,0.18); border:1px solid #00F0FF; color:#fff; font-size:9.5px; text-align:center; padding:5px 0; text-decoration:none;">🎵 Tải MP3 TikTok</a>
+            </div>
+            <div style="font-size:8.5px; color:var(--secondary); font-style:italic;">👉 Tải xong bấm nút "📁 CHỌN FILE TỪ MÁY" để nghe vĩnh viễn không lo giật lag!</div>
+          </div>
+
+          <div style="font-size:10px; color:var(--text-muted); margin-bottom:4px;">🌐 Hoặc dán link âm thanh trực tiếp (.mp3, .m4a, stream):</div>
           <input type="text" id="webInputLinkUrl" class="modal-input" placeholder="Dán link URL (https://...mp3, mp4, stream)" style="font-size:11px; padding:8px 10px; margin-bottom:6px;">
           <input type="text" id="webInputLinkTitle" class="modal-input" placeholder="Đặt tên bài hát (tùy chọn)..." style="font-size:11px; padding:8px 10px; margin-bottom:8px;">
           <button class="btn btn-primary" style="width:100%; font-size:11px; padding:8px 0;" onclick="submitWebLinkTrack()">⚡ THÊM VÀO PLAYLIST & PHÁT</button>
@@ -1886,6 +1899,19 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
       showToast('⚠️ Vui lòng nhập link URL');
       return;
     }
+
+    if (/(?:youtube\.com|youtu\.be)/i.test(url)) {
+      alert('🎬 Link YouTube không thể phát trực tiếp vì YouTube mã hóa dạng trang web.\n\n💡 Cách nghe cực dễ (chỉ mất 5 giây):\n1. Vào trang y2mate.nu để tải file MP3 của video này về máy.\n2. Bấm "📁 CHỌN FILE TỪ MÁY" trong app để thêm vào danh sách phát.\n\n👉 Nghe mượt mà vĩnh viễn, không tốn 4G khi leo rank!');
+      window.open('https://y2mate.nu/en1/', '_blank');
+      return;
+    }
+
+    if (/(?:tiktok\.com)/i.test(url)) {
+      alert('🎵 Link TikTok không thể phát trực tiếp vì TikTok mã hóa video.\n\n💡 Cách nghe cực dễ (chỉ mất 5 giây):\n1. Vào trang snaptik.app để tải file MP3 của video này về máy.\n2. Bấm "📁 CHỌN FILE TỪ MÁY" trong app để thêm vào danh sách phát.\n\n👉 Nhạc phát ngầm liên tục suốt trận đấu!');
+      window.open('https://snaptik.app/', '_blank');
+      return;
+    }
+
     const newTrack = {
       id: 'link_' + Date.now(),
       name: title,

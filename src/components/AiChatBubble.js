@@ -14,6 +14,7 @@ import {
   PanResponder,
   Easing,
   useWindowDimensions,
+  Linking,
 } from 'react-native';
 import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -407,10 +408,30 @@ export default function AiChatBubble({
       // Trigger pop-up toast notification
       showToastNotification(`🎵 Đang phát [${track.formatType || 'AUDIO'}]: ${track.name}`);
     } catch (err) {
-      Alert.alert(
-        '⚠️ Không Thể Phát Bản Nhạc Này',
-        'Đường link hoặc file media có thể không truy cập được lúc này. Vui lòng kiểm tra kết nối mạng hoặc chọn file khác!'
-      );
+      const isYtOrTt = /(?:youtube\.com|youtu\.be|tiktok\.com)/i.test(track.uri || '');
+      if (isYtOrTt) {
+        Alert.alert(
+          '⚠️ Link YouTube / TikTok Không Thể Phát Trực Tiếp',
+          'YouTube & TikTok sử dụng mã hóa trang web nên không cho phép ứng dụng phát qua link URL thô.\n\n💡 CÁCH NGHE ĐƠN GIẢN NHẤT:\n1. Bấm nút dưới để tải nhanh file MP3 về máy (khoảng 5 giây).\n2. Trong app, bấm "📁 THÊM NHẠC TỪ MÁY" để phát vĩnh viễn, cực mượt khi leo rank!',
+          [
+            { text: 'Đóng', style: 'cancel' },
+            {
+              text: '🚀 TẢI MP3 NHANH',
+              onPress: () => {
+                const target = (track.uri || '').includes('tiktok')
+                  ? 'https://snaptik.app/'
+                  : 'https://y2mate.nu/en1/';
+                Linking.openURL(target).catch(() => {});
+              },
+            },
+          ]
+        );
+      } else {
+        Alert.alert(
+          '⚠️ Không Thể Phát Bản Nhạc Này',
+          'Đường link này không phản hồi hoặc không phải định dạng âm thanh trực tiếp (.mp3, .m4a, stream).\n\n💡 Khuyên dùng: Tải file .mp3 về máy rồi chọn "📁 THÊM NHẠC TỪ MÁY" để nghe ổn định 100% trong mọi trận đấu!'
+        );
+      }
     }
   };
 
@@ -544,6 +565,48 @@ export default function AiChatBubble({
 
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       Alert.alert('⚠️ Link không hợp lệ', 'Đường link phải bắt đầu bằng http:// hoặc https://');
+      return;
+    }
+
+    // Kiểm tra thông minh nếu là link YouTube hoặc TikTok
+    const isYouTube = /(?:youtube\.com|youtu\.be)/i.test(url);
+    const isTikTok = /(?:tiktok\.com)/i.test(url);
+
+    if (isYouTube) {
+      Alert.alert(
+        '🎬 Link YouTube Không Thể Phát Trực Tiếp',
+        'YouTube bảo vệ bản quyền và mã hóa luồng phát dạng trang web, các ứng dụng không thể phát qua link URL thô.\n\n💡 CÁCH NGHE CỰC DỄ (Chỉ mất 5 giây):\n1. Bấm nút dưới để chuyển nhanh sang trang y2mate tải file MP3 về máy.\n2. Trong app, bấm nút "📁 THÊM NHẠC TỪ MÁY" để chọn bài hát.\n\n👉 Nhạc sẽ lưu vĩnh viễn, phát cực mượt, không tốn dung lượng 4G và không bị giật lag ping khi kéo tâm!',
+        [
+          { text: 'Đóng', style: 'cancel' },
+          {
+            text: '🚀 MỞ TRANG TẢI MP3 YOUTUBE',
+            onPress: () => {
+              Linking.openURL('https://y2mate.nu/en1/').catch(() => {
+                Linking.openURL('https://www.google.com/search?q=youtube+to+mp3');
+              });
+            },
+          },
+        ]
+      );
+      return;
+    }
+
+    if (isTikTok) {
+      Alert.alert(
+        '🎵 Link TikTok Không Thể Phát Trực Tiếp',
+        'TikTok bảo vệ bản quyền video nên không cho phép phát qua link URL thô.\n\n💡 CÁCH NGHE CỰC DỄ (Chỉ mất 5 giây):\n1. Bấm nút dưới để mở trang SnapTik tải file MP3 của video này về máy.\n2. Bấm nút "📁 THÊM NHẠC TỪ MÁY" trong app để thêm vào danh sách phát.\n\n👉 Nhạc phát trong nền mượt mà suốt mọi trận đấu!',
+        [
+          { text: 'Đóng', style: 'cancel' },
+          {
+            text: '🚀 MỞ TRANG TẢI MP3 TIKTOK',
+            onPress: () => {
+              Linking.openURL('https://snaptik.app/').catch(() => {
+                Linking.openURL('https://www.google.com/search?q=tiktok+download+mp3');
+              });
+            },
+          },
+        ]
+      );
       return;
     }
 
@@ -1044,6 +1107,32 @@ export default function AiChatBubble({
                       </TouchableOpacity>
                     </View>
 
+                    {/* YouTube & TikTok Fast Converter Helper Box */}
+                    <View style={styles.quickConvertBox}>
+                      <Text style={styles.quickConvertTitle}>
+                        🎬 BẠN CÓ LINK YOUTUBE HOẶC TIKTOK?
+                      </Text>
+                      <Text style={styles.quickConvertDesc}>
+                        Link chia sẻ YouTube/TikTok là link web mã hóa. Bấm nút dưới để chuyển nhanh sang trang tải MP3 về máy chỉ 5 giây:
+                      </Text>
+                      <View style={styles.quickConvertBtnRow}>
+                        <TouchableOpacity
+                          style={[styles.quickConvertBtn, styles.quickConvertYt]}
+                          onPress={() => Linking.openURL('https://y2mate.nu/en1/').catch(() => {})}>
+                          <Text style={styles.quickConvertBtnText}>🎬 Tải MP3 YouTube</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={[styles.quickConvertBtn, styles.quickConvertTt]}
+                          onPress={() => Linking.openURL('https://snaptik.app/').catch(() => {})}>
+                          <Text style={styles.quickConvertBtnText}>🎵 Tải MP3 TikTok</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <Text style={styles.quickConvertHint}>
+                        👉 Tải xong bấm nút <Text style={{ color: COLORS.primaryBright, fontWeight: 'bold' }}>"📁 CHỌN FILE TỪ MÁY"</Text> để nghe vĩnh viễn, mượt mà khi leo rank!
+                      </Text>
+                    </View>
+
+                    <Text style={[styles.presetLinkHeader, { marginTop: 8 }]}>🌐 Hoặc dán link âm thanh trực tiếp (.mp3, .m4a, stream):</Text>
                     <TextInput
                       style={styles.linkTextInput}
                       placeholder="Dán đường link URL (https://...mp3, mp4, stream)"
@@ -1938,6 +2027,59 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
     fontSize: 11,
     fontWeight: '700',
+  },
+  quickConvertBox: {
+    backgroundColor: 'rgba(255, 106, 0, 0.08)',
+    borderRadius: 12,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 106, 0, 0.35)',
+    marginBottom: 10,
+  },
+  quickConvertTitle: {
+    color: COLORS.primaryBright,
+    fontSize: 10,
+    fontWeight: '900',
+    marginBottom: 4,
+    letterSpacing: 0.5,
+  },
+  quickConvertDesc: {
+    color: '#D0D4E4',
+    fontSize: 9.5,
+    lineHeight: 14,
+    marginBottom: 8,
+  },
+  quickConvertBtnRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 6,
+  },
+  quickConvertBtn: {
+    flex: 1,
+    paddingVertical: 7,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quickConvertYt: {
+    backgroundColor: 'rgba(255, 0, 0, 0.25)',
+    borderWidth: 1,
+    borderColor: '#FF3333',
+  },
+  quickConvertTt: {
+    backgroundColor: 'rgba(0, 240, 255, 0.18)',
+    borderWidth: 1,
+    borderColor: '#00F0FF',
+  },
+  quickConvertBtnText: {
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  quickConvertHint: {
+    color: COLORS.secondary,
+    fontSize: 9,
+    fontStyle: 'italic',
   },
   linkTextInput: {
     backgroundColor: 'rgba(255, 255, 255, 0.06)',
