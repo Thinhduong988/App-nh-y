@@ -49,7 +49,8 @@
     .phone-wrapper {
       width: 100%;
       max-width: 430px;
-      height: 890px;
+      height: min(840px, calc(100vh - 24px));
+      max-height: calc(100vh - 24px);
       background: var(--bg-nebula);
       border-radius: 42px;
       border: 3px solid #3A236E;
@@ -581,6 +582,217 @@
       border-color: var(--primary);
       color: var(--primary);
     }
+
+    
+    /* Category Filter Pills */
+    .category-pills-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .category-pills-row::-webkit-scrollbar { display: none; }
+    .category-pill {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--card);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .category-pill.active {
+      background: rgba(255, 98, 0, 0.2);
+      border-color: var(--primary);
+      color: var(--secondary);
+      font-weight: 900;
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+    .weapon-pill-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .weapon-pill {
+      flex: 1;
+      text-align: center;
+      padding: 8px 6px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--card);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+      transition: all 0.15s;
+    }
+    .weapon-pill.active {
+      background: rgba(255, 98, 0, 0.25);
+      border-color: var(--primary);
+      color: #fff;
+      font-weight: 900;
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+    .fire-button-sim {
+      min-width: 58px;
+      min-height: 58px;
+      max-width: 90px;
+      max-height: 90px;
+      line-height: 1.1;
+    }
+
+    
+    /* Floating Chat & Music Bubble */
+    .floating-chat-bubble {
+      position: absolute;
+      bottom: 84px;
+      right: 16px;
+      width: 56px;
+      height: 56px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, var(--primary), #FF8500);
+      border: 2px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 4px 20px var(--primary-glow), 0 0 15px rgba(255, 98, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 150;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .floating-chat-bubble:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 25px var(--primary);
+    }
+    .floating-chat-bubble.playing {
+      background: linear-gradient(135deg, var(--cyan), #0099FF);
+      border-color: #FFF;
+      box-shadow: 0 0 25px var(--cyan);
+    }
+    .floating-chat-bubble span {
+      font-size: 24px;
+    }
+    .bubble-badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: var(--cyan);
+      color: #07050E;
+      font-size: 8px;
+      font-weight: 900;
+      padding: 1px 5px;
+      border-radius: 8px;
+      border: 1px solid #FFF;
+    }
+    .bubble-mini-track {
+      position: absolute;
+      bottom: -18px;
+      left: -20px;
+      right: -20px;
+      background: rgba(12, 14, 20, 0.95);
+      border: 1px solid var(--cyan);
+      border-radius: 8px;
+      padding: 1px 6px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--cyan);
+      font-size: 8px;
+      font-weight: 800;
+    }
+    /* Spinning Vinyl */
+    @keyframes spinDisc {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .vinyl-disc {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #0B0D14;
+      border: 3px solid var(--primary);
+      box-shadow: 0 0 18px var(--primary-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .vinyl-disc.spinning {
+      animation: spinDisc 5s linear infinite;
+    }
+    .sheet-tab-row {
+      display: flex;
+      background: rgba(12, 14, 20, 0.95);
+      padding: 6px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      gap: 6px;
+    }
+    .sheet-tab-btn {
+      flex: 1;
+      text-align: center;
+      padding: 8px 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .sheet-tab-btn.active {
+      background: rgba(255, 98, 0, 0.2);
+      color: #FFF;
+      font-weight: 900;
+      border: 1px solid var(--primary);
+    }
+
+    /* ================= RESPONSIVE MOBILE STYLES (UI/UX PRO MAX) ================= */
+    @media (max-width: 600px) {
+      body {
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: 100vh;
+        min-height: 100dvh;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        background: var(--bg) !important;
+      }
+      .phone-wrapper {
+        max-width: 100vw !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .phone-notch {
+        display: none !important;
+      }
+      .app-screen {
+        padding: 14px 12px !important;
+        padding-top: calc(14px + env(safe-area-inset-top, 0px)) !important;
+        padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+      .nav-bar {
+        height: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
+        padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+      .modal-card {
+        width: 92% !important;
+        max-width: 380px !important;
+      }
+      .hud-canvas {
+        max-width: 100% !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -649,6 +861,123 @@
     </div>
   </div>
 
+
+  <!-- FLOATING AI & MUSIC BUBBLE -->
+  <div class="floating-chat-bubble" id="floatingBubbleBtn" onclick="openChatMusicModal()">
+    <span id="bubbleIcon">🤖</span>
+    <div class="bubble-badge" id="bubbleBadge">AI</div>
+    <div class="bubble-mini-track" id="bubbleMiniTrack" style="display:none;">
+      <span id="bubbleMiniTrackText">▶ Đang phát...</span>
+    </div>
+  </div>
+
+  <!-- CHAT & MUSIC MODAL OVERLAY -->
+  <div class="modal-overlay" id="chatMusicModal" style="align-items:flex-end; padding:0;">
+    <div class="modal-card" style="max-width:100%; height:82%; border-bottom-left-radius:0; border-bottom-right-radius:0; border-top-left-radius:28px; border-top-right-radius:28px; clip-path:none; display:flex; flex-direction:column; padding:16px;">
+      
+      <!-- Modal Header -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:36px; height:36px; border-radius:18px; background:rgba(255,98,0,0.2); border:1.5px solid var(--primary); display:flex; align-items:center; justify-content:center; font-size:18px;" id="modalAvatarIcon">
+            🤖
+          </div>
+          <div>
+            <div style="font-size:14px; font-weight:900; color:#fff;" id="modalHeaderTitle">AI Coach & Trình Phát Nhạc</div>
+            <div style="font-size:10px; color:var(--green); font-weight:700;" id="modalHeaderSub">Trực tuyến • Chuẩn OB 2026</div>
+          </div>
+        </div>
+        <div style="width:28px; height:28px; border-radius:14px; background:rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; font-weight:900; color:#fff;" onclick="closeChatMusicModal()">
+          ✕
+        </div>
+      </div>
+
+      <!-- Segment Tabs -->
+      <div class="sheet-tab-row">
+        <div class="sheet-tab-btn active" id="tabBtnChat" onclick="switchModalTab('CHAT')">
+          🤖 AI Kéo Tâm
+        </div>
+        <div class="sheet-tab-btn" id="tabBtnMusic" onclick="switchModalTab('MUSIC')">
+          🎵 Nhạc Chiến MP4 <span id="tabMusicPlayingDot" style="display:none; color:var(--cyan);">• ▶</span>
+        </div>
+      </div>
+
+      <!-- VIEW 1: AI CHAT VIEW -->
+      <div id="viewChat" style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+        <div id="chatMessagesBox" style="flex:1; overflow-y:auto; padding-right:4px; margin-bottom:10px; display:flex; flex-direction:column; gap:8px;">
+          <!-- Messages will be rendered here -->
+        </div>
+
+        <div style="display:flex; gap:6px;">
+          <input type="text" id="webChatInput" class="modal-input" style="margin-bottom:0; flex:1;" placeholder="Hỏi AI về lỗi kéo tâm, độ nhạy..." onkeydown="if(event.key==='Enter') sendWebChatMessage()">
+          <button class="btn btn-primary" style="width:auto; padding:0 16px;" onclick="sendWebChatMessage()">➔</button>
+        </div>
+      </div>
+
+      <!-- VIEW 2: CYBER MUSIC PLAYER VIEW (MP4 VIDEO SUPPORT) -->
+      <div id="viewMusic" style="flex:1; display:none; flex-direction:column; overflow-y:auto; padding-right:4px;">
+        
+        <!-- Now Playing Disc Card -->
+        <div class="scifi-panel" style="padding:14px; text-align:center; margin-bottom:12px;">
+          <div style="display:flex; justify-content:center; margin-bottom:8px;">
+            <div class="vinyl-disc" id="webVinylDisc">
+              <div style="width:28px; height:28px; border-radius:14px; background:var(--primary); display:flex; align-items:center; justify-content:center; font-size:14px;">
+                🔥
+              </div>
+            </div>
+          </div>
+
+          <span class="badge-tactical" id="webTrackBadge" style="font-size:9px; padding:2px 6px;">⚡ BẢN NHẠC CHIẾN PRO</span>
+          <div style="font-size:14px; font-weight:900; color:#fff; margin-top:4px;" id="webTrackTitle">⚡ Free Fire Phonk (Bass Boost 2026)</div>
+          <div style="font-size:10px; color:var(--text-muted); margin-top:2px;" id="webTrackMeta">Esports Gaming Beat</div>
+
+          <!-- Controls -->
+          <div style="display:flex; justify-content:center; align-items:center; gap:12px; margin-top:12px;">
+            <button class="btn btn-outline" style="width:36px; height:36px; padding:0; border-radius:18px;" onclick="toggleWebMusicLoop()" title="Lặp lại">
+              <span id="webLoopIcon" style="font-size:14px; color:var(--cyan);">🔁</span>
+            </button>
+
+            <button class="btn btn-primary" style="width:48px; height:48px; padding:0; border-radius:24px; font-size:18px;" id="webPlayBtn" onclick="toggleWebPlayPause()">
+              ▶
+            </button>
+
+            <button class="btn btn-outline" style="width:36px; height:36px; padding:0; border-radius:18px;" onclick="stopWebMusic()" title="Dừng">
+              ⏹
+            </button>
+          </div>
+        </div>
+
+        <!-- Big Button: Pick MP4 Video from device -->
+        <div class="scifi-panel" style="padding:12px; cursor:pointer; margin-bottom:12px; border-color:var(--primary);" onclick="triggerMp4Upload()">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="font-size:24px;">📁</div>
+            <div style="flex:1;">
+              <div style="font-size:13px; font-weight:900; color:var(--secondary);">+ CHỌN VIDEO MP4 TỪ MÁY BẠN</div>
+              <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">Trích xuất phát nhạc từ clip TikTok, Highlight FF, MP4 hoặc Audio trên máy</div>
+            </div>
+            <div style="font-size:16px; color:var(--primary); font-weight:900;">➔</div>
+          </div>
+        </div>
+
+        <!-- Playlist -->
+        <div style="font-size:12px; font-weight:900; color:var(--secondary); margin-bottom:6px;">⭐ DANH SÁCH BÀI HÁT</div>
+        <div id="webPlaylistContainer" style="display:flex; flex-direction:column; gap:6px;">
+          <!-- Playlist items injected here -->
+        </div>
+
+        <div style="background:rgba(12, 14, 20, 0.85); border-radius:8px; padding:10px; margin-top:10px; border:1px solid var(--border);">
+          <div style="font-size:10px; color:var(--text-muted); line-height:1.4;">
+            💡 <b style="color:var(--secondary);">Chế độ phát nền:</b> Bạn có thể bấm [✕] đóng cửa sổ này lại. Nhạc vẫn tiếp tục phát trong nền để bạn vừa nghe vừa xem độ nhạy và kéo tâm!
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Hidden Audio/Video player and File Picker -->
+  <video id="hiddenMediaElem" style="display:none;" loop></video>
+  <input type="file" id="localMp4Picker" accept="video/mp4,video/*,audio/*" style="display:none;" onchange="handleWebMediaPicked(this)">
+
 </div>
 
 <script>
@@ -673,12 +1002,19 @@
 
 const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Max", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip16pm", "brand": "Apple", "name": "iPhone 16 Pro Max", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip15pm", "brand": "Apple", "name": "iPhone 15 Pro Max", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip14pm", "brand": "Apple", "name": "iPhone 14 Pro Max", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip13pm", "brand": "Apple", "name": "iPhone 13 Pro Max", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip12pm", "brand": "Apple", "name": "iPhone 12 Pro Max", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip17p", "brand": "Apple", "name": "iPhone 17 Pro", "gen": 184, "red": 174, "s2x": 168, "s4x": 160, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip16p", "brand": "Apple", "name": "iPhone 16 Pro", "gen": 184, "red": 174, "s2x": 168, "s4x": 160, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip15p", "brand": "Apple", "name": "iPhone 15 Pro", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip14p", "brand": "Apple", "name": "iPhone 14 Pro", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip13p", "brand": "Apple", "name": "iPhone 13 Pro", "gen": 184, "red": 174, "s2x": 168, "s4x": 160, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip12p", "brand": "Apple", "name": "iPhone 12 Pro", "gen": 184, "red": 174, "s2x": 168, "s4x": 160, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip11p", "brand": "Apple", "name": "iPhone 11 Pro / 11 Pro Max", "gen": 184, "red": 172, "s2x": 166, "s4x": 158, "awm": 73, "look": 139, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ip17", "brand": "Apple", "name": "iPhone 17", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip16", "brand": "Apple", "name": "iPhone 16 / 16 Plus", "gen": 188, "red": 178, "s2x": 172, "s4x": 164, "awm": 75, "look": 143, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip15", "brand": "Apple", "name": "iPhone 15 / 15 Plus", "gen": 188, "red": 178, "s2x": 172, "s4x": 164, "awm": 75, "look": 143, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip14", "brand": "Apple", "name": "iPhone 14 / 14 Plus", "gen": 188, "red": 178, "s2x": 172, "s4x": 164, "awm": 75, "look": 143, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip13", "brand": "Apple", "name": "iPhone 13 / 13 Mini", "gen": 188, "red": 178, "s2x": 172, "s4x": 164, "awm": 75, "look": 143, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip12", "brand": "Apple", "name": "iPhone 12 / 12 Mini", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip11", "brand": "Apple", "name": "iPhone 11", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ipxs", "brand": "Apple", "name": "iPhone XS / XS Max", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip-x", "brand": "Apple", "name": "iPhone X / XR", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip-8-plus", "brand": "Apple", "name": "iPhone 8 Plus", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip-8", "brand": "Apple", "name": "iPhone 8 (Thường)", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip-7-plus", "brand": "Apple", "name": "iPhone 7 Plus", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip-7", "brand": "Apple", "name": "iPhone 7", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ip-6s", "brand": "Apple", "name": "iPhone 6s / 6s Plus", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-se3", "brand": "Apple", "name": "iPhone SE 3 (2022)", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-se2", "brand": "Apple", "name": "iPhone SE 2 (2020)", "gen": 192, "red": 182, "s2x": 176, "s4x": 168, "awm": 76, "look": 147, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ap-ipad-pro-m4", "brand": "Apple", "name": "iPad Pro M4 (2024)", "gen": 178, "red": 166, "s2x": 160, "s4x": 152, "awm": 71, "look": 133, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 38, "hud": "Đáy 10% • Phải 16%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ipad-pro-m2", "brand": "Apple", "name": "iPad Pro M2 / M1", "gen": 178, "red": 166, "s2x": 160, "s4x": 152, "awm": 71, "look": 133, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 38, "hud": "Đáy 10% • Phải 16%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ipad-air-m2", "brand": "Apple", "name": "iPad Air M2 / M1", "gen": 178, "red": 166, "s2x": 160, "s4x": 152, "awm": 71, "look": 133, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 38, "hud": "Đáy 10% • Phải 16%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ipad-10", "brand": "Apple", "name": "iPad 10 / iPad 9 (Thường)", "gen": 178, "red": 166, "s2x": 160, "s4x": 152, "awm": 71, "look": 133, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 38, "hud": "Đáy 10% • Phải 16%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ap-ipad-mini-6", "brand": "Apple", "name": "iPad Mini 6 / Mini 7", "gen": 178, "red": 166, "s2x": 160, "s4x": 152, "awm": 71, "look": 133, "dpi": "Mặc định (Con trượt: 120)", "safeMax": 120, "btn": 38, "hud": "Đáy 10% • Phải 16%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s26u", "brand": "Samsung", "name": "Galaxy S26 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "450 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s25u", "brand": "Samsung", "name": "Galaxy S25 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "460 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s24u", "brand": "Samsung", "name": "Galaxy S24 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "470 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s23u", "brand": "Samsung", "name": "Galaxy S23 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "470 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s22u", "brand": "Samsung", "name": "Galaxy S22 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s21u", "brand": "Samsung", "name": "Galaxy S21 Ultra 5G", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-note20u", "brand": "Samsung", "name": "Galaxy Note 20 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s25-plus", "brand": "Samsung", "name": "Galaxy S25 Plus / S25", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "470 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s24-plus", "brand": "Samsung", "name": "Galaxy S24 Plus / S24", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "450 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s24fe", "brand": "Samsung", "name": "Galaxy S24 FE", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "460 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s23-plus", "brand": "Samsung", "name": "Galaxy S23 Plus / S23", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "440 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s23fe", "brand": "Samsung", "name": "Galaxy S23 FE", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "450 (An toàn: <500)", "safeMax": 500, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "ss-s22", "brand": "Samsung", "name": "Galaxy S22 / S22 Plus", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "460 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-s21", "brand": "Samsung", "name": "Galaxy S21 / S21 Plus", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "470 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-s21fe", "brand": "Samsung", "name": "Galaxy S21 FE 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "475 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-s20fe", "brand": "Samsung", "name": "Galaxy S20 FE 5G / S20", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-ga73", "brand": "Samsung", "name": "Galaxy A73 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-ga56", "brand": "Samsung", "name": "Galaxy A56 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-ga55", "brand": "Samsung", "name": "Galaxy A55 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-ga54", "brand": "Samsung", "name": "Galaxy A54 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-ga53", "brand": "Samsung", "name": "Galaxy A53 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-ga36", "brand": "Samsung", "name": "Galaxy A36 5G", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "ss-ga35", "brand": "Samsung", "name": "Galaxy A35 / A34", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "ss-ga26", "brand": "Samsung", "name": "Galaxy A26 5G", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "ss-ga25", "brand": "Samsung", "name": "Galaxy A25 / A24", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "ss-ga16", "brand": "Samsung", "name": "Galaxy A16 5G / A16", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "470 (An toàn: <500)", "safeMax": 500, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "ss-ga15", "brand": "Samsung", "name": "Galaxy A15 / A14", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "465 (An toàn: <500)", "safeMax": 500, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "ss-ga06", "brand": "Samsung", "name": "Galaxy A06 / A05s / A05", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "450 (An toàn: <500)", "safeMax": 500, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "ss-m55-f55", "brand": "Samsung", "name": "Galaxy M55 / F55 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-m35-f35", "brand": "Samsung", "name": "Galaxy M35 / F35 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "460 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-m34-f34", "brand": "Samsung", "name": "Galaxy M34 / F34 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "440 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "ss-m15", "brand": "Samsung", "name": "Galaxy M15 5G / F15", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "465 (An toàn: <500)", "safeMax": 500, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-15-ultra", "brand": "Xiaomi", "name": "Xiaomi 15 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "mi-14-ultra", "brand": "Xiaomi", "name": "Xiaomi 14 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "mi-13-ultra", "brand": "Xiaomi", "name": "Xiaomi 13 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "mi-mix-fold-4", "brand": "Xiaomi", "name": "Xiaomi MIX Fold 4 / Flip", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-mix-flip", "brand": "Xiaomi", "name": "Xiaomi MIX Flip", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "520 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-15-pro", "brand": "Xiaomi", "name": "Xiaomi 15 Pro / 15", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "mi-14-pro", "brand": "Xiaomi", "name": "Xiaomi 14 Pro / 14T Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "520 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "mi-13-pro", "brand": "Xiaomi", "name": "Xiaomi 13 Pro / 13T Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-12-pro", "brand": "Xiaomi", "name": "Xiaomi 12 Pro / 12T Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-11-pro", "brand": "Xiaomi", "name": "Xiaomi 11 Ultra / 11T Pro", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "495 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "mi-15-base", "brand": "Xiaomi", "name": "Xiaomi 15 / 14T", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-14-base", "brand": "Xiaomi", "name": "Xiaomi 14 / 14T", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-13-base", "brand": "Xiaomi", "name": "Xiaomi 13 / 13T", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-12-base", "brand": "Xiaomi", "name": "Xiaomi 12 / 12X / 12T", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "485 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-11-base", "brand": "Xiaomi", "name": "Xiaomi 11 Lite NE 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "485 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-14-civi", "brand": "Xiaomi", "name": "Xiaomi 14 Civi / Civi 4 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-civi3", "brand": "Xiaomi", "name": "Xiaomi Civi 3 / Civi 2", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "485 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-13-lite", "brand": "Xiaomi", "name": "Xiaomi 13 Lite / 12 Lite", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "470 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-11lite", "brand": "Xiaomi", "name": "Xiaomi 11 Lite 5G NE", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "mi-pad6pro", "brand": "Xiaomi", "name": "Xiaomi Pad 6 Pro / Pad 6", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-k90-ultra", "brand": "REDMI", "name": "Redmi K90 Ultra / Pro", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "510 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rm-k80-pro", "brand": "REDMI", "name": "Redmi K80 Pro / K80", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "490 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rm-k70-pro", "brand": "REDMI", "name": "Redmi K70 Pro / K70 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rm-k70", "brand": "REDMI", "name": "Redmi K70 / K70E", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "485 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-k60-pro", "brand": "REDMI", "name": "Redmi K60 Pro / K60 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rm-k60", "brand": "REDMI", "name": "Redmi K60 / K60E", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "485 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-k50-pro", "brand": "REDMI", "name": "Redmi K50 Pro Gaming", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-k40-pro", "brand": "REDMI", "name": "Redmi K40 Pro / Gaming", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-turbo4", "brand": "REDMI", "name": "Redmi Turbo 4 / 4 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-turbo3", "brand": "REDMI", "name": "Redmi Turbo 3", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-n14-pro", "brand": "REDMI", "name": "Redmi Note 14 Pro / Pro+ 5G", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rm-n14", "brand": "REDMI", "name": "Redmi Note 14 5G / 4G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "495 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-n13-pro", "brand": "REDMI", "name": "Redmi Note 13 Pro / Pro+ 5G", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "510 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rm-n13", "brand": "REDMI", "name": "Redmi Note 13 / 13 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-n12-pro", "brand": "REDMI", "name": "Redmi Note 12 Pro / 12s", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-n12", "brand": "REDMI", "name": "Redmi Note 12 / 12 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "495 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-n11-pro", "brand": "REDMI", "name": "Redmi Note 11 Pro 5G / Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-n11", "brand": "REDMI", "name": "Redmi Note 11 / 11S / 10 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rm-14c", "brand": "REDMI", "name": "Redmi 14C / 13C", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "rm-a3", "brand": "REDMI", "name": "Redmi A3 / A3x / A2+", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "520 (An toàn: <550)", "safeMax": 550, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "rm-12-budget", "brand": "REDMI", "name": "Redmi 12 / 12C", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "510 (An toàn: <550)", "safeMax": 550, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "rm-10-9a", "brand": "REDMI", "name": "Redmi 10 / 10C / 9A / 9C", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "poco-f7-ultra", "brand": "POCO", "name": "POCO F7 Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "poco-f7-pro", "brand": "POCO", "name": "POCO F7 Pro / F7", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-f6-pro", "brand": "POCO", "name": "POCO F6 Pro / F6", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "530 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-f5-pro", "brand": "POCO", "name": "POCO F5 Pro / F5", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "520 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-f4-gt", "brand": "POCO", "name": "POCO F4 GT / F4", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-f3", "brand": "POCO", "name": "POCO F3 (Huyền Thoại)", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-x7-pro", "brand": "POCO", "name": "POCO X7 Pro 5G / X7", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "515 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-x6-pro", "brand": "POCO", "name": "POCO X6 Pro 5G / X6", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "510 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-x5-pro", "brand": "POCO", "name": "POCO X5 Pro 5G / X5", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-x4-pro", "brand": "POCO", "name": "POCO X4 Pro 5G / X4 GT", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "470 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-x3-pro", "brand": "POCO", "name": "POCO X3 Pro / X3 NFC", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "460 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-m6-pro", "brand": "POCO", "name": "POCO M6 Pro / M6 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "460 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-m5-m5s", "brand": "POCO", "name": "POCO M5 / M5s / M4 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "460 (An toàn: <550)", "safeMax": 550, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "poco-c65", "brand": "POCO", "name": "POCO C65 / C75 / C61", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "480 (An toàn: <550)", "safeMax": 550, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "iqoo-13", "brand": "iQOO", "name": "iQOO 13 / 13 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "440 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-12", "brand": "iQOO", "name": "iQOO 12 / 12 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "460 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-11", "brand": "iQOO", "name": "iQOO 11 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "470 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-neo10-pro", "brand": "iQOO", "name": "iQOO Neo 10 Pro / Plus", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "475 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-neo9-pro", "brand": "iQOO", "name": "iQOO Neo 9 Pro / Neo 9", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-neo8", "brand": "iQOO", "name": "iQOO Neo 8 / Neo 8 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-neo7", "brand": "iQOO", "name": "iQOO Neo 7 / Neo 7 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "485 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-z9-turbo", "brand": "iQOO", "name": "iQOO Z9 Turbo / Turbo Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-z9", "brand": "iQOO", "name": "iQOO Z9 / Z9x / Z9s", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "495 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "iqoo-z7", "brand": "iQOO", "name": "iQOO Z7 5G / Z7x / Z6", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-x300-pro", "brand": "Vivo", "name": "Vivo X300 Ultra / Pro", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "vivo-x200-pro", "brand": "Vivo", "name": "Vivo X200 / X200 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-x100-pro", "brand": "Vivo", "name": "Vivo X100 Pro / Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "vivo-x100", "brand": "Vivo", "name": "Vivo X100 / X100s", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-x90-pro", "brand": "Vivo", "name": "Vivo X90 Pro / X90", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-v40-pro", "brand": "Vivo", "name": "Vivo V40 Pro / V40 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-v30-pro", "brand": "Vivo", "name": "Vivo V30 Pro / V30 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-v29-v27", "brand": "Vivo", "name": "Vivo V29 / V29e / V27", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-v25", "brand": "Vivo", "name": "Vivo V25 5G / V25 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-y200", "brand": "Vivo", "name": "Vivo Y200 Pro / Y200 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-y100", "brand": "Vivo", "name": "Vivo Y100 5G / Y100i", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-y58-y38", "brand": "Vivo", "name": "Vivo Y58 / Y38 / Y28", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "vivo-y17s", "brand": "Vivo", "name": "Vivo Y17s / Y16 / Y15s", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "485 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "vivo-t3", "brand": "Vivo", "name": "Vivo T3 5G / T3x / T2", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "oppo-find-x9-pro", "brand": "OPPO", "name": "OPPO Find X9 Pro / Ultra", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "oppo-find-x8-pro", "brand": "OPPO", "name": "OPPO Find X8 Pro / X8", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "oppo-find-x7-ultra", "brand": "OPPO", "name": "OPPO Find X7 Ultra / X7", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "oppo-find-x6-pro", "brand": "OPPO", "name": "OPPO Find X6 Pro / X5 Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "oppo-reno-15-pro", "brand": "OPPO", "name": "OPPO Reno 15 Pro / Reno 15", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "oppo-reno-14-pro", "brand": "OPPO", "name": "OPPO Reno 14 Pro / Reno 14", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "oppo-reno-12-pro", "brand": "OPPO", "name": "OPPO Reno 12 Pro 5G / Reno 12", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "oppo-reno-11-pro", "brand": "OPPO", "name": "OPPO Reno 11 Pro / Reno 11", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "oppo-reno-10", "brand": "OPPO", "name": "OPPO Reno 10 Pro+ 5G / Reno 10", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "op-a3-pro", "brand": "OPPO", "name": "OPPO A3 Pro / A3 (Siêu Bền)", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "op-a79", "brand": "OPPO", "name": "OPPO A79 5G / A78 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op-a60", "brand": "OPPO", "name": "OPPO A60 / A60s", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op-a38", "brand": "OPPO", "name": "OPPO A38 / A18 / A17", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "480 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "op-a58", "brand": "OPPO", "name": "OPPO A58 4G / A57", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "475 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rl-gt8-pro", "brand": "Realme", "name": "Realme GT 8 Pro (8 Elite)", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rl-gt7-pro", "brand": "Realme", "name": "Realme GT 7 Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rl-gt6", "brand": "Realme", "name": "Realme GT 6 / GT 6T", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rl-gt5-pro", "brand": "Realme", "name": "Realme GT 5 Pro / GT 5", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rl-gt-neo5", "brand": "Realme", "name": "Realme GT Neo 5 / Neo 6", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rl-gt3", "brand": "Realme", "name": "Realme GT 3 / GT Neo 3T", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rl-14-pro-plus", "brand": "Realme", "name": "Realme 14 Pro Plus / Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rl-13-pro-plus", "brand": "Realme", "name": "Realme 13 Pro Plus / Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "490 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rl-12-pro-plus", "brand": "Realme", "name": "Realme 12 Pro+ 5G / 12 Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rl-11-pro-plus", "brand": "Realme", "name": "Realme 11 Pro+ 5G / 11 Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rl-c75", "brand": "Realme", "name": "Realme C75 / C73 / C67", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "475 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rl-c65-c55", "brand": "Realme", "name": "Realme C65 / C55 / C53", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "450 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "rl-c35", "brand": "Realme", "name": "Realme C35 / C33 / C31", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "460 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "rl-narzo-70", "brand": "Realme", "name": "Realme Narzo 70 Pro / 70 / 60", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "495 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "rmg-10-pro-plus", "brand": "REDMAGIC", "name": "RedMagic 10 Pro Plus / 10 Pro", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "560 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rmg-9s-pro-plus", "brand": "REDMAGIC", "name": "RedMagic 9S Pro Plus / 9S Pro", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "550 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rmg-9-pro", "brand": "REDMAGIC", "name": "RedMagic 9 Pro / 9 Pro+", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "540 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rmg-8s-pro", "brand": "REDMAGIC", "name": "RedMagic 8S Pro / 8 Pro", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "510 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rmg-10-base", "brand": "REDMAGIC", "name": "RedMagic 10 Air / Nova", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "520 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rmg-8-base", "brand": "REDMAGIC", "name": "RedMagic 8 / 7S / 7", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "500 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rog-9-pro", "brand": "ROGPHONE", "name": "ASUS ROG Phone 9 Pro / Ultimate", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "560 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rog-8-pro", "brand": "ROGPHONE", "name": "ASUS ROG Phone 8 Pro / Ultimate", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "550 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rog-7-ultimate", "brand": "ROGPHONE", "name": "ASUS ROG Phone 7 Ultimate / 7", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "530 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rog-6-pro", "brand": "ROGPHONE", "name": "ASUS ROG Phone 6 Pro / 6D", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "510 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rog-9-base", "brand": "ROGPHONE", "name": "ASUS ROG Phone 9", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "560 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "rog-8-base", "brand": "ROGPHONE", "name": "ASUS ROG Phone 8", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "540 (An toàn: <600)", "safeMax": 600, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "hn-magic7-pro", "brand": "HONOR", "name": "HONOR Magic 7 Pro / Lite", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "hn-magic6-pro", "brand": "HONOR", "name": "HONOR Magic 6 Pro / 6", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "hn-magic5-pro", "brand": "HONOR", "name": "HONOR Magic 5 Pro / 5", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hn-magic-v3", "brand": "HONOR", "name": "HONOR Magic V3 / V2 (Gập)", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hn-200-pro", "brand": "HONOR", "name": "HONOR 200 Pro / 200 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hn-90", "brand": "HONOR", "name": "HONOR 90 5G / 90 Lite", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hn-x9c", "brand": "HONOR", "name": "HONOR X9c 5G / X9b 5G", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "hn-x8b", "brand": "HONOR", "name": "HONOR X8b / X8a / X7b", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hn-play-60", "brand": "HONOR", "name": "HONOR Play 60 Plus / Play 50", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hn-x6a", "brand": "HONOR", "name": "HONOR X6a / X5 Plus", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "470 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "op1-13", "brand": "OnePlus", "name": "OnePlus 13 / 13R", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "op1-12", "brand": "OnePlus", "name": "OnePlus 12 / 12R", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "op1-11", "brand": "OnePlus", "name": "OnePlus 11 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op1-10-pro", "brand": "OnePlus", "name": "OnePlus 10 Pro / 10T", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op1-9-pro", "brand": "OnePlus", "name": "OnePlus 9 Pro / 9 / 9RT", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op1-ace5", "brand": "OnePlus", "name": "OnePlus Ace 5 / Ace 5 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op1-ace3", "brand": "OnePlus", "name": "OnePlus Ace 3 / Ace 3V", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op1-nord4", "brand": "OnePlus", "name": "OnePlus Nord 4 / Nord CE4", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "495 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op1-nord3", "brand": "OnePlus", "name": "OnePlus Nord 3 5G / Nord CE3", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "op1-nordn30", "brand": "OnePlus", "name": "OnePlus Nord N30 / N20", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "480 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hw-pura70-ultra", "brand": "Huawei", "name": "Huawei Pura 70 Ultra / Pro", "gen": 182, "red": 170, "s2x": 164, "s4x": 156, "awm": 72, "look": 137, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "hw-mate60-pro", "brand": "Huawei", "name": "Huawei Mate 60 Pro / RS", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "hw-mate50-pro", "brand": "Huawei", "name": "Huawei Mate 50 Pro / P60 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hw-p50", "brand": "Huawei", "name": "Huawei P50 Pro / P50", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hw-nova13", "brand": "Huawei", "name": "Huawei Nova 13 Pro / Nova 13", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hw-nova12", "brand": "Huawei", "name": "Huawei Nova 12 / Nova 12i", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "495 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hw-nova11", "brand": "Huawei", "name": "Huawei Nova 11 / Nova 10", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "hw-enjoy-60x", "brand": "Huawei", "name": "Huawei Enjoy 60X / 70", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "475 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "inf-gt20-pro", "brand": "Infinix", "name": "Infinix GT 20 Pro 5G", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "inf-gt10-pro", "brand": "Infinix", "name": "Infinix GT 10 Pro", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "inf-zero-40", "brand": "Infinix", "name": "Infinix Zero 40 5G / Zero 30", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "inf-note40-pro", "brand": "Infinix", "name": "Infinix Note 40 Pro+ 5G / 40 Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "495 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "inf-note30-pro", "brand": "Infinix", "name": "Infinix Note 30 Pro / Note 30", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "485 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "inf-hot40-pro", "brand": "Infinix", "name": "Infinix Hot 40 Pro / Hot 40i", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "475 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "inf-hot50-pro", "brand": "Infinix", "name": "Infinix Hot 50 Pro+ / Hot 50", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "480 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "inf-smart8", "brand": "Infinix", "name": "Infinix Smart 8 / Smart 8 Plus", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "460 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "tc-phantom-x2", "brand": "Tecno", "name": "Tecno Phantom X2 Pro / V Fold", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "tc-camon-30-pro", "brand": "Tecno", "name": "Tecno Camon 30 Pro / Premier", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "tc-camon-20-pro", "brand": "Tecno", "name": "Tecno Camon 20 Pro 5G / 20", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "495 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "tc-pova6-pro", "brand": "Tecno", "name": "Tecno POVA 6 Pro 5G / POVA 6", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "500 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "tc-pova5-pro", "brand": "Tecno", "name": "Tecno POVA 5 Pro / POVA 5", "gen": 190, "red": 180, "s2x": 174, "s4x": 166, "awm": 76, "look": 145, "dpi": "490 (An toàn: <530)", "safeMax": 530, "btn": 43, "hud": "Đáy 12% • Phải 19%", "drag": "Kéo Chữ J Tầm Gần / Thẳng Tầm Xa"}, {"id": "tc-spark-30-pro", "brand": "Tecno", "name": "Tecno Spark 30 Pro / Spark 30", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "480 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}, {"id": "tc-spark-20-pro", "brand": "Tecno", "name": "Tecno Spark 20 Pro+ / 20 Pro", "gen": 185, "red": 173, "s2x": 167, "s4x": 159, "awm": 74, "look": 140, "dpi": "475 (An toàn: <530)", "safeMax": 530, "btn": 42, "hud": "Đáy 11% • Phải 18%", "drag": "Vuốt Chữ J Móc Nhanh (Tránh Vọt Đầu)"}, {"id": "tc-pop-9", "brand": "Tecno", "name": "Tecno Pop 9 / Pop 8 / Pop 7", "gen": 198, "red": 188, "s2x": 182, "s4x": 174, "awm": 79, "look": 153, "dpi": "460 (An toàn: <530)", "safeMax": 530, "btn": 45, "hud": "Đáy 13% • Phải 20%", "drag": "Hất Thẳng Dứt Khoát Hết Màn Hình"}];
 
+  
   let currentTab = 'home';
   let selectedDevice = null;
+  let currentBrand = null;
+  let sensNavSource = 'brand'; // 'brand' | 'home' | 'account' | 'category' | 'search'
+  let brandCategoryFilter = 'ALL'; // 'ALL' | '2026' | 'GAMING' | 'MIDRANGE' | 'BUDGET' | 'IOS'
+  let sensSearchQuery = '';
+  let detailWeaponMode = 'ALL'; // 'ALL' | 'SHOTGUN' | 'SMG'
   let savedConfigs = JSON.parse(localStorage.getItem('saved_ff_configs') || '[]');
   let pendingSaveDevice = null;
   let pendingRenameId = null;
   let savedSearchQuery = '';
+  let lastGeneratedDevice = null;
 
   function showToast(msg) {
     const t = document.getElementById('toastMsg');
@@ -688,6 +1024,14 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
   }
 
   function switchTab(tab) {
+    if (tab === 'sens') {
+      if (currentTab === 'sens' && (selectedDevice || currentBrand || sensSearchQuery)) {
+        selectedDevice = null;
+        currentBrand = null;
+        sensSearchQuery = '';
+        brandCategoryFilter = 'ALL';
+      }
+    }
     currentTab = tab;
     document.querySelectorAll('.nav-item').forEach((el, idx) => {
       el.classList.toggle('active', ['home', 'sens', 'gen', 'account'][idx] === tab);
@@ -695,11 +1039,78 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
     render();
   }
 
+  function filterByBrand(brand) {
+    currentBrand = brand;
+    sensSearchQuery = '';
+    sensNavSource = 'brand';
+    selectedDevice = null;
+    render();
+  }
+
+  function setBrandCategory(cat) {
+    brandCategoryFilter = cat;
+    currentBrand = null;
+    sensSearchQuery = '';
+    render();
+  }
+
+  function setDetailWeaponMode(mode) {
+    detailWeaponMode = mode;
+    render();
+  }
+
+  function openDeviceById(id, from = 'sens') {
+    sensNavSource = from;
+    detailWeaponMode = 'ALL';
+    selectedDevice = DEVICES.find(d => d.id === id) || savedConfigs.find(d => d.id === id);
+    currentTab = 'sens';
+    render();
+  }
+
+  function filterDevices(query) {
+    sensSearchQuery = query;
+    render();
+  }
+
+  function getCategoryDevices(cat) {
+    if (cat === '2026') {
+      return DEVICES.filter(d => 
+        d.name.includes('16') || d.name.includes('17') || d.name.includes('S24') || 
+        d.name.includes('S25') || d.name.includes('K70') || d.name.includes('14') || 
+        d.name.includes('15') || d.name.includes('Magic 9') || d.name.includes('ROG 8')
+      );
+    }
+    if (cat === 'GAMING') {
+      return DEVICES.filter(d => 
+        ['ROGPhone', 'RedMagic', 'POCO', 'iQOO'].includes(d.brand) || 
+        d.name.includes('GT') || d.name.includes('Pro') || d.name.includes('Ultra')
+      );
+    }
+    if (cat === 'MIDRANGE') {
+      return DEVICES.filter(d => 
+        ['Redmi', 'Realme', 'Vivo', 'OPPO', 'Samsung'].includes(d.brand) && 
+        !d.name.includes('Ultra') && !d.name.includes('Plus')
+      );
+    }
+    if (cat === 'BUDGET') {
+      return DEVICES.filter(d => 
+        ['Infinix', 'Tecno'].includes(d.brand) || 
+        d.name.includes('Play') || d.name.includes('Lite') || d.name.includes('Spark') || 
+        d.name.includes('Hot') || d.name.includes('C')
+      );
+    }
+    if (cat === 'IOS') {
+      return DEVICES.filter(d => d.brand === 'Apple');
+    }
+    return DEVICES;
+  }
+
   // --- SAVE MODAL LOGIC (Unlimited saves with custom naming) ---
   function openSaveModal(dev) {
-    pendingSaveDevice = dev;
+    pendingSaveDevice = dev || selectedDevice || lastGeneratedDevice;
+    if (!pendingSaveDevice) return;
     const input = document.getElementById('saveConfigTitleInput');
-    input.value = dev.customTitle || `[AI] ${dev.name || 'Cấu hình'}`;
+    input.value = pendingSaveDevice.customTitle || pendingSaveDevice.name || 'Cấu hình mới';
     document.getElementById('saveModalOverlay').style.display = 'flex';
   }
 
@@ -719,7 +1130,6 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
     if (!pendingSaveDevice) return;
     const title = document.getElementById('saveConfigTitleInput').value.trim() || pendingSaveDevice.name || 'Cấu hình mới';
     
-    // Create new independent saved config with unique timestamp id
     const newConfig = {
       ...pendingSaveDevice,
       id: 'cfg_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
@@ -777,22 +1187,29 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
   }
 
   function copyConfig(device) {
-    const title = device.customTitle || device.name;
+    const d = device || selectedDevice || lastGeneratedDevice;
+    if (!d) return;
+    const title = d.customTitle || d.name;
     const text = `🎯 [ĐỘ NHẠY FREE FIRE ESPORTS 2026]
 📱 Cấu hình: ${title}
-• Nhìn xung quanh: ${device.gen}
-• Red Dot: ${device.red}
-• Ống 2X: ${device.s2x}
-• Ống 4X: ${device.s4x}
-• AWM / Sniper: ${device.awm}
-• Nhìn tự do: ${device.look}
-• DPI đề xuất: ${device.dpi}
-• Nút bắn chuẩn: ${device.btn}%
-• Vị trí HUD: ${device.hud}
-• Kiểu kéo tâm: ${device.drag}
+• Nhìn xung quanh: ${d.gen}
+• Red Dot: ${d.red}
+• Ống 2X: ${d.s2x}
+• Ống 4X: ${d.s4x}
+• AWM / Sniper: ${d.awm}
+• Nhìn tự do: ${d.look}
+• DPI đề xuất: ${d.dpi}
+• Nút bắn chuẩn: ${d.btn}%
+• Vị trí HUD: ${d.hud}
+• Kiểu kéo tâm: ${d.drag}
 🔥 Hiệu chuẩn ma trận Cosmic Free Fire OB 2026`;
     navigator.clipboard.writeText(text);
     showToast('📋 Đã sao chép thông số vào bộ nhớ đệm!');
+  }
+
+  function copySavedById(id) {
+    const item = savedConfigs.find(c => c.id === id);
+    if (item) copyConfig(item);
   }
 
   function renderSliderHtml(label, val) {
@@ -800,10 +1217,12 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
     return `
       <div class="slider-box">
         <div class="slider-header">
-          <span style="color:var(--text-muted);">${label}</span>
-          <span style="color:var(--secondary); font-weight:900;">${val}</span>
+          <span style="color:var(--text-muted); font-size:12px;">${label}</span>
+          <span style="color:var(--secondary); font-weight:900; font-size:13px;">${val}</span>
         </div>
-        <div class="slider-track"><div class="slider-fill" style="width:${pct}%"></div></div>
+        <div class="slider-bar">
+          <div class="slider-fill" style="width:${pct}%;"></div>
+        </div>
       </div>
     `;
   }
@@ -821,60 +1240,6 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
         <div style="color:var(--primary); font-weight:900; font-size:16px;">➔</div>
       </div>
     `).join('');
-  }
-
-  function filterByBrand(brand) {
-    const list = DEVICES.filter(d => d.brand.toLowerCase() === brand.toLowerCase());
-    const area = document.getElementById('deviceListArea');
-    area.innerHTML = `
-      <div style="color:var(--secondary); font-size:12px; font-weight:900; cursor:pointer; margin-bottom:10px; display:flex; align-items:center; gap:4px;" onclick="render()">
-        ← QUAY LẠI DANH SÁCH HÃNG
-      </div>
-      <div class="title-h1" style="font-size:16px; margin-bottom:12px;">DÒNG MÁY ${brand.toUpperCase()} (${list.length})</div>
-      ${list.map(d => `
-        <div class="device-card" onclick='openDeviceById("${d.id}")'>
-          <div>
-            <div style="font-size:14px; font-weight:900; color:#fff;">${d.name}</div>
-            <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">🎯 ${d.drag} • Nút: ${d.btn}%</div>
-          </div>
-          <div class="score-badge">${d.gen}</div>
-        </div>
-      `).join('')}
-    `;
-  }
-
-  function filterDevices(query) {
-    const q = query.trim().toLowerCase();
-    const area = document.getElementById('deviceListArea');
-    if (!q) {
-      area.innerHTML = renderBrandGridHtml();
-      return;
-    }
-    const matched = DEVICES.filter(d => d.name.toLowerCase().includes(q) || d.brand.toLowerCase().includes(q));
-    if (matched.length === 0) {
-      area.innerHTML = `
-        <div style="text-align:center; padding:35px; color:var(--text-muted); background:var(--card); clip-path:polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);">
-          🔍 Không tìm thấy thiết bị nào khớp từ khóa.<br>Thử tìm "K70", "iPhone 16", "S24"...
-        </div>
-      `;
-      return;
-    }
-    area.innerHTML = matched.map(d => `
-      <div class="device-card" onclick='openDeviceById("${d.id}")'>
-        <div>
-          <span class="badge-tactical" style="font-size:9px; padding:2px 6px;">${d.brand}</span>
-          <div style="font-size:14px; font-weight:900; margin-top:4px; color:#fff;">${d.name}</div>
-          <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">🎯 ${d.drag} • DPI: ${d.dpi}</div>
-        </div>
-        <div class="score-badge">${d.gen}</div>
-      </div>
-    `).join('');
-  }
-
-  function openDeviceById(id) {
-    selectedDevice = DEVICES.find(d => d.id === id) || savedConfigs.find(d => d.id === id);
-    currentTab = 'sens';
-    render();
   }
 
   function selectChip(el) {
@@ -920,7 +1285,7 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
     const awm = Math.max(40, Math.round(gen * 0.40));
     const look = Math.max(70, gen - 45);
 
-    const resDevice = {
+    lastGeneratedDevice = {
       id: 'ai-' + Date.now(),
       brand: 'AI Tối Ưu',
       name: `${dev} • ${weapon.split(' ')[0]}`,
@@ -933,7 +1298,7 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
           <span class="badge-tactical badge-gold">⚡ KẾT QUẢ TÍNH TOÁN 5D</span>
           <span style="color:var(--green); font-size:11px; font-weight:900;">99.4% Chuẩn Đầu</span>
         </div>
-        <h3 style="font-size:15px; font-weight:900; color:#fff; margin-bottom:12px;">${resDevice.name}</h3>
+        <h3 style="font-size:15px; font-weight:900; color:#fff; margin-bottom:12px;">${lastGeneratedDevice.name}</h3>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
           <div style="background:var(--surface); padding:8px 10px; border:1px solid var(--border); clip-path:polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);">
             <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Nhìn xung quanh</div>
@@ -957,12 +1322,11 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
         <div style="font-size:12px; color:var(--green); font-weight:900; margin-bottom:14px;">Kỹ thuật: ${drag}</div>
         
         <div class="btn-row" style="margin-bottom:0;">
-          <button class="btn btn-primary" onclick='openSaveModal(${JSON.stringify(resDevice)})'>💾 LƯU CẤU HÌNH AI NÀY</button>
-          <button class="btn btn-outline" onclick='copyConfig(${JSON.stringify(resDevice)})'>📋 SAO CHÉP</button>
+          <button class="btn btn-primary" onclick="openSaveModal(lastGeneratedDevice)">💾 LƯU CẤU HÌNH AI NÀY</button>
+          <button class="btn btn-outline" onclick="copyConfig(lastGeneratedDevice)">📋 SAO CHÉP</button>
         </div>
       </div>
     `;
-    showToast('⚡ AI đã hiệu chuẩn thành công!');
   }
 
   // --- MAIN RENDER FUNCTION ---
@@ -1029,8 +1393,8 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
 
         <div class="title-h1" style="font-size:15px; margin:16px 0 10px 0;">🏆 DÒNG MÁY PHỔ BIẾN NHẤT</div>
         <div class="brand-grid">
-          ${DEVICES.slice(0, 5).map(d => `
-            <div class="device-card" onclick='openDeviceById("${d.id}")'>
+          ${DEVICES.slice(0, 6).map(d => `
+            <div class="device-card" onclick='openDeviceById("${d.id}", "home")'>
               <div>
                 <span class="badge-tactical" style="font-size:9px; padding:2px 6px;">${d.brand}</span>
                 <div style="font-size:13px; font-weight:900; margin-top:3px; color:#fff;">${d.name}</div>
@@ -1042,31 +1406,84 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
         </div>
       `;
     } else if (currentTab === 'sens') {
+      // SUB-SCREEN A: CHI TIẾT CẤU HÌNH (DETAIL VIEW)
       if (selectedDevice) {
+        let baseGen = selectedDevice.gen;
+        let baseRed = selectedDevice.red;
+        let baseBtn = selectedDevice.btn;
+        let dragTip = selectedDevice.drag;
+
+        if (detailWeaponMode === 'SHOTGUN') {
+          baseGen = Math.min(200, baseGen + 4);
+          baseRed = Math.min(200, baseRed + 6);
+          baseBtn = Math.max(38, baseBtn - 2);
+          dragTip = 'Vuốt Móc Chữ J Đỉnh Đầu (Tâm Bám Gắt)';
+        } else if (detailWeaponMode === 'SMG') {
+          baseGen = Math.min(200, baseGen - 2);
+          baseRed = Math.min(200, baseRed - 2);
+          baseBtn = Math.min(52, baseBtn + 3);
+          dragTip = 'Kéo Thẳng Đều Tay Ghìm Độ Giật (Đạn Không Xòe)';
+        }
+
+        const s2x = Math.max(70, baseRed - 6);
+        const s4x = Math.max(60, baseRed - 14);
+        const awm = Math.max(40, Math.round(baseGen * 0.40));
+        const look = Math.max(70, baseGen - 45);
+
+        let backText = '← QUAY LẠI KHO THIẾT BỊ';
+        let backAction = "selectedDevice=null; currentBrand=null; sensSearchQuery=''; render();";
+        if (sensNavSource === 'home') {
+          backText = '← QUAY LẠI TRANG CHỦ';
+          backAction = "selectedDevice=null; switchTab('home');";
+        } else if (sensNavSource === 'account') {
+          backText = '← QUAY LẠI BỘ NHỚ ĐÃ LƯU';
+          backAction = "selectedDevice=null; switchTab('account');";
+        } else if (currentBrand) {
+          backText = `← QUAY LẠI DÒNG MÁY ${currentBrand.toUpperCase()}`;
+          backAction = "selectedDevice=null; render();";
+        } else if (sensSearchQuery) {
+          backText = `← QUAY LẠI TÌM KIẾM ("${sensSearchQuery}")`;
+          backAction = "selectedDevice=null; render();";
+        }
+
         container.innerHTML = `
-          <div style="color:var(--secondary); font-size:12px; font-weight:900; cursor:pointer; margin-bottom:12px; display:flex; align-items:center; gap:4px;" onclick="selectedDevice=null; render();">
-            ← QUAY LẠI TÌM MÁY KHÁC
+          <div style="color:var(--secondary); font-size:12px; font-weight:900; cursor:pointer; margin-bottom:12px; display:inline-flex; align-items:center; gap:6px; background:rgba(255,184,0,0.1); padding:6px 12px; border-radius:6px; border:1px solid rgba(255,184,0,0.25);" onclick="${backAction}">
+            ${backText}
           </div>
 
           <div class="scifi-panel">
             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
               <div>
-                <span class="badge-tactical">${selectedDevice.brand}</span>
-                <h2 style="font-size:18px; font-weight:900; color:#fff; margin-top:4px;">${selectedDevice.name}</h2>
+                <span class="badge-tactical">${selectedDevice.brand || 'Free Fire'}</span>
+                <h2 style="font-size:17px; font-weight:900; color:#fff; margin-top:4px;">${selectedDevice.customTitle || selectedDevice.name}</h2>
+                <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">Hiệu chuẩn: Esports Headshot Lab OB 2026</div>
               </div>
-              <div class="score-badge" style="font-size:18px;">${selectedDevice.gen}</div>
+              <div class="score-badge" style="font-size:18px;">${baseGen}</div>
             </div>
           </div>
 
-          <div class="title-h1" style="font-size:14px; margin-bottom:10px;">📊 BẢNG ĐỘ NHẠY TRONG GAME</div>
-          ${renderSliderHtml('Nhìn Xung Quanh (General)', selectedDevice.gen)}
-          ${renderSliderHtml('Red Dot Sight (Tâm Đỏ)', selectedDevice.red)}
-          ${renderSliderHtml('Ống Ngắm 2X', selectedDevice.s2x)}
-          ${renderSliderHtml('Ống Ngắm 4X', selectedDevice.s4x)}
-          ${renderSliderHtml('Ống Ngắm Ngắm Bắn (AWM)', selectedDevice.awm)}
-          ${renderSliderHtml('Góc Nhìn Tự Do', selectedDevice.look)}
+          <div class="title-h1" style="font-size:13px; margin:14px 0 8px 0;">🔫 TỐI ƯU CẤU HÌNH THEO VŨ KHÍ</div>
+          <div class="weapon-pill-row">
+            <div class="weapon-pill ${detailWeaponMode === 'ALL' ? 'active' : ''}" onclick="setDetailWeaponMode('ALL')">
+              🎯 Toàn Diện
+            </div>
+            <div class="weapon-pill ${detailWeaponMode === 'SHOTGUN' ? 'active' : ''}" onclick="setDetailWeaponMode('SHOTGUN')">
+              💥 Shotgun
+            </div>
+            <div class="weapon-pill ${detailWeaponMode === 'SMG' ? 'active' : ''}" onclick="setDetailWeaponMode('SMG')">
+              ⚡ MP40 Sấy
+            </div>
+          </div>
 
-          <div class="title-h1" style="font-size:14px; margin:14px 0 10px 0;">⚙️ THÔNG SỐ CẢI TIẾN CHIẾN THUẬT</div>
+          <div class="title-h1" style="font-size:13px; margin-bottom:8px;">📊 BẢNG ĐỘ NHẠY TRONG GAME (THANG 200)</div>
+          ${renderSliderHtml('Nhìn Xung Quanh (General)', baseGen)}
+          ${renderSliderHtml('Red Dot Sight (Tâm Đỏ)', baseRed)}
+          ${renderSliderHtml('Ống Ngắm 2X', s2x)}
+          ${renderSliderHtml('Ống Ngắm 4X', s4x)}
+          ${renderSliderHtml('Ống Ngắm Ngắm Bắn (AWM)', awm)}
+          ${renderSliderHtml('Góc Nhìn Tự Do', look)}
+
+          <div class="title-h1" style="font-size:13px; margin:14px 0 8px 0;">⚙️ THÔNG SỐ CẢI TIẾN CHIẾN THUẬT</div>
           <div class="scifi-panel">
             <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px;">
               <span style="color:var(--text-muted);">DPI Tối Ưu:</span>
@@ -1074,7 +1491,7 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
             </div>
             <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px;">
               <span style="color:var(--text-muted);">Kích Thước Nút Bắn:</span>
-              <span style="color:var(--primary); font-weight:900;">${selectedDevice.btn}%</span>
+              <span style="color:var(--primary); font-weight:900;">${baseBtn}% (Chuẩn Pro)</span>
             </div>
             <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px;">
               <span style="color:var(--text-muted);">Vị Trí Nút Bắn HUD:</span>
@@ -1082,18 +1499,18 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
             </div>
             <div style="display:flex; justify-content:space-between; font-size:12px;">
               <span style="color:var(--text-muted);">Kỹ Thuật Vuốt Tâm:</span>
-              <span style="color:var(--green); font-weight:900;">${selectedDevice.drag}</span>
+              <span style="color:var(--green); font-weight:900;">${dragTip}</span>
             </div>
           </div>
 
-          <div class="title-h1" style="font-size:14px; margin:14px 0 8px 0;">🔘 MÔ PHỎNG NÚT BẮN HUD THỰC TẾ</div>
+          <div class="title-h1" style="font-size:13px; margin:14px 0 8px 0;">🔘 MÔ PHỎNG NÚT BẮN HUD THỰC TẾ</div>
           <div class="hud-box">
             <div style="color:var(--red); font-size:20px; font-weight:900;">┼</div>
             <div style="color:var(--red); font-size:10px; font-weight:900; margin-top:-2px;">ĐẦU MỤC TIÊU</div>
-            <div style="color:var(--green); font-size:12px; margin:6px 0; font-weight:900;">▲ ${selectedDevice.drag}</div>
-            <div class="fire-button-sim" style="width:${selectedDevice.btn * 1.5}px; height:${selectedDevice.btn * 1.5}px;">
-              <span style="font-size:16px;">🔥</span>
-              <span style="font-size:11px; font-weight:900; color:#fff;">${selectedDevice.btn}%</span>
+            <div style="color:var(--green); font-size:12px; margin:6px 0; font-weight:900;">▲ ${dragTip}</div>
+            <div class="fire-button-sim" style="width:${baseBtn * 1.5}px; height:${baseBtn * 1.5}px;">
+              <span style="font-size:15px;">🔥</span>
+              <span style="font-size:11px; font-weight:900; color:#fff;">${baseBtn}%</span>
             </div>
           </div>
 
@@ -1102,18 +1519,105 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
             <button class="btn btn-outline" onclick="copyConfig(selectedDevice)">📋 SAO CHÉP</button>
           </div>
         `;
-      } else {
+      } 
+      // SUB-SCREEN B: DANH SÁCH DÒNG MÁY THEO HÃNG (BRAND VIEW)
+      else if (currentBrand) {
+        const brandDevices = DEVICES.filter(d => d.brand.toLowerCase() === currentBrand.toLowerCase());
+        const displayList = sensSearchQuery.trim()
+          ? brandDevices.filter(d => d.name.toLowerCase().includes(sensSearchQuery.trim().toLowerCase()))
+          : brandDevices;
+
         container.innerHTML = `
-          <h1 class="title-h1">🎯 KHO 230+ THIẾT BỊ</h1>
-          <div class="sub-title">Chọn máy để xem bộ thông số kéo tâm chuẩn:</div>
+          <div style="color:var(--secondary); font-size:12px; font-weight:900; cursor:pointer; margin-bottom:12px; display:inline-flex; align-items:center; gap:6px; background:rgba(255,184,0,0.1); padding:6px 12px; border-radius:6px; border:1px solid rgba(255,184,0,0.25);" onclick="currentBrand=null; sensSearchQuery=''; render();">
+            ← QUAY LẠI TẤT CẢ 16 HÃNG MÁY
+          </div>
+
+          <h1 class="title-h1">DÒNG MÁY ${currentBrand.toUpperCase()} (${brandDevices.length})</h1>
+          <div class="sub-title">Chọn mẫu máy cụ thể để xem toàn bộ thông số:</div>
 
           <div class="search-box">
             <span style="color:var(--primary); font-size:14px;">🔍</span>
-            <input type="text" id="searchInput" placeholder="Tìm theo tên máy (vd: K70, iPhone 16, S24...)" oninput="filterDevices(this.value)">
+            <input type="text" placeholder="Lọc trong hãng ${currentBrand}..." value="${sensSearchQuery}" oninput="filterDevices(this.value)">
+            ${sensSearchQuery ? `<span style="color:var(--text-muted); cursor:pointer; font-size:13px; padding-left:6px;" onclick="filterDevices('')">✕</span>` : ''}
+          </div>
+
+          <div class="brand-grid">
+            ${displayList.length === 0 ? `
+              <div style="text-align:center; padding:35px; color:var(--text-muted); background:var(--card); clip-path:polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);">
+                🔍 Không tìm thấy dòng máy nào khớp từ khóa trong hãng ${currentBrand}.
+              </div>
+            ` : displayList.map(d => `
+              <div class="device-card" onclick='openDeviceById("${d.id}", "brand")'>
+                <div>
+                  <div style="font-size:14px; font-weight:900; color:#fff;">${d.name}</div>
+                  <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">🎯 ${d.drag} • Nút: ${d.btn}%</div>
+                </div>
+                <div class="score-badge">${d.gen}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+      // SUB-SCREEN C: KHO THIẾT BỊ GỐC (CATALOG ROOT)
+      else {
+        let displayList = null;
+        let isGlobalSearch = sensSearchQuery.trim().length > 0;
+
+        if (isGlobalSearch) {
+          const q = sensSearchQuery.trim().toLowerCase();
+          displayList = DEVICES.filter(d => d.name.toLowerCase().includes(q) || d.brand.toLowerCase().includes(q));
+        } else if (brandCategoryFilter !== 'ALL') {
+          displayList = getCategoryDevices(brandCategoryFilter);
+        }
+
+        container.innerHTML = `
+          <h1 class="title-h1">🎯 KHO 230+ THIẾT BỊ</h1>
+          <div class="sub-title">Chọn máy để xem bộ thông số kéo tâm chuẩn Esports 2026:</div>
+
+          <div class="search-box">
+            <span style="color:var(--primary); font-size:14px;">🔍</span>
+            <input type="text" id="searchInput" placeholder="Tìm theo tên máy (vd: K70, iPhone 16, S24...)" value="${sensSearchQuery}" oninput="filterDevices(this.value)">
+            ${sensSearchQuery ? `<span style="color:var(--text-muted); cursor:pointer; font-size:13px; padding-left:6px;" onclick="filterDevices('')">✕</span>` : ''}
+          </div>
+
+          <div class="category-pills-row">
+            <div class="category-pill ${brandCategoryFilter === 'ALL' && !isGlobalSearch ? 'active' : ''}" onclick="setBrandCategory('ALL')">
+              🏢 16 Hãng Máy
+            </div>
+            <div class="category-pill ${brandCategoryFilter === '2026' ? 'active' : ''}" onclick="setBrandCategory('2026')">
+              ⚡ Siêu Phẩm 2026
+            </div>
+            <div class="category-pill ${brandCategoryFilter === 'GAMING' ? 'active' : ''}" onclick="setBrandCategory('GAMING')">
+              🚀 Gaming 144Hz+
+            </div>
+            <div class="category-pill ${brandCategoryFilter === 'MIDRANGE' ? 'active' : ''}" onclick="setBrandCategory('MIDRANGE')">
+              📱 Tầm Trung
+            </div>
+            <div class="category-pill ${brandCategoryFilter === 'BUDGET' ? 'active' : ''}" onclick="setBrandCategory('BUDGET')">
+              🔋 Máy Yếu (60Hz)
+            </div>
+            <div class="category-pill ${brandCategoryFilter === 'IOS' ? 'active' : ''}" onclick="setBrandCategory('IOS')">
+              🍏 Apple iOS
+            </div>
           </div>
 
           <div id="deviceListArea" class="brand-grid">
-            ${renderBrandGridHtml()}
+            ${displayList === null ? renderBrandGridHtml() : (
+              displayList.length === 0 ? `
+                <div style="text-align:center; padding:35px; color:var(--text-muted); background:var(--card); clip-path:polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);">
+                  🔍 Không tìm thấy thiết bị nào khớp từ khóa.<br>Thử tìm "K70", "iPhone 16", "S24"...
+                </div>
+              ` : displayList.map(d => `
+                <div class="device-card" onclick='openDeviceById("${d.id}", "category")'>
+                  <div>
+                    <span class="badge-tactical" style="font-size:9px; padding:2px 6px;">${d.brand}</span>
+                    <div style="font-size:14px; font-weight:900; margin-top:4px; color:#fff;">${d.name}</div>
+                    <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">🎯 ${d.drag} • DPI: ${d.dpi}</div>
+                  </div>
+                  <div class="score-badge">${d.gen}</div>
+                </div>
+              `).join('')
+            )}
           </div>
         `;
       }
@@ -1132,28 +1636,27 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
 
         <div style="font-size:11px; font-weight:900; color:var(--secondary); text-transform:uppercase; margin-bottom:6px;">2. Tần số quét màn hình</div>
         <div class="chip-group" id="genHzChips">
-          <div class="chip" onclick="selectChip(this)">60Hz (Cơ Bản)</div>
-          <div class="chip" onclick="selectChip(this)">90Hz (Mượt)</div>
-          <div class="chip active" onclick="selectChip(this)">120Hz+ (Esports)</div>
-          <div class="chip" onclick="selectChip(this)">144Hz - 165Hz</div>
+          <div class="chip" onclick="selectChip(this)">60Hz</div>
+          <div class="chip" onclick="selectChip(this)">90Hz</div>
+          <div class="chip active" onclick="selectChip(this)">120Hz+</div>
+          <div class="chip" onclick="selectChip(this)">144Hz</div>
         </div>
 
-        <div style="font-size:11px; font-weight:900; color:var(--secondary); text-transform:uppercase; margin-bottom:6px;">3. Lực vuốt tay của bạn</div>
+        <div style="font-size:11px; font-weight:900; color:var(--secondary); text-transform:uppercase; margin-bottom:6px;">3. Lực vuốt tay cá nhân</div>
         <div class="chip-group" id="genForceChips">
-          <div class="chip" onclick="selectChip(this)">Vuốt Mạnh (Dứt Khoát)</div>
-          <div class="chip active" onclick="selectChip(this)">Vuốt Vừa (Chuẩn)</div>
-          <div class="chip" onclick="selectChip(this)">Vuốt Nhẹ (Lười Vuốt)</div>
+          <div class="chip" onclick="selectChip(this)">Nhẹ (Vuốt lướt nhanh)</div>
+          <div class="chip active" onclick="selectChip(this)">Vừa (Đều đặn)</div>
+          <div class="chip" onclick="selectChip(this)">Mạnh (Ghim chặt tay)</div>
         </div>
 
-        <div style="font-size:11px; font-weight:900; color:var(--secondary); text-transform:uppercase; margin-bottom:6px;">4. Bề mặt tiếp xúc màn hình</div>
+        <div style="font-size:11px; font-weight:900; color:var(--secondary); text-transform:uppercase; margin-bottom:6px;">4. Phụ kiện hỗ trợ</div>
         <div class="chip-group" id="genFrictionChips">
-          <div class="chip active" onclick="selectChip(this)">Kính Bóng Thường</div>
-          <div class="chip" onclick="selectChip(this)">Cường Lực Nhám</div>
-          <div class="chip" onclick="selectChip(this)">Bao Ngón Tay Gaming</div>
-          <div class="chip" onclick="selectChip(this)">Màn Hình Trần</div>
+          <div class="chip active" onclick="selectChip(this)">Tay Trần Màn Trơn</div>
+          <div class="chip" onclick="selectChip(this)">Màn Cường Lực Nhám</div>
+          <div class="chip" onclick="selectChip(this)">Bao Ngón Tay Chơi Game</div>
         </div>
 
-        <div style="font-size:11px; font-weight:900; color:var(--secondary); text-transform:uppercase; margin-bottom:6px;">5. Vũ khí sở trường</div>
+        <div style="font-size:11px; font-weight:900; color:var(--secondary); text-transform:uppercase; margin-bottom:6px;">5. Vũ khí tủ của bạn</div>
         <div class="chip-group" id="genWeaponChips">
           <div class="chip active" onclick="selectChip(this)">Shotgun (M1887, M1014)</div>
           <div class="chip" onclick="selectChip(this)">SMG Sấy (MP40, UMP)</div>
@@ -1223,14 +1726,14 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
                   Nhìn: <b style="color:#fff;">${item.gen}</b> | RedDot: <b style="color:#fff;">${item.red}</b> | Nút: <b style="color:var(--primary);">${item.btn}%</b>
                 </div>
                 <div style="font-size:10px; color:var(--cyan); margin-top:2px;">
-                  🎯 ${item.drag} • DPI: ${item.dpi}
+                  🎯 ${item.drag} • DPI: ${d_dpi(item)}
                 </div>
               </div>
             </div>
             <div style="display:flex; gap:6px; margin-top:10px;">
-              <button class="btn btn-primary" style="padding:6px 10px; font-size:10px;" onclick='openDeviceById("${item.id}")'>👁️ XEM</button>
+              <button class="btn btn-primary" style="padding:6px 10px; font-size:10px;" onclick='openDeviceById("${item.id}", "account")'>👁️ XEM</button>
               <button class="btn btn-outline" style="padding:6px 10px; font-size:10px; color:var(--secondary);" onclick='openRenameModal("${item.id}")'>✏️ ĐỔI TÊN</button>
-              <button class="btn btn-outline" style="padding:6px 10px; font-size:10px;" onclick='copyConfig(${JSON.stringify(item)})'>📋 CHÉP</button>
+              <button class="btn btn-outline" style="padding:6px 10px; font-size:10px;" onclick='copySavedById("${item.id}")'>📋 CHÉP</button>
               <button class="btn btn-outline" style="padding:6px 8px; font-size:10px; color:var(--red);" onclick='deleteSaved("${item.id}")'>🗑️</button>
             </div>
           </div>
@@ -1239,8 +1742,230 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
     }
   }
 
+  function d_dpi(item) {
+    return item.dpi || 'Chuẩn máy';
+  }
+
+  
+  // ================= CYBER MUSIC & CHAT BUBBLE LOGIC =================
+  let webModalTab = 'CHAT';
+  let webCustomTracks = JSON.parse(localStorage.getItem('my_web_music_tracks') || '[]');
+  const WEB_DEFAULT_TRACKS = [
+    { id: 'def-1', name: '⚡ Free Fire Phonk (Bass Boost 2026)', meta: 'Esports Gaming Beat', url: 'https://raw.githubusercontent.com/rafaelreis-hotmart/Audio-Sample-files/master/sample.mp3', isCustom: false },
+    { id: 'def-2', name: '🔥 EDM Headshot Trap Beat', meta: 'Cyber Montage Beat', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', isCustom: false },
+    { id: 'def-3', name: '🎧 Lo-Fi Chill Leo Rank Đêm', meta: 'Night Chill Free Fire', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', isCustom: false }
+  ];
+  let currentWebTrack = webCustomTracks.length > 0 ? webCustomTracks[0] : WEB_DEFAULT_TRACKS[0];
+  let isWebPlaying = false;
+  let isWebLooping = true;
+  let webChatMessages = [
+    { sender: 'ai', text: 'Xin chào Xạ Thủ! 👋 Tôi là Trợ Lý AI Kéo Tâm Free Fire (OB 2026).\n\nBạn có thể hỏi tôi cách chỉnh tâm, hoặc mở tab "Nhạc Chiến MP4" để nạp video MP4 từ máy và vừa nghe nhạc vừa kéo tâm nhé!' }
+  ];
+
+  function openChatMusicModal() {
+    document.getElementById('chatMusicModal').style.display = 'flex';
+    renderWebChat();
+    renderWebPlaylist();
+  }
+
+  function closeChatMusicModal() {
+    document.getElementById('chatMusicModal').style.display = 'none';
+  }
+
+  function switchModalTab(tab) {
+    webModalTab = tab;
+    document.getElementById('tabBtnChat').classList.toggle('active', tab === 'CHAT');
+    document.getElementById('tabBtnMusic').classList.toggle('active', tab === 'MUSIC');
+    document.getElementById('viewChat').style.display = tab === 'CHAT' ? 'flex' : 'none';
+    document.getElementById('viewMusic').style.display = tab === 'MUSIC' ? 'flex' : 'none';
+    document.getElementById('modalAvatarIcon').innerText = tab === 'MUSIC' ? '🎵' : '🤖';
+    document.getElementById('modalHeaderTitle').innerText = tab === 'MUSIC' ? 'Nhạc Chiến Game (MP4)' : 'AI Coach Kéo Tâm';
+    if (tab === 'CHAT') renderWebChat();
+    if (tab === 'MUSIC') renderWebPlaylist();
+  }
+
+  function triggerMp4Upload() {
+    document.getElementById('localMp4Picker').click();
+  }
+
+  function handleWebMediaPicked(input) {
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    const objectUrl = URL.createObjectURL(file);
+
+    const newTrack = {
+      id: 'custom_' + Date.now(),
+      name: file.name || 'Video MP4 của bạn',
+      meta: (file.size / (1024 * 1024)).toFixed(1) + ' MB • Video MP4',
+      url: objectUrl,
+      isCustom: true
+    };
+
+    webCustomTracks.unshift(newTrack);
+    try {
+      localStorage.setItem('my_web_music_tracks', JSON.stringify(webCustomTracks.map(t => ({ id: t.id, name: t.name, meta: t.meta, isCustom: true }))));
+    } catch(e) {}
+
+    renderWebPlaylist();
+    playWebTrack(newTrack);
+    showToast('🎉 Đã nạp Video MP4: ' + newTrack.name);
+  }
+
+  function playWebTrack(track) {
+    currentWebTrack = track;
+    const player = document.getElementById('hiddenMediaElem');
+    player.src = track.url;
+    player.loop = isWebLooping;
+    player.play().then(() => {
+      isWebPlaying = true;
+      updateWebMusicUI();
+    }).catch(err => {
+      showToast('⚠️ Vui lòng nhấn Phát để bắt đầu');
+      updateWebMusicUI();
+    });
+  }
+
+  function toggleWebPlayPause() {
+    const player = document.getElementById('hiddenMediaElem');
+    if (!player.src && currentWebTrack) {
+      playWebTrack(currentWebTrack);
+      return;
+    }
+    if (player.paused) {
+      player.play().then(() => {
+        isWebPlaying = true;
+        updateWebMusicUI();
+      }).catch(e => {});
+    } else {
+      player.pause();
+      isWebPlaying = false;
+      updateWebMusicUI();
+    }
+  }
+
+  function stopWebMusic() {
+    const player = document.getElementById('hiddenMediaElem');
+    player.pause();
+    player.currentTime = 0;
+    isWebPlaying = false;
+    updateWebMusicUI();
+  }
+
+  function toggleWebMusicLoop() {
+    isWebLooping = !isWebLooping;
+    const player = document.getElementById('hiddenMediaElem');
+    player.loop = isWebLooping;
+    document.getElementById('webLoopIcon').style.color = isWebLooping ? 'var(--cyan)' : 'var(--text-muted)';
+    showToast(isWebLooping ? '🔁 Đã bật lặp lại liên tục' : '➡️ Đã tắt lặp lại');
+  }
+
+  function updateWebMusicUI() {
+    const disc = document.getElementById('webVinylDisc');
+    const playBtn = document.getElementById('webPlayBtn');
+    const bubble = document.getElementById('floatingBubbleBtn');
+    const bubbleIcon = document.getElementById('bubbleIcon');
+    const miniTrack = document.getElementById('bubbleMiniTrack');
+    const miniTrackText = document.getElementById('bubbleMiniTrackText');
+    const tabDot = document.getElementById('tabMusicPlayingDot');
+
+    if (currentWebTrack) {
+      document.getElementById('webTrackTitle').innerText = currentWebTrack.name;
+      document.getElementById('webTrackMeta').innerText = currentWebTrack.meta;
+      document.getElementById('webTrackBadge').innerText = currentWebTrack.isCustom ? '🎬 VIDEO MP4 CỦA BẠN' : '⚡ BẢN NHẠC CHIẾN PRO';
+    }
+
+    if (isWebPlaying) {
+      disc.classList.add('spinning');
+      playBtn.innerText = '⏸';
+      bubble.classList.add('playing');
+      bubbleIcon.innerText = '🎵';
+      miniTrack.style.display = 'block';
+      miniTrackText.innerText = '▶ ' + (currentWebTrack ? currentWebTrack.name.substring(0, 14) : 'Nhạc chiến');
+      tabDot.style.display = 'inline';
+    } else {
+      disc.classList.remove('spinning');
+      playBtn.innerText = '▶';
+      bubble.classList.remove('playing');
+      bubbleIcon.innerText = '🤖';
+      miniTrack.style.display = 'none';
+      tabDot.style.display = 'none';
+    }
+  }
+
+  function renderWebPlaylist() {
+    const container = document.getElementById('webPlaylistContainer');
+    const allTracks = [...webCustomTracks, ...WEB_DEFAULT_TRACKS];
+
+    container.innerHTML = allTracks.map(t => {
+      const isCurrent = currentWebTrack && currentWebTrack.id === t.id;
+      return `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.04); border-radius:10px; padding:8px 12px; border:1px solid ${isCurrent ? 'var(--primary)' : 'rgba(255,255,255,0.06)'};">
+          <div style="flex:1; cursor:pointer;" onclick='playWebTrack(${JSON.stringify(t)})'>
+            <div style="font-size:12px; font-weight:900; color:${isCurrent ? 'var(--primary)' : '#fff'};">${t.name}</div>
+            <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">${t.meta}</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <button class="btn btn-primary" style="padding:4px 8px; font-size:10px;" onclick='playWebTrack(${JSON.stringify(t)})'>
+              ${isCurrent && isWebPlaying ? '⏸ TẠM DỪNG' : '▶ PHÁT'}
+            </button>
+            ${t.isCustom ? `
+              <button class="btn btn-outline" style="padding:4px 6px; font-size:10px; color:var(--red);" onclick='deleteWebTrack("${t.id}")'>🗑️</button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function deleteWebTrack(id) {
+    webCustomTracks = webCustomTracks.filter(t => t.id !== id);
+    try {
+      localStorage.setItem('my_web_music_tracks', JSON.stringify(webCustomTracks.map(t => ({ id: t.id, name: t.name, meta: t.meta, isCustom: true }))));
+    } catch(e) {}
+    if (currentWebTrack && currentWebTrack.id === id) {
+      stopWebMusic();
+      currentWebTrack = WEB_DEFAULT_TRACKS[0];
+    }
+    renderWebPlaylist();
+    updateWebMusicUI();
+  }
+
+  function renderWebChat() {
+    const box = document.getElementById('chatMessagesBox');
+    box.innerHTML = webChatMessages.map(m => `
+      <div style="display:flex; justify-content:${m.sender === 'ai' ? 'flex-start' : 'flex-end'};">
+        <div style="max-width:85%; padding:10px 12px; border-radius:14px; font-size:12px; line-height:1.5; background:${m.sender === 'ai' ? 'rgba(255,255,255,0.06)' : 'var(--primary)'}; color:#fff; border:1px solid ${m.sender === 'ai' ? 'rgba(255,255,255,0.08)' : 'transparent'};">
+          ${m.text.replace(/\n/g, '<br>')}
+        </div>
+      </div>
+    `).join('');
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function sendWebChatMessage() {
+    const input = document.getElementById('webChatInput');
+    const text = input.value.trim();
+    if (!text) return;
+    webChatMessages.push({ sender: 'user', text });
+    input.value = '';
+    renderWebChat();
+
+    setTimeout(() => {
+      let reply = '🤖 AI đã tiếp nhận: "' + text + '". Bạn hãy kiểm tra thông số độ nhạy ở Tab "Độ Nhạy" và mở Tab "Nhạc Chiến MP4" để nạp nhạc chiến từ máy của bạn nhé!';
+      if (text.toLowerCase().includes('shotgun')) {
+        reply = '💥 Với Shotgun M1887: Đặt tâm thắt lưng địch, kéo chữ J dứt khoát. Nút bắn khuyên dùng: 40%, Red Dot: 190!';
+      } else if (text.toLowerCase().includes('mp40') || text.toLowerCase().includes('smg')) {
+        reply = '⚡ Với MP40 / SMG: Kéo thẳng đều tay từ ngực lên cằm trong 0.3s đầu rồi ghìm tâm. Nút bắn: 46%, Red Dot: 182!';
+      }
+      webChatMessages.push({ sender: 'ai', text: reply });
+      renderWebChat();
+    }, 400);
+  }
+
+  
   // Initial render
   render();
+
 </script>
 
 </body>

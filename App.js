@@ -12,7 +12,10 @@ import {
   SafeAreaView,
   Modal,
   Share,
+  Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS } from './src/theme/colors';
 import { BRANDS, SUB_SERIES_MAP, MOCK_DATA, PRO_TIPS } from './src/data/sensitivityData';
@@ -23,9 +26,26 @@ export default function App() {
   // Navigation & Screen State
   const [currentScreen, setCurrentScreen] = useState('Splash'); // Splash, Auth, MainApp
   const [activeTab, setActiveTab] = useState('HomeTab'); // HomeTab, SensitivityTab, TrainingHudTab, AccountTab
+  const [isLandscapeMode, setIsLandscapeMode] = useState(false);
+
+  // Safe Tab Switcher (Ensures portrait mode when navigating between tabs)
+  const handleTabSwitch = async (tabName) => {
+    if (isLandscapeMode) {
+      try {
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+        setIsLandscapeMode(false);
+      } catch (e) {}
+    }
+    if (tabName === 'SensitivityTab') {
+      setSensSubScreen('BrandList');
+      setGlobalSearchQuery('');
+    }
+    setActiveTab(tabName);
+  };
 
   // Sensitivity Navigation
   const [sensSubScreen, setSensSubScreen] = useState('BrandList'); // BrandList, SubSeriesList, DeviceList, DetailView
+  const [sensNavSource, setSensNavSource] = useState('BrandList'); // 'BrandList' | 'DeviceList' | 'HomeTab' | 'AccountTab'
   const [selectedBrand, setSelectedBrand] = useState('Apple');
   const [selectedSubSeries, setSelectedSubSeries] = useState('All');
   const [selectedConfig, setSelectedConfig] = useState(null);
@@ -357,18 +377,18 @@ export default function App() {
     const q = globalSearchQuery.toLowerCase();
     return MOCK_DATA.filter(
       (item) =>
-        item.deviceName.toLowerCase().includes(q) ||
-        item.brand.toLowerCase().includes(q)
+        (item.deviceName || '').toLowerCase().includes(q) ||
+        (item.brand || '').toLowerCase().includes(q)
     );
   }, [globalSearchQuery]);
 
   const filteredData = useMemo(() => {
     return MOCK_DATA.filter((item) => {
-      const matchBrand = item.brand.toLowerCase() === selectedBrand.toLowerCase();
+      const matchBrand = (item.brand || '').toLowerCase() === (selectedBrand || '').toLowerCase();
       const matchSeries = selectedSubSeries === 'All' || item.series === selectedSubSeries;
       const matchSearch =
         !deviceSearchQuery.trim() ||
-        item.deviceName.toLowerCase().includes(deviceSearchQuery.toLowerCase());
+        (item.deviceName || '').toLowerCase().includes(deviceSearchQuery.toLowerCase());
       return matchBrand && matchSeries && matchSearch;
     });
   }, [selectedBrand, selectedSubSeries, deviceSearchQuery]);
@@ -377,12 +397,12 @@ export default function App() {
   const filteredSavedConfigs = useMemo(() => {
     if (!savedSearchQuery.trim()) return savedConfigs;
     const q = savedSearchQuery.toLowerCase();
-    return savedConfigs.filter(
-      (item) =>
-        item.title.toLowerCase().includes(q) ||
-        item.brand.toLowerCase().includes(q) ||
-        (item.config?.deviceName && item.config.deviceName.toLowerCase().includes(q))
-    );
+    return savedConfigs.filter((item) => {
+      const title = (item.title || item.name || '').toLowerCase();
+      const brand = (item.brand || '').toLowerCase();
+      const devName = (item.config?.deviceName || item.config?.name || '').toLowerCase();
+      return title.includes(q) || brand.includes(q) || devName.includes(q);
+    });
   }, [savedConfigs, savedSearchQuery]);
 
   // Auth Handlers
@@ -421,6 +441,20 @@ export default function App() {
       </View>
     );
   };
+
+  // ================= 0. SPLASH / LOADING SCREEN =================
+  if (currentScreen === 'Splash') {
+    return (
+      <SafeAreaView style={[styles.authContainer, { justifyContent: 'center', alignItems: 'center' }]}>
+        <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+        <View style={styles.authLogoBadge}>
+          <Text style={styles.authLogoIcon}>🎯</Text>
+        </View>
+        <Text style={[styles.authTitle, { marginTop: 14 }]}>ĐỘ NHẠY FF PRO</Text>
+        <Text style={styles.authSubtitle}>/// ĐANG KHỞI ĐỘNG HỆ THỐNG ESPORTS ///</Text>
+      </SafeAreaView>
+    );
+  }
 
   // ================= 1. AUTH SCREEN (COSMIC SCI-FI TAC) =================
   if (currentScreen === 'Auth') {
@@ -472,7 +506,10 @@ export default function App() {
       // ---------------- TAB 1: TRANG CHỦ COSMIC GALAXY ----------------
       case 'HomeTab':
         return (
-          <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            style={styles.tabContent}
+            contentContainerStyle={{ paddingBottom: 120 }}
+            showsVerticalScrollIndicator={false}>
             {/* Header Cosmic HUD */}
             <View style={styles.homeHeaderRow}>
               <View>
@@ -481,7 +518,7 @@ export default function App() {
               </View>
               <TouchableOpacity
                 style={styles.headerAvatar}
-                onPress={() => setActiveTab('AccountTab')}>
+                onPress={() => handleTabSwitch('AccountTab')}>
                 <Text style={styles.headerAvatarText}>{userProfile.avatarLetter}</Text>
               </TouchableOpacity>
             </View>
@@ -500,7 +537,7 @@ export default function App() {
               <TouchableOpacity
                 style={styles.bannerActionBtn}
                 onPress={() => {
-                  setActiveTab('SensitivityTab');
+                  handleTabSwitch('SensitivityTab');
                   setSensSubScreen('BrandList');
                 }}>
                 <Text style={styles.bannerActionBtnText}>Khám phá 250+ thiết bị →</Text>
@@ -529,7 +566,7 @@ export default function App() {
               <TouchableOpacity
                 style={styles.toolCard}
                 onPress={() => {
-                  setActiveTab('TrainingHudTab');
+                  handleTabSwitch('TrainingHudTab');
                 }}>
                 <Text style={styles.toolIcon}>🎮</Text>
                 <Text style={styles.toolTitle}>Phòng Luyện & HUD</Text>
@@ -539,7 +576,7 @@ export default function App() {
               <TouchableOpacity
                 style={styles.toolCard}
                 onPress={() => {
-                  setActiveTab('SensitivityTab');
+                  handleTabSwitch('SensitivityTab');
                   setSensSubScreen('BrandList');
                   setBrandListFilter('2026');
                 }}>
@@ -553,7 +590,7 @@ export default function App() {
               <TouchableOpacity
                 style={styles.toolCard}
                 onPress={() => {
-                  setActiveTab('SensitivityTab');
+                  handleTabSwitch('SensitivityTab');
                   setSensSubScreen('BrandList');
                   setBrandListFilter('GAMING');
                 }}>
@@ -565,7 +602,7 @@ export default function App() {
               <TouchableOpacity
                 style={styles.toolCard}
                 onPress={() => {
-                  setActiveTab('AccountTab');
+                  handleTabSwitch('AccountTab');
                 }}>
                 <Text style={styles.toolIcon}>💾</Text>
                 <Text style={styles.toolTitle}>Cấu Hình Đã Lưu ({savedConfigs.length})</Text>
@@ -631,7 +668,9 @@ export default function App() {
                     <TouchableOpacity
                       style={styles.deviceItemCard}
                       onPress={() => {
+                        if (item.brand) setSelectedBrand(item.brand);
                         setSelectedConfig(item);
+                        setSensNavSource('BrandList');
                         setSensSubScreen('DetailView');
                       }}>
                       <View style={{ flex: 1 }}>
@@ -660,7 +699,8 @@ export default function App() {
                   <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    style={{ marginBottom: 12 }}>
+                    contentContainerStyle={{ paddingHorizontal: 2 }}
+                    style={{ marginBottom: 12, flexGrow: 0 }}>
                     <View style={styles.categoryFilterRow}>
                       {[
                         { key: 'ALL', label: '🏢 16 Hãng Máy', count: 16 },
@@ -732,7 +772,9 @@ export default function App() {
                         <TouchableOpacity
                           style={styles.deviceItemCard}
                           onPress={() => {
+                            if (item.brand) setSelectedBrand(item.brand);
                             setSelectedConfig(item);
+                            setSensNavSource('BrandList');
                             setSensSubScreen('DetailView');
                           }}>
                           <View style={{ flex: 1 }}>
@@ -831,12 +873,21 @@ export default function App() {
                 data={filteredData}
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 100 }}
+                contentContainerStyle={{ paddingBottom: 120 }}
+                ListEmptyComponent={
+                  <View style={styles.emptyContainer}>
+                    <Text style={styles.emptyIcon}>🔍</Text>
+                    <Text style={styles.emptyTitle}>Chưa có máy trong phân mục này</Text>
+                    <Text style={styles.emptyDesc}>Hãy thử tìm kiếm trên thanh tìm kiếm hoặc chọn phân khúc khác nhé!</Text>
+                  </View>
+                }
                 renderItem={({ item }) => (
                   <TouchableOpacity
                     style={styles.deviceItemCard}
                     onPress={() => {
+                      if (item.brand) setSelectedBrand(item.brand);
                       setSelectedConfig(item);
+                      setSensNavSource('DeviceList');
                       setSensSubScreen('DetailView');
                     }}>
                     <View style={{ flex: 1 }}>
@@ -864,11 +915,12 @@ export default function App() {
         }
 
         // Sub-screen 4: Chi tiết cấu hình + Mô phỏng nút bắn HUD
-        if (sensSubScreen === 'DetailView' && selectedConfig) {
-          let baseGen = selectedConfig.general || 188;
-          let baseRedDot = selectedConfig.redDot || 174;
-          let baseBtnSize = selectedConfig.buttonSize || 42;
-          let dragTip = selectedConfig.dragType || 'Vuốt dứt khoát';
+        if (sensSubScreen === 'DetailView') {
+          const config = selectedConfig || MOCK_DATA[0];
+          let baseGen = config.general || 188;
+          let baseRedDot = config.redDot || 174;
+          let baseBtnSize = config.buttonSize || 42;
+          let dragTip = config.dragType || 'Vuốt dứt khoát';
 
           if (detailWeaponMode === 'SHOTGUN') {
             baseGen = Math.min(200, baseGen + 4);
@@ -884,38 +936,53 @@ export default function App() {
 
           const generalVal = baseGen;
           const redDotVal = baseRedDot;
-          const scope2x = selectedConfig.scope2x || Math.max(70, redDotVal - 6);
-          const scope4x = selectedConfig.scope4x || Math.max(60, redDotVal - 14);
-          const scopeAWM = selectedConfig.awm || Math.max(40, Math.round(generalVal * 0.40));
-          const freeLook = selectedConfig.freeLook || Math.max(70, generalVal - 45);
+          const scope2x = config.scope2x || Math.max(70, redDotVal - 6);
+          const scope4x = config.scope4x || Math.max(60, redDotVal - 14);
+          const scopeAWM = config.awm || Math.max(40, Math.round(generalVal * 0.40));
+          const freeLook = config.freeLook || Math.max(70, generalVal - 45);
           const btnSize = baseBtnSize;
-          const hudCoord = selectedConfig.hudPos || 'Cách đáy 12% • Cách phải 19%';
+          const hudCoord = config.hudPos || 'Cách đáy 12% • Cách phải 19%';
 
           return (
-            <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
+            <ScrollView
+              style={styles.tabContent}
+              contentContainerStyle={{ paddingBottom: 130 }}
+              showsVerticalScrollIndicator={false}>
               <TouchableOpacity
                 style={styles.backButtonRow}
                 onPress={() => {
-                  if (globalSearchQuery.trim()) {
-                    setSensSubScreen('BrandList');
-                  } else {
+                  if (sensNavSource === 'AccountTab') {
+                    setActiveTab('AccountTab');
+                  } else if (sensNavSource === 'HomeTab') {
+                    handleTabSwitch('HomeTab');
+                  } else if (sensNavSource === 'DeviceList') {
                     setSensSubScreen('DeviceList');
+                  } else {
+                    setSensSubScreen('BrandList');
                   }
                 }}>
                 <Text style={styles.backButtonIcon}>‹</Text>
-                <Text style={styles.backButtonText}>Quay lại danh sách máy</Text>
+                <Text style={styles.backButtonText}>
+                  {sensNavSource === 'AccountTab'
+                    ? 'Quay lại Cấu hình đã lưu'
+                    : sensNavSource === 'HomeTab'
+                    ? 'Quay lại Trang chủ'
+                    : sensNavSource === 'DeviceList'
+                    ? 'Quay lại danh sách máy'
+                    : 'Quay lại kho thiết bị'}
+                </Text>
               </TouchableOpacity>
 
               <View style={styles.detailHeaderCard}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                  <Text style={styles.detailBrandTag}>{selectedConfig.brand}</Text>
-                  {selectedConfig.is2026 && (
+                  <Text style={styles.detailBrandTag}>{config.brand || 'Free Fire'}</Text>
+                  {config.is2026 && (
                     <View style={styles.badge2026Header}>
                       <Text style={styles.badge2026HeaderText}>⚡ BẢN CHUẨN ESPORTS 2026</Text>
                     </View>
                   )}
                 </View>
-                <Text style={styles.detailTitle}>{selectedConfig.deviceName}</Text>
+                <Text style={styles.detailTitle}>{config.deviceName || config.name || config.title || 'Cấu hình tùy chỉnh'}</Text>
                 <Text style={styles.detailAuthor}>Hiệu chuẩn: Esports Headshot Lab 2026</Text>
               </View>
 
@@ -963,7 +1030,7 @@ export default function App() {
               <View style={styles.hardwareCard}>
                 <View style={styles.hardwareRow}>
                   <Text style={styles.hardwareLabel}>DPI Khuyên Dùng:</Text>
-                  <Text style={[styles.hardwareValue, { color: COLORS.secondary }]}>{selectedConfig.dpi}</Text>
+                  <Text style={[styles.hardwareValue, { color: COLORS.secondary }]}>{config.dpi}</Text>
                 </View>
                 <View style={styles.hardwareRow}>
                   <Text style={styles.hardwareLabel}>Kích thước nút bắn:</Text>
@@ -1014,7 +1081,7 @@ export default function App() {
               <TouchableOpacity
                 style={styles.testInTrainerBtn}
                 onPress={() => {
-                  setActiveTab('TrainingHudTab');
+                  handleTabSwitch('TrainingHudTab');
                 }}>
                 <Text style={styles.testInTrainerBtnText}>🎮 VÀO LUYỆN TÂM VỚI MÁY NÀY →</Text>
               </TouchableOpacity>
@@ -1022,13 +1089,13 @@ export default function App() {
               <View style={styles.actionButtonGroup}>
                 <TouchableOpacity
                   style={styles.saveActionButton}
-                  onPress={() => handleOpenSaveModal(selectedConfig)}>
+                  onPress={() => handleOpenSaveModal(config)}>
                   <Text style={styles.actionButtonText}>💾 LƯU CẤU HÌNH</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   style={styles.shareActionButton}
-                  onPress={() => handleShareSensitivity(selectedConfig)}>
+                  onPress={() => handleShareSensitivity(config)}>
                   <Text style={styles.shareActionButtonText}>📤 CHIA SẺ</Text>
                 </TouchableOpacity>
               </View>
@@ -1047,8 +1114,17 @@ export default function App() {
       case 'GeneratorTab':
         return (
           <TrainingAndHudStudio
-            onBack={() => setActiveTab('HomeTab')}
+            onBack={async () => {
+              if (isLandscapeMode) {
+                try {
+                  await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+                  setIsLandscapeMode(false);
+                } catch (e) {}
+              }
+              setActiveTab('HomeTab');
+            }}
             initialButtonSize={selectedConfig?.buttonSize || 42}
+            onOrientationChange={(landscape) => setIsLandscapeMode(landscape)}
           />
         );
 
@@ -1057,7 +1133,10 @@ export default function App() {
         const displayedList = showAllSaved ? filteredSavedConfigs : filteredSavedConfigs.slice(0, 5);
 
         return (
-          <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            style={styles.tabContent}
+            contentContainerStyle={{ paddingBottom: 130 }}
+            showsVerticalScrollIndicator={false}>
             <Text style={styles.screenMainTitle}>👤 HỒ SƠ & BỘ NHỚ CHIẾN THUẬT</Text>
             <Text style={styles.screenSubTitle}>Lưu & đổi tên không giới hạn các bộ độ nhạy của bạn</Text>
 
@@ -1132,7 +1211,10 @@ export default function App() {
                       <TouchableOpacity
                         style={styles.viewBtn}
                         onPress={() => {
-                          setSelectedConfig(item.config);
+                          const targetConfig = item.config || item;
+                          if (item.brand || targetConfig.brand) setSelectedBrand(item.brand || targetConfig.brand);
+                          setSelectedConfig(targetConfig);
+                          setSensNavSource('AccountTab');
                           setActiveTab('SensitivityTab');
                           setSensSubScreen('DetailView');
                         }}>
@@ -1216,56 +1298,60 @@ export default function App() {
       {/* Main Tab View */}
       <View style={{ flex: 1 }}>{renderTabContent()}</View>
 
-      {/* Bottom Navigation Bar (iOS 26 Floating Frosted Bar) */}
-      <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.navItem} onPress={() => setActiveTab('HomeTab')}>
-          <Text style={[styles.navIcon, activeTab === 'HomeTab' && styles.activeNavText]}>🏠</Text>
-          <Text style={[styles.navLabel, activeTab === 'HomeTab' && styles.activeNavText]}>
-            Trang Chủ
-          </Text>
-        </TouchableOpacity>
+      {/* Bottom Navigation Bar (iOS 26 Floating Frosted Bar - Tự ẩn khi xoay ngang trong phòng luyện) */}
+      {!(activeTab === 'TrainingHudTab' && isLandscapeMode) && (
+        <View style={styles.bottomBar}>
+          <TouchableOpacity style={styles.navItem} onPress={() => handleTabSwitch('HomeTab')}>
+            <Text style={[styles.navIcon, activeTab === 'HomeTab' && styles.activeNavText]}>🏠</Text>
+            <Text style={[styles.navLabel, activeTab === 'HomeTab' && styles.activeNavText]}>
+              Trang Chủ
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.navItem}
-          onPress={() => {
-            setActiveTab('SensitivityTab');
-            setSensSubScreen('BrandList');
-            setGlobalSearchQuery('');
-          }}>
-          <Text style={[styles.navIcon, activeTab === 'SensitivityTab' && styles.activeNavText]}>
-            🎯
-          </Text>
-          <Text style={[styles.navLabel, activeTab === 'SensitivityTab' && styles.activeNavText]}>
-            Độ Nhạy
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.navItem}
+            onPress={() => {
+              handleTabSwitch('SensitivityTab');
+              setSensSubScreen('BrandList');
+              setGlobalSearchQuery('');
+            }}>
+            <Text style={[styles.navIcon, activeTab === 'SensitivityTab' && styles.activeNavText]}>
+              🎯
+            </Text>
+            <Text style={[styles.navLabel, activeTab === 'SensitivityTab' && styles.activeNavText]}>
+              Độ Nhạy
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.navItem}
-          onPress={() => setActiveTab('TrainingHudTab')}>
-          <Text style={[styles.navIcon, (activeTab === 'TrainingHudTab' || activeTab === 'AimTrainerTab' || activeTab === 'HudDpiTab') && styles.activeNavText]}>
-            🎮
-          </Text>
-          <Text style={[styles.navLabel, (activeTab === 'TrainingHudTab' || activeTab === 'AimTrainerTab' || activeTab === 'HudDpiTab') && styles.activeNavText]}>
-            Luyện & HUD
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.navItem}
+            onPress={() => handleTabSwitch('TrainingHudTab')}>
+            <Text style={[styles.navIcon, (activeTab === 'TrainingHudTab' || activeTab === 'AimTrainerTab' || activeTab === 'HudDpiTab') && styles.activeNavText]}>
+              🎮
+            </Text>
+            <Text style={[styles.navLabel, (activeTab === 'TrainingHudTab' || activeTab === 'AimTrainerTab' || activeTab === 'HudDpiTab') && styles.activeNavText]}>
+              Luyện & HUD
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.navItem}
-          onPress={() => setActiveTab('AccountTab')}>
-          <Text style={[styles.navIcon, activeTab === 'AccountTab' && styles.activeNavText]}>
-            👤
-          </Text>
-          <Text style={[styles.navLabel, activeTab === 'AccountTab' && styles.activeNavText]}>
-            Tài Khoản
-          </Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            style={styles.navItem}
+            onPress={() => handleTabSwitch('AccountTab')}>
+            <Text style={[styles.navIcon, activeTab === 'AccountTab' && styles.activeNavText]}>
+              👤
+            </Text>
+            <Text style={[styles.navLabel, activeTab === 'AccountTab' && styles.activeNavText]}>
+              Tài Khoản
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* MODAL 1: ĐẶT TÊN KHI LƯU CẤU HÌNH (LƯU KHÔNG GIỚI HẠN) */}
       <Modal visible={isSaveModalVisible} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
+        <KeyboardAvoidingView
+          style={styles.modalOverlay}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.modalCard}>
             <View style={styles.tacticalCornerTL} />
             <View style={styles.tacticalCornerBR} />
@@ -1308,12 +1394,14 @@ export default function App() {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* MODAL 2: ĐỔI TÊN CẤU HÌNH ĐÃ LƯU */}
       <Modal visible={isRenameModalVisible} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
+        <KeyboardAvoidingView
+          style={styles.modalOverlay}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.modalCard}>
             <View style={styles.tacticalCornerTL} />
             <View style={styles.tacticalCornerBR} />
@@ -1340,12 +1428,14 @@ export default function App() {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* MODAL 3: CHỈNH SỬA PROFILE */}
       <Modal visible={isEditProfileVisible} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
+        <KeyboardAvoidingView
+          style={styles.modalOverlay}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.modalCard}>
             <View style={styles.tacticalCornerTL} />
             <View style={styles.tacticalCornerBR} />
@@ -1393,14 +1483,15 @@ export default function App() {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
-      {/* BONG BÓNG CHAT AI COACH OB 2026 (Nổi trên mọi màn hình) */}
+      {/* BONG BÓNG CHAT AI COACH OB 2026 (Nổi trên mọi màn hình, tự ẩn khi đang trong chế độ bắn ngang để không che nút bắn) */}
       <AiChatBubble
+        hidden={activeTab === 'TrainingHudTab' && isLandscapeMode}
         onApplyToTrainer={(cfg) => {
           setSelectedConfig(cfg);
-          setActiveTab('TrainingHudTab');
+          handleTabSwitch('TrainingHudTab');
         }}
         onSaveConfig={(cfg) => {
           handleOpenSaveModal(cfg);
@@ -1415,11 +1506,12 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: COLORS.background,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   tabContent: {
     flex: 1,
     paddingHorizontal: 16,
-    paddingTop: 12,
+    paddingTop: 10,
   },
 
   // Tactical Corner Accents: Tắt bỏ góc nhọn để UI mềm mại chuẩn iOS
@@ -1439,7 +1531,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
     justifyContent: 'center',
-    padding: 24,
+    padding: 20,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight || 24) + 12 : 20,
   },
   authCard: {
     backgroundColor: COLORS.glassCardElevated,
@@ -2404,13 +2497,14 @@ const styles = StyleSheet.create({
   // Bottom Navigation Bar (iOS 26 Floating Frosted Bar)
   bottomBar: {
     flexDirection: 'row',
-    height: 70,
-    backgroundColor: 'rgba(12, 14, 18, 0.94)',
+    height: Platform.OS === 'ios' ? 82 : 68,
+    backgroundColor: 'rgba(12, 14, 18, 0.96)',
     borderTopWidth: 1,
     borderTopColor: 'rgba(255, 255, 255, 0.08)',
     alignItems: 'center',
     justifyContent: 'space-around',
-    paddingBottom: 6,
+    paddingBottom: Platform.OS === 'ios' ? 22 : 8,
+    paddingTop: 6,
   },
   navItem: {
     alignItems: 'center',

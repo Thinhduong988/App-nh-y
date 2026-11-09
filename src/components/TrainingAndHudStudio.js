@@ -61,7 +61,7 @@ const HUD_PRESETS = [
   { id: 'beginner', name: 'Tân Binh 2 Ngón', size: 54, opacity: 100, desc: 'Nút to chống trượt tay, dễ bấm trúng.' },
 ];
 
-export default function TrainingAndHudStudio({ onBack, initialButtonSize = 42 }) {
+export default function TrainingAndHudStudio({ onBack, initialButtonSize = 42, onOrientationChange }) {
   // Main Segment: 'TRAINER' (Luyện tâm) | 'HUD_STUDIO' (Căn chỉnh nút bắn) | 'EVALUATOR' (Đánh giá máy & DPI) | 'GRAPHICS' (Đồ họa & FPS)
   const [activeSegment, setActiveSegment] = useState('TRAINER');
 
@@ -105,28 +105,46 @@ export default function TrainingAndHudStudio({ onBack, initialButtonSize = 42 })
   useEffect(() => {
     const subscription = Dimensions.addEventListener('change', ({ window }) => {
       setDimensions(window);
-      setIsLandscape(window.width > window.height);
+      const landscape = window.width > window.height;
+      setIsLandscape(landscape);
+      onOrientationChange?.(landscape);
     });
 
     return () => {
       subscription?.remove?.();
-      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).catch(() => {});
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).catch(() => { });
+      onOrientationChange?.(false);
     };
   }, []);
 
   // TÍNH NĂNG XOAY MÀN HÌNH THÀNH NÚT RIÊNG (Dedicated Screen Rotation Function)
   const handleToggleOrientation = async () => {
     try {
-      if (isLandscape) {
+      const nextLandscape = !isLandscape;
+      if (nextLandscape) {
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+      } else {
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+      }
+      setIsLandscape(nextLandscape);
+      onOrientationChange?.(nextLandscape);
+    } catch (e) {
+      const nextLandscape = !isLandscape;
+      setIsLandscape(nextLandscape);
+      onOrientationChange?.(nextLandscape);
+    }
+  };
+
+  // Safe Exit Handler (Ensures phone returns to portrait mode upon back)
+  const handleExit = async () => {
+    if (isLandscape) {
+      try {
         await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
         setIsLandscape(false);
-      } else {
-        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-        setIsLandscape(true);
-      }
-    } catch (e) {
-      setIsLandscape(!isLandscape);
+        onOrientationChange?.(false);
+      } catch (e) { }
     }
+    onBack?.();
   };
 
   // TOUCH HANDLERS ON THE BOTTOM-RIGHT FIRE BUTTON
@@ -290,61 +308,66 @@ export default function TrainingAndHudStudio({ onBack, initialButtonSize = 42 })
       <StatusBar hidden={isLandscape} barStyle="light-content" />
 
       {/* TOP HEADER: LIQUID FROSTED GLASS BAR WITH DEDICATED ROTATION BUTTON */}
-      <View style={[styles.topBar, isLandscape && styles.topBarLandscape]}>
-        {onBack && (
-          <TouchableOpacity style={styles.backBtnBig} onPress={onBack} activeOpacity={0.7}>
-            <Text style={styles.backChevron}>‹</Text>
-            <Text style={styles.backBtnText}>Quay lại</Text>
+      <View style={[styles.headerWrapper, isLandscape && styles.headerWrapperLandscape]}>
+        <View style={[styles.topBar, isLandscape && styles.topBarLandscape]}>
+          {onBack && (
+            <TouchableOpacity style={styles.backBtnBig} onPress={handleExit} activeOpacity={0.7}>
+              <Text style={styles.backChevron}>‹</Text>
+              <Text style={styles.backBtnText}>Quay lại</Text>
+            </TouchableOpacity>
+          )}
+
+          {/* Center Title Badge */}
+          <View style={styles.headerCenter}>
+            <Text style={styles.headerTitleText}>
+              {activeSegment === 'TRAINER' ? '🎯 PHÒNG TẬP' : activeSegment === 'HUD_STUDIO' ? '📐 NÚT BẮN & DPI' : activeSegment === 'EVALUATOR' ? '📱 ĐO MÁY AI' : '🎮 ĐỒ HỌA & FPS'}
+            </Text>
+            <Text style={styles.headerSubText}>
+
+            </Text>
+          </View>
+
+          {/* NÚT XOAY MÀN HÌNH RIÊNG BIỆT (DEDICATED ROTATE BUTTON) */}
+          <TouchableOpacity
+            style={styles.dedicatedRotateBtn}
+            activeOpacity={0.8}
+            onPress={handleToggleOrientation}>
+            <Text style={styles.rotateBtnIcon}>🔄</Text>
+            <Text style={styles.rotateBtnText}>
+              {isLandscape ? 'Màn Dọc' : 'Xoay Ngang'}
+            </Text>
           </TouchableOpacity>
-        )}
+        </View>
 
-        {/* Unified Mode Segment Selector */}
+        {/* Unified Mode Segment Selector in dedicated 2nd row (Portrait only) */}
         {!isLandscape && (
-          <View style={styles.segmentContainer}>
-            <TouchableOpacity
-              style={[styles.segmentBtn, activeSegment === 'TRAINER' && styles.segmentBtnActive]}
-              onPress={() => setActiveSegment('TRAINER')}>
-              <Text style={[styles.segmentBtnText, activeSegment === 'TRAINER' && styles.segmentBtnTextActive]}>
-                🎯 Luyện Kéo Tâm
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.segmentBtn, activeSegment === 'HUD_STUDIO' && styles.segmentBtnActive]}
-              onPress={() => setActiveSegment('HUD_STUDIO')}>
-              <Text style={[styles.segmentBtnText, activeSegment === 'HUD_STUDIO' && styles.segmentBtnTextActive]}>
-                📐 Nút Bắn & DPI
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.segmentBtn, activeSegment === 'EVALUATOR' && styles.segmentBtnActive]}
-              onPress={() => setActiveSegment('EVALUATOR')}>
-              <Text style={[styles.segmentBtnText, activeSegment === 'EVALUATOR' && styles.segmentBtnTextActive]}>
-                📱 Đo Máy
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.segmentBtn, activeSegment === 'GRAPHICS' && styles.segmentBtnActive]}
-              onPress={() => setActiveSegment('GRAPHICS')}>
-              <Text style={[styles.segmentBtnText, activeSegment === 'GRAPHICS' && styles.segmentBtnTextActive]}>
-                🎮 Đồ Họa
-              </Text>
-            </TouchableOpacity>
+          <View style={styles.segmentRow}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.segmentContainer}>
+              {[
+                { key: 'TRAINER', icon: '🎯', label: 'Luyện Kéo Tâm' },
+                { key: 'HUD_STUDIO', icon: '📐', label: 'Nút Bắn & DPI' },
+                { key: 'EVALUATOR', icon: '📱', label: 'Đo Máy AI' },
+                { key: 'GRAPHICS', icon: '🎮', label: 'Đồ Họa & FPS' },
+              ].map((tab) => {
+                const isActive = activeSegment === tab.key;
+                return (
+                  <TouchableOpacity
+                    key={tab.key}
+                    style={[styles.segmentBtn, isActive && styles.segmentBtnActive]}
+                    onPress={() => setActiveSegment(tab.key)}>
+                    <Text style={styles.segmentIcon}>{tab.icon}</Text>
+                    <Text style={[styles.segmentBtnText, isActive && styles.segmentBtnTextActive]}>
+                      {tab.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
           </View>
         )}
-
-        {/* NÚT XOAY MÀN HÌNH RIÊNG BIỆT (DEDICATED ROTATE BUTTON) */}
-        <TouchableOpacity
-          style={styles.dedicatedRotateBtn}
-          activeOpacity={0.8}
-          onPress={handleToggleOrientation}>
-          <Text style={styles.rotateBtnIcon}>🔄</Text>
-          <Text style={styles.rotateBtnText}>
-            {isLandscape ? 'Màn Dọc' : 'Xoay Ngang'}
-          </Text>
-        </TouchableOpacity>
       </View>
 
       {/* ================= MODE 1: COMBAT AIM TRAINER ARENA ================= */}
@@ -352,25 +375,31 @@ export default function TrainingAndHudStudio({ onBack, initialButtonSize = 42 })
         <View style={[styles.battlefield, isLandscape && styles.battlefieldLandscape]}>
           {/* WEAPON SELECTOR ROW (TOP OF COMBAT) */}
           <View style={[styles.combatWeaponBar, isLandscape && styles.combatWeaponBarLandscape]}>
-            <View style={styles.weaponPills}>
-              {WEAPONS.map((w) => {
-                const isSel = selectedWeapon.id === w.id;
-                return (
-                  <TouchableOpacity
-                    key={w.id}
-                    style={[styles.weaponPill, isSel && styles.weaponPillActive]}
-                    onPress={() => {
-                      setSelectedWeapon(w);
-                      SOUNDS.playWeaponShot(w.id);
-                    }}>
-                    <Text style={styles.weaponPillIcon}>{w.icon}</Text>
-                    <Text style={[styles.weaponPillText, isSel && styles.weaponPillTextActive]}>
-                      {w.name.split(' ')[0]}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.weaponScrollContent}
+              style={{ flexGrow: 0, marginRight: 8 }}>
+              <View style={styles.weaponPills}>
+                {WEAPONS.map((w) => {
+                  const isSel = selectedWeapon.id === w.id;
+                  return (
+                    <TouchableOpacity
+                      key={w.id}
+                      style={[styles.weaponPill, isSel && styles.weaponPillActive]}
+                      onPress={() => {
+                        setSelectedWeapon(w);
+                        SOUNDS.playWeaponShot(w.id);
+                      }}>
+                      <Text style={styles.weaponPillIcon}>{w.icon}</Text>
+                      <Text style={[styles.weaponPillText, isSel && styles.weaponPillTextActive]}>
+                        {w.name.split(' ')[0]}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </ScrollView>
 
             {/* In-battle quick HUD Button Size Pill */}
             <TouchableOpacity
@@ -545,7 +574,7 @@ export default function TrainingAndHudStudio({ onBack, initialButtonSize = 42 })
 
       {/* ================= MODE 2: HUD STUDIO (TÙY CHỈNH NÚT BẮN) ================= */}
       {activeSegment === 'HUD_STUDIO' && !isLandscape && (
-        <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: 130 }} showsVerticalScrollIndicator={false}>
           {/* Mockup Preview Area */}
           <View style={styles.previewBox}>
             <Text style={styles.previewTitle}>🔘 Mô Phỏng Cỡ Nút Bắn Thực Tế</Text>
@@ -619,7 +648,7 @@ export default function TrainingAndHudStudio({ onBack, initialButtonSize = 42 })
 
       {/* ================= MODE 3: ĐÁNH GIÁ MÁY & DPI (EVALUATOR) ================= */}
       {activeSegment === 'EVALUATOR' && !isLandscape && (
-        <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: 130 }} showsVerticalScrollIndicator={false}>
           <View style={styles.glassCard}>
             <Text style={styles.cardHeaderTitle}>Thông số máy của bạn</Text>
             <Text style={styles.cardDesc}>
@@ -707,7 +736,7 @@ export default function TrainingAndHudStudio({ onBack, initialButtonSize = 42 })
 
       {/* ================= MODE 4: GRAPHICS & FPS GUIDE ================= */}
       {activeSegment === 'GRAPHICS' && !isLandscape && (
-        <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: 130 }} showsVerticalScrollIndicator={false}>
           <View style={styles.glassCard}>
             <Text style={styles.cardHeaderTitle}>🎮 Thiết Lập Đồ Họa & FPS Free Fire</Text>
             <Text style={styles.cardDesc}>
@@ -747,33 +776,55 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
+  headerWrapper: {
+    backgroundColor: COLORS.glassCard,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.glassBorder,
+  },
+  headerWrapperLandscape: {
+    borderBottomWidth: 1,
+  },
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    backgroundColor: COLORS.glassCard,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.glassBorder,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     gap: 8,
   },
   topBarLandscape: {
-    paddingVertical: 6,
-    paddingHorizontal: 20,
+    paddingVertical: 5,
+    paddingHorizontal: 16,
+  },
+  headerCenter: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTitleText: {
+    color: '#FFF',
+    fontSize: 13,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
+  headerSubText: {
+    color: COLORS.primaryBright,
+    fontSize: 9,
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   backBtnBig: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    paddingVertical: 7,
-    paddingHorizontal: 14,
-    borderRadius: 22,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.12)',
   },
   backChevron: {
-    fontSize: 24,
+    fontSize: 22,
     color: COLORS.primaryBright,
     marginRight: 4,
     marginTop: -2,
@@ -781,33 +832,42 @@ const styles = StyleSheet.create({
   },
   backBtnText: {
     color: '#FFF',
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '700',
   },
 
-  // Segment Selector
-  segmentContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 20,
-    padding: 3,
-    gap: 3,
-    borderWidth: 1,
-    borderColor: COLORS.glassBorder,
+  // Segment Selector Row (Dedicated 2nd row)
+  segmentRow: {
+    paddingHorizontal: 10,
+    paddingBottom: 8,
   },
-  segmentBtn: {
-    flex: 1,
-    paddingVertical: 6,
-    borderRadius: 16,
+  segmentContainer: {
+    flexDirection: 'row',
+    gap: 6,
+    paddingHorizontal: 2,
     alignItems: 'center',
   },
+  segmentBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    gap: 5,
+  },
   segmentBtnActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: 'rgba(255, 106, 0, 0.22)',
+    borderColor: COLORS.primary,
+  },
+  segmentIcon: {
+    fontSize: 13,
   },
   segmentBtnText: {
     color: COLORS.textMuted,
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
   },
   segmentBtnTextActive: {
@@ -819,13 +879,13 @@ const styles = StyleSheet.create({
   dedicatedRotateBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 106, 0, 0.18)',
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 22,
+    backgroundColor: 'rgba(255, 106, 0, 0.2)',
+    paddingVertical: 7,
+    paddingHorizontal: 12,
+    borderRadius: 20,
     borderWidth: 1.5,
     borderColor: COLORS.primary,
-    gap: 6,
+    gap: 5,
     shadowColor: COLORS.primary,
     shadowOpacity: 0.35,
     shadowRadius: 8,
@@ -854,8 +914,8 @@ const styles = StyleSheet.create({
   combatWeaponBar: {
     position: 'absolute',
     top: 10,
-    left: 16,
-    right: 16,
+    left: 12,
+    right: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -863,8 +923,11 @@ const styles = StyleSheet.create({
   },
   combatWeaponBarLandscape: {
     top: 6,
-    left: 24,
-    right: 24,
+    left: 20,
+    right: 20,
+  },
+  weaponScrollContent: {
+    alignItems: 'center',
   },
   weaponPills: {
     flexDirection: 'row',
