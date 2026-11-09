@@ -449,9 +449,9 @@ export default function App() {
       <SafeAreaView style={[styles.authContainer, { justifyContent: 'center', alignItems: 'center' }]}>
         <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
         <View style={styles.authLogoBadge}>
-          <Text style={styles.authLogoIcon}>🎯</Text>
+          <Text style={styles.authLogoIcon}>👑</Text>
         </View>
-        <Text style={[styles.authTitle, { marginTop: 14 }]}>ĐỘ NHẠY FF PRO</Text>
+        <Text style={[styles.authTitle, { marginTop: 14 }]}>ĐẲNG CẤP</Text>
         <Text style={styles.authSubtitle}>/// ĐANG KHỞI ĐỘNG HỆ THỐNG ESPORTS ///</Text>
       </SafeAreaView>
     );
@@ -469,10 +469,10 @@ export default function App() {
           <View style={styles.tacticalCornerBR} />
 
           <View style={styles.authLogoBadge}>
-            <Text style={styles.authLogoIcon}>🎯</Text>
+            <Text style={styles.authLogoIcon}>👑</Text>
           </View>
-          <Text style={styles.authTitle}>ĐỘ NHẠY FF PRO</Text>
-          <Text style={styles.authSubtitle}>/// COSMIC GALAXY TACTICAL HUD 2026 ///</Text>
+          <Text style={styles.authTitle}>ĐẲNG CẤP</Text>
+          <Text style={styles.authSubtitle}>/// HỆ THỐNG KÉO TÂM ESPORTS ĐỈNH CAO ///</Text>
 
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Tên Nhân Vật / IGN</Text>
