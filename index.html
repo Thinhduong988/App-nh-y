@@ -931,13 +931,21 @@
           <div style="font-size:10px; color:var(--text-muted); margin-top:2px;" id="webTrackMeta">Esports Gaming Beat</div>
 
           <!-- Controls -->
-          <div style="display:flex; justify-content:center; align-items:center; gap:12px; margin-top:12px;">
-            <button class="btn btn-outline" style="width:36px; height:36px; padding:0; border-radius:18px;" onclick="toggleWebMusicLoop()" title="Lặp lại">
+          <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-top:12px;">
+            <button class="btn btn-outline" style="width:36px; height:36px; padding:0; border-radius:18px;" onclick="toggleWebMusicLoop()" title="Chế độ lặp">
               <span id="webLoopIcon" style="font-size:14px; color:var(--cyan);">🔁</span>
+            </button>
+
+            <button class="btn btn-outline" style="width:36px; height:36px; padding:0; border-radius:18px;" onclick="playPrevWebTrack()" title="Bài trước">
+              ⏮
             </button>
 
             <button class="btn btn-primary" style="width:48px; height:48px; padding:0; border-radius:24px; font-size:18px;" id="webPlayBtn" onclick="toggleWebPlayPause()">
               ▶
+            </button>
+
+            <button class="btn btn-outline" style="width:36px; height:36px; padding:0; border-radius:18px;" onclick="playNextWebTrack()" title="Bài kế tiếp">
+              ⏭
             </button>
 
             <button class="btn btn-outline" style="width:36px; height:36px; padding:0; border-radius:18px;" onclick="stopWebMusic()" title="Dừng">
@@ -946,27 +954,73 @@
           </div>
         </div>
 
-        <!-- Big Button: Pick MP4 Video from device -->
-        <div class="scifi-panel" style="padding:12px; cursor:pointer; margin-bottom:12px; border-color:var(--primary);" onclick="triggerMp4Upload()">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <div style="font-size:24px;">📁</div>
-            <div style="flex:1;">
-              <div style="font-size:13px; font-weight:900; color:var(--secondary);">+ CHỌN VIDEO MP4 TỪ MÁY BẠN</div>
-              <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">Trích xuất phát nhạc từ clip TikTok, Highlight FF, MP4 hoặc Audio trên máy</div>
+        <!-- 2 Action Buttons: Pick Media File & Add URL Link -->
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <div class="scifi-panel" style="flex:1; padding:10px; cursor:pointer; border-color:var(--primary);" onclick="triggerMp4Upload()">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="font-size:20px;">📁</div>
+              <div style="flex:1;">
+                <div style="font-size:11px; font-weight:900; color:var(--secondary);">CHỌN FILE TỪ MÁY</div>
+                <div style="font-size:8.5px; color:var(--text-muted); margin-top:1px;">MP3, M4A, MP4, WAV</div>
+              </div>
             </div>
-            <div style="font-size:16px; color:var(--primary); font-weight:900;">➔</div>
+          </div>
+
+          <div class="scifi-panel" style="flex:1; padding:10px; cursor:pointer; border-color:var(--cyan);" onclick="toggleWebLinkInput()">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="font-size:20px;">🔗</div>
+              <div style="flex:1;">
+                <div style="font-size:11px; font-weight:900; color:var(--cyan);">DÁN LINK NHẠC/VIDEO</div>
+                <div style="font-size:8.5px; color:var(--text-muted); margin-top:1px;">URL online hoặc stream</div>
+              </div>
+            </div>
           </div>
         </div>
 
+        <!-- Link URL Input Box -->
+        <div id="webLinkInputBox" class="scifi-panel" style="display:none; padding:12px; margin-bottom:12px; border-color:var(--cyan);">
+          <div style="font-size:12px; font-weight:900; color:var(--cyan); margin-bottom:8px;">🔗 THÊM TỪ LINK VIDEO / NHẠC ONLINE</div>
+          <input type="text" id="webInputLinkUrl" class="modal-input" placeholder="Dán link URL (https://...mp3, mp4, stream)" style="font-size:11px; padding:8px 10px; margin-bottom:6px;">
+          <input type="text" id="webInputLinkTitle" class="modal-input" placeholder="Đặt tên bài hát (tùy chọn)..." style="font-size:11px; padding:8px 10px; margin-bottom:8px;">
+          <button class="btn btn-primary" style="width:100%; font-size:11px; padding:8px 0;" onclick="submitWebLinkTrack()">⚡ THÊM VÀO PLAYLIST & PHÁT</button>
+          
+          <div style="font-size:10px; color:var(--text-muted); margin-top:8px; margin-bottom:4px;">💡 Link beat Esport hot mẫu sẵn:</div>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <div style="background:rgba(255,255,255,0.04); padding:4px 8px; border-radius:6px; cursor:pointer; font-size:10px; display:flex; justify-content:space-between;" onclick="quickAddWebPreset(0)">
+              <span style="color:var(--secondary); font-weight:bold;">[Phonk] Free Fire Phonk Drift Bass Boost</span>
+              <span style="color:var(--cyan);">+ Thêm</span>
+            </div>
+            <div style="background:rgba(255,255,255,0.04); padding:4px 8px; border-radius:6px; cursor:pointer; font-size:10px; display:flex; justify-content:space-between;" onclick="quickAddWebPreset(1)">
+              <span style="color:var(--secondary); font-weight:bold;">[EDM] EDM Esports Montage Trap Beat</span>
+              <span style="color:var(--cyan);">+ Thêm</span>
+            </div>
+            <div style="background:rgba(255,255,255,0.04); padding:4px 8px; border-radius:6px; cursor:pointer; font-size:10px; display:flex; justify-content:space-between;" onclick="quickAddWebPreset(2)">
+              <span style="color:var(--secondary); font-weight:bold;">[Lofi] Free Fire Chill Lofi Leo Rank</span>
+              <span style="color:var(--cyan);">+ Thêm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search Track Bar -->
+        <div style="display:flex; align-items:center; background:rgba(255,255,255,0.05); border-radius:10px; padding:6px 10px; border:1px solid rgba(255,255,255,0.08); margin-bottom:10px;">
+          <span style="margin-right:6px; font-size:12px;">🔍</span>
+          <input type="text" id="webTrackSearchInput" placeholder="Tìm kiếm bài hát, video, link..." style="flex:1; background:transparent; border:none; color:#fff; font-size:11px; outline:none;" oninput="filterWebPlaylist(this.value)">
+        </div>
+
+        <!-- Playlist Header & Resume Button -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <div style="font-size:12px; font-weight:900; color:var(--secondary);">⭐ DANH SÁCH BÀI HÁT (<span id="webPlaylistCount">0</span>)</div>
+          <button class="btn btn-outline" style="padding:2px 8px; font-size:9px; border-color:var(--cyan); color:var(--cyan);" onclick="resumeLastWebTrack()">▶ TIẾP TỤC BÀI ĐANG CHỌN</button>
+        </div>
+
         <!-- Playlist -->
-        <div style="font-size:12px; font-weight:900; color:var(--secondary); margin-bottom:6px;">⭐ DANH SÁCH BÀI HÁT</div>
         <div id="webPlaylistContainer" style="display:flex; flex-direction:column; gap:6px;">
           <!-- Playlist items injected here -->
         </div>
 
         <div style="background:rgba(12, 14, 20, 0.85); border-radius:8px; padding:10px; margin-top:10px; border:1px solid var(--border);">
           <div style="font-size:10px; color:var(--text-muted); line-height:1.4;">
-            💡 <b style="color:var(--secondary);">Chế độ phát nền:</b> Bạn có thể bấm [✕] đóng cửa sổ này lại. Nhạc vẫn tiếp tục phát trong nền để bạn vừa nghe vừa xem độ nhạy và kéo tâm!
+            💡 <b style="color:var(--secondary);">Chế độ phát nền & Pop-up:</b> Bạn có thể bấm [✕] đóng cửa sổ này lại. Nhạc vẫn tiếp tục phát trong nền kèm <span style="color:var(--cyan); font-weight:bold;">thanh Mini Pop-up nổi</span> để bạn vừa nghe vừa xem độ nhạy và kéo tâm!
           </div>
         </div>
       </div>
@@ -974,9 +1028,26 @@
     </div>
   </div>
 
+  <!-- Floating Mini Music Player Pop-up Widget (Hiển thị khi đang phát nhạc và đóng popup lớn) -->
+  <div id="webMiniPlayerBar" style="display:none; position:fixed; bottom:74px; left:12px; right:74px; background:rgba(14,18,26,0.95); border:1.5px solid var(--cyan); border-radius:20px; padding:6px 10px; align-items:center; z-index:9998; box-shadow:0 4px 15px rgba(0,240,255,0.4);">
+    <div style="display:flex; align-items:center; flex:1; cursor:pointer;" onclick="openChatMusicModal(); switchModalTab('MUSIC');">
+      <div style="font-size:16px; margin-right:8px;" id="webMiniPlayerIcon">🎵</div>
+      <div style="flex:1; overflow:hidden;">
+        <div id="webMiniPlayerTitle" style="font-size:11px; font-weight:900; color:#fff; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">Đang phát nhạc</div>
+        <div id="webMiniPlayerSub" style="font-size:8.5px; color:var(--cyan); font-weight:bold;">Đang chạy nền • Tiếp tục</div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:6px;">
+      <button class="btn btn-outline" style="width:26px; height:26px; padding:0; border-radius:13px; font-size:10px;" onclick="playPrevWebTrack()">⏮</button>
+      <button class="btn btn-primary" style="width:28px; height:28px; padding:0; border-radius:14px; font-size:11px;" id="webMiniPlayBtn" onclick="toggleWebPlayPause()">⏸</button>
+      <button class="btn btn-outline" style="width:26px; height:26px; padding:0; border-radius:13px; font-size:10px;" onclick="playNextWebTrack()">⏭</button>
+      <button class="btn btn-outline" style="width:20px; height:20px; padding:0; border-radius:10px; font-size:9px; color:var(--text-muted);" onclick="document.getElementById('webMiniPlayerBar').style.display='none'">✕</button>
+    </div>
+  </div>
+
   <!-- Hidden Audio/Video player and File Picker -->
-  <video id="hiddenMediaElem" style="display:none;" loop></video>
-  <input type="file" id="localMp4Picker" accept="video/mp4,video/*,audio/*" style="display:none;" onchange="handleWebMediaPicked(this)">
+  <video id="hiddenMediaElem" style="display:none;"></video>
+  <input type="file" id="localMp4Picker" accept="audio/*,video/*,.mp3,.m4a,.mp4,.wav,.aac,.ogg,.flac" style="display:none;" onchange="handleWebMediaPicked(this)">
 
 </div>
 
@@ -1788,15 +1859,99 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
     document.getElementById('localMp4Picker').click();
   }
 
+  let webSearchQuery = '';
+  const WEB_PRESET_LINKS = [
+    { name: '⚡ Free Fire Phonk Drift Bass Boost 2026', url: 'https://raw.githubusercontent.com/rafaelreis-hotmart/Audio-Sample-files/master/sample.mp3', tag: 'Phonk' },
+    { name: '🔥 EDM Esports Montage Beat (Drop Cực Căng)', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', tag: 'EDM' },
+    { name: '🎧 Free Fire Chill Lofi Leo Rank (Hồi Tâm)', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', tag: 'Lofi' }
+  ];
+
+  function toggleWebLinkInput() {
+    const box = document.getElementById('webLinkInputBox');
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function quickAddWebPreset(idx) {
+    const p = WEB_PRESET_LINKS[idx];
+    if (!p) return;
+    document.getElementById('webInputLinkUrl').value = p.url;
+    document.getElementById('webInputLinkTitle').value = p.name;
+    submitWebLinkTrack();
+  }
+
+  function submitWebLinkTrack() {
+    const url = document.getElementById('webInputLinkUrl').value.trim();
+    const title = document.getElementById('webInputLinkTitle').value.trim() || ('Nhạc Online #' + Math.floor(Math.random() * 900 + 100));
+    if (!url) {
+      showToast('⚠️ Vui lòng nhập link URL');
+      return;
+    }
+    const newTrack = {
+      id: 'link_' + Date.now(),
+      name: title,
+      meta: 'Trực Tuyến (URL Link)',
+      url: url,
+      isCustom: true
+    };
+    webCustomTracks.unshift(newTrack);
+    try {
+      localStorage.setItem('my_web_music_tracks', JSON.stringify(webCustomTracks.map(t => ({ id: t.id, name: t.name, meta: t.meta, url: t.url, isCustom: true }))));
+    } catch(e) {}
+    document.getElementById('webInputLinkUrl').value = '';
+    document.getElementById('webInputLinkTitle').value = '';
+    document.getElementById('webLinkInputBox').style.display = 'none';
+    renderWebPlaylist();
+    playWebTrack(newTrack);
+    showToast('🔗 Đã thêm bài từ Link: ' + newTrack.name);
+  }
+
+  function filterWebPlaylist(query) {
+    webSearchQuery = (query || '').toLowerCase().trim();
+    renderWebPlaylist();
+  }
+
+  function playNextWebTrack() {
+    const all = [...webCustomTracks, ...WEB_DEFAULT_TRACKS];
+    if (all.length === 0) return;
+    const currentId = currentWebTrack ? currentWebTrack.id : null;
+    const idx = all.findIndex(t => t.id === currentId);
+    const nextIdx = (idx + 1) % all.length;
+    playWebTrack(all[nextIdx]);
+  }
+
+  function playPrevWebTrack() {
+    const all = [...webCustomTracks, ...WEB_DEFAULT_TRACKS];
+    if (all.length === 0) return;
+    const currentId = currentWebTrack ? currentWebTrack.id : null;
+    const idx = all.findIndex(t => t.id === currentId);
+    const prevIdx = (idx - 1 + all.length) % all.length;
+    playWebTrack(all[prevIdx]);
+  }
+
+  function resumeLastWebTrack() {
+    const all = [...webCustomTracks, ...WEB_DEFAULT_TRACKS];
+    if (currentWebTrack) {
+      playWebTrack(currentWebTrack);
+    } else if (all.length > 0) {
+      playWebTrack(all[0]);
+    }
+  }
+
   function handleWebMediaPicked(input) {
     if (!input.files || input.files.length === 0) return;
     const file = input.files[0];
     const objectUrl = URL.createObjectURL(file);
+    const lower = (file.name || '').toLowerCase();
+    let format = 'AUDIO';
+    if (lower.endsWith('.mp4')) format = 'MP4';
+    else if (lower.endsWith('.m4a')) format = 'M4A';
+    else if (lower.endsWith('.mp3')) format = 'MP3';
+    else if (lower.endsWith('.wav')) format = 'WAV';
 
     const newTrack = {
       id: 'custom_' + Date.now(),
-      name: file.name || 'Video MP4 của bạn',
-      meta: (file.size / (1024 * 1024)).toFixed(1) + ' MB • Video MP4',
+      name: file.name || ('Bản nhạc ' + format + ' của bạn'),
+      meta: (file.size / (1024 * 1024)).toFixed(1) + ' MB • ' + format,
       url: objectUrl,
       isCustom: true
     };
@@ -1808,17 +1963,24 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
 
     renderWebPlaylist();
     playWebTrack(newTrack);
-    showToast('🎉 Đã nạp Video MP4: ' + newTrack.name);
+    showToast('🎉 Đã nạp ' + format + ': ' + newTrack.name);
   }
 
   function playWebTrack(track) {
     currentWebTrack = track;
     const player = document.getElementById('hiddenMediaElem');
     player.src = track.url;
-    player.loop = isWebLooping;
+    player.onended = () => {
+      if (isWebLooping) {
+        player.play();
+      } else {
+        playNextWebTrack(); // Continuous autoplay
+      }
+    };
     player.play().then(() => {
       isWebPlaying = true;
       updateWebMusicUI();
+      showToast('🎵 Đang phát: ' + track.name);
     }).catch(err => {
       showToast('⚠️ Vui lòng nhấn Phát để bắt đầu');
       updateWebMusicUI();
@@ -1856,7 +2018,7 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
     const player = document.getElementById('hiddenMediaElem');
     player.loop = isWebLooping;
     document.getElementById('webLoopIcon').style.color = isWebLooping ? 'var(--cyan)' : 'var(--text-muted)';
-    showToast(isWebLooping ? '🔁 Đã bật lặp lại liên tục' : '➡️ Đã tắt lặp lại');
+    showToast(isWebLooping ? '🔁 Đã bật lặp lại liên tục' : '➡️ Đã tắt lặp lại (Chuyển bài)');
   }
 
   function updateWebMusicUI() {
@@ -1867,36 +2029,60 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
     const miniTrack = document.getElementById('bubbleMiniTrack');
     const miniTrackText = document.getElementById('bubbleMiniTrackText');
     const tabDot = document.getElementById('tabMusicPlayingDot');
+    const miniPlayerBar = document.getElementById('webMiniPlayerBar');
+    const miniPlayBtn = document.getElementById('webMiniPlayBtn');
 
     if (currentWebTrack) {
       document.getElementById('webTrackTitle').innerText = currentWebTrack.name;
       document.getElementById('webTrackMeta').innerText = currentWebTrack.meta;
-      document.getElementById('webTrackBadge').innerText = currentWebTrack.isCustom ? '🎬 VIDEO MP4 CỦA BẠN' : '⚡ BẢN NHẠC CHIẾN PRO';
+      document.getElementById('webTrackBadge').innerText = currentWebTrack.isCustom ? '📂 BÀI HÁT CỦA BẠN' : '⚡ BẢN NHẠC CHIẾN PRO';
+      if (document.getElementById('webMiniPlayerTitle')) {
+        document.getElementById('webMiniPlayerTitle').innerText = currentWebTrack.name;
+      }
     }
 
     if (isWebPlaying) {
       disc.classList.add('spinning');
       playBtn.innerText = '⏸';
+      if (miniPlayBtn) miniPlayBtn.innerText = '⏸';
       bubble.classList.add('playing');
       bubbleIcon.innerText = '🎵';
       miniTrack.style.display = 'block';
       miniTrackText.innerText = '▶ ' + (currentWebTrack ? currentWebTrack.name.substring(0, 14) : 'Nhạc chiến');
       tabDot.style.display = 'inline';
+      if (miniPlayerBar && document.getElementById('chatMusicModal').style.display !== 'flex') {
+        miniPlayerBar.style.display = 'flex';
+      }
     } else {
       disc.classList.remove('spinning');
       playBtn.innerText = '▶';
+      if (miniPlayBtn) miniPlayBtn.innerText = '▶';
       bubble.classList.remove('playing');
       bubbleIcon.innerText = '🤖';
       miniTrack.style.display = 'none';
       tabDot.style.display = 'none';
+      if (miniPlayerBar) miniPlayerBar.style.display = 'none';
     }
   }
 
   function renderWebPlaylist() {
     const container = document.getElementById('webPlaylistContainer');
     const allTracks = [...webCustomTracks, ...WEB_DEFAULT_TRACKS];
+    const filtered = allTracks.filter(t => {
+      if (!webSearchQuery) return true;
+      return (t.name && t.name.toLowerCase().includes(webSearchQuery)) || (t.meta && t.meta.toLowerCase().includes(webSearchQuery));
+    });
 
-    container.innerHTML = allTracks.map(t => {
+    if (document.getElementById('webPlaylistCount')) {
+      document.getElementById('webPlaylistCount').innerText = filtered.length;
+    }
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<div style="text-align:center; padding:16px; color:var(--text-muted); font-size:11px;">🔍 Không tìm thấy bài hát nào khớp với "${webSearchQuery}"</div>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(t => {
       const isCurrent = currentWebTrack && currentWebTrack.id === t.id;
       return `
         <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.04); border-radius:10px; padding:8px 12px; border:1px solid ${isCurrent ? 'var(--primary)' : 'rgba(255,255,255,0.06)'};">

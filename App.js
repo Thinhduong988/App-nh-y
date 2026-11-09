@@ -27,6 +27,7 @@ export default function App() {
   const [currentScreen, setCurrentScreen] = useState('Splash'); // Splash, Auth, MainApp
   const [activeTab, setActiveTab] = useState('HomeTab'); // HomeTab, SensitivityTab, TrainingHudTab, AccountTab
   const [isLandscapeMode, setIsLandscapeMode] = useState(false);
+  const [bubbleResetTrigger, setBubbleResetTrigger] = useState(0);
 
   // Safe Tab Switcher (Ensures portrait mode when navigating between tabs)
   const handleTabSwitch = async (tabName) => {
@@ -1277,6 +1278,27 @@ export default function App() {
               </TouchableOpacity>
             </View>
 
+            {/* CÀI ĐẶT TRỢ LÝ & BONG BÓNG CHAT */}
+            <View style={styles.supportCard}>
+              <View style={styles.tacticalCornerTL} />
+              <View style={styles.tacticalCornerBR} />
+              <Text style={styles.supportTitle}>🤖 BONG BÓNG AI COACH & PHÁT NHẠC</Text>
+              <Text style={styles.supportDesc}>
+                Bong bóng AI Coach và Trình phát nhạc MP3/M4A/MP4/Link hỗ trợ kéo thả tự do, tự căn lề màn hình và chạy nhạc nền khi leo rank. Nếu bong bóng bị kéo lệch ngoài tầm nhìn, bấm nút dưới để đặt lại ngay lập tức.
+              </Text>
+              <TouchableOpacity
+                style={styles.resetBubbleBtn}
+                onPress={() => {
+                  setBubbleResetTrigger((prev) => prev + 1);
+                  Alert.alert(
+                    '✅ Đã Đặt Lại Vị Trí',
+                    'Bong bóng chat & trình phát nhạc đã được đưa về góc dưới bên phải màn hình!'
+                  );
+                }}>
+                <Text style={styles.resetBubbleBtnText}>🎯 ĐẶT LẠI VỊ TRÍ BONG BÓNG CHAT</Text>
+              </TouchableOpacity>
+            </View>
+
             {/* Nút đăng xuất */}
             <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
               <Text style={styles.logoutButtonText}>ĐĂNG XUẤT TÀI KHOẢN</Text>
@@ -1486,9 +1508,10 @@ export default function App() {
         </KeyboardAvoidingView>
       </Modal>
 
-      {/* BONG BÓNG CHAT AI COACH OB 2026 (Nổi trên mọi màn hình, tự ẩn khi đang trong chế độ bắn ngang để không che nút bắn) */}
+      {/* BONG BÓNG CHAT AI COACH OB 2026 (Nổi trên mọi màn hình, tự động neo góc an toàn khi xoay ngang) */}
       <AiChatBubble
-        hidden={activeTab === 'TrainingHudTab' && isLandscapeMode}
+        isLandscapeMode={isLandscapeMode}
+        resetTrigger={bubbleResetTrigger}
         onApplyToTrainer={(cfg) => {
           setSelectedConfig(cfg);
           handleTabSwitch('TrainingHudTab');
@@ -2804,6 +2827,21 @@ const styles = StyleSheet.create({
   testInTrainerBtnText: {
     color: '#0A1A0F',
     fontSize: 13,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
+  resetBubbleBtn: {
+    backgroundColor: 'rgba(0, 240, 255, 0.15)',
+    borderRadius: 14,
+    paddingVertical: 12,
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: '#00F0FF',
+    marginTop: 12,
+  },
+  resetBubbleBtnText: {
+    color: '#00F0FF',
+    fontSize: 11,
     fontWeight: '900',
     letterSpacing: 0.5,
   },

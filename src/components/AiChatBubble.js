@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,9 +11,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-  Dimensions,
   PanResponder,
   Easing,
+  useWindowDimensions,
 } from 'react-native';
 import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -37,6 +37,7 @@ const DEFAULT_TRACKS = [
     author: 'Esports Gaming Beat',
     uri: 'https://raw.githubusercontent.com/rafaelreis-hotmart/Audio-Sample-files/master/sample.mp3',
     duration: '0:35',
+    formatType: 'MP3',
     isCustom: false,
   },
   {
@@ -45,6 +46,7 @@ const DEFAULT_TRACKS = [
     author: 'Cyber Montage Beat',
     uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
     duration: '6:12',
+    formatType: 'MP3',
     isCustom: false,
   },
   {
@@ -53,11 +55,52 @@ const DEFAULT_TRACKS = [
     author: 'Night Chill Free Fire',
     uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
     duration: '7:05',
+    formatType: 'MP3',
+    isCustom: false,
+  },
+  {
+    id: 'def-4',
+    name: '💥 Brazil Phonk Auto Headshot Mix',
+    author: 'High Ping Montage',
+    uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+    duration: '5:44',
+    formatType: 'LINK',
     isCustom: false,
   },
 ];
 
-export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = false }) {
+const PRESET_STREAM_LINKS = [
+  {
+    name: '⚡ Free Fire Phonk Drift Bass Boost 2026',
+    url: 'https://raw.githubusercontent.com/rafaelreis-hotmart/Audio-Sample-files/master/sample.mp3',
+    tag: 'Phonk',
+  },
+  {
+    name: '🔥 EDM Esports Montage Beat (Drop Căng)',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    tag: 'EDM',
+  },
+  {
+    name: '🎧 Free Fire Chill Lofi Leo Rank (Hồi Tâm)',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+    tag: 'Lofi',
+  },
+  {
+    name: '💥 Brazil Phonk Auto Headshot Master Mix',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+    tag: 'Esport Trap',
+  },
+];
+
+export default function AiChatBubble({
+  onApplyToTrainer,
+  onSaveConfig,
+  hidden = false,
+  isLandscapeMode = false,
+  resetTrigger = 0,
+}) {
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+
   const [isOpen, setIsOpen] = useState(false);
   const [activeModalTab, setActiveModalTab] = useState('CHAT'); // 'CHAT' | 'MUSIC'
   const [inputText, setInputText] = useState('');
@@ -65,12 +108,12 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
     {
       id: 'm-1',
       sender: 'ai',
-      text: 'Xin chào Xạ Thủ! 👋 Tôi là Trợ Lý AI Kéo Tâm Free Fire (OB 2026).\n\nBạn đang gặp vấn đề gì khi kéo tâm (dính ngực, vọt đầu) hay cần độ nhạy cho dòng máy nào? Bạn cũng có thể mở tab "Nhạc Chiến MP4" để nghe nhạc từ video trong máy nhé!',
+      text: 'Xin chào Xạ Thủ! 👋 Tôi là Trợ Lý AI Kéo Tâm Free Fire (OB 2026).\n\nBạn đang gặp vấn đề gì khi kéo tâm (dính ngực, vọt đầu) hay cần độ nhạy cho dòng máy nào? Bạn cũng có thể mở tab "Nhạc Chiến" để nghe nhạc từ video MP4, MP3, M4A hoặc dán link online nhé!',
       timestamp: 'Vừa xong',
     },
   ]);
 
-  // Bubble Pulse Animation
+  // Bubble Animations
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const scrollViewRef = useRef(null);
 
@@ -79,29 +122,41 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
   const [customTracks, setCustomTracks] = useState([]);
   const [currentTrack, setCurrentTrack] = useState(DEFAULT_TRACKS[0]);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLooping, setIsLooping] = useState(true);
+  const [playMode, setPlayMode] = useState('LOOP_ALL'); // 'LOOP_ALL' (phát tiếp tục cả danh sách) | 'LOOP_ONE' (lặp 1 bài)
   const [volume, setVolume] = useState(80);
   const [playbackPosition, setPlaybackPosition] = useState(0);
   const [playbackDuration, setPlaybackDuration] = useState(0);
+
+  // Search & Link Input States
+  const [searchTrackQuery, setSearchTrackQuery] = useState('');
+  const [isLinkModalVisible, setIsLinkModalVisible] = useState(false);
+  const [inputLinkUrl, setInputLinkUrl] = useState('');
+  const [inputLinkTitle, setInputLinkTitle] = useState('');
+
+  // Floating Pop-up & Toast states
+  const [showMiniPlayer, setShowMiniPlayer] = useState(true);
+  const [toastMessage, setToastMessage] = useState('');
+  const toastFadeAnim = useRef(new Animated.Value(0)).current;
 
   // Spinning Vinyl Animation
   const spinAnim = useRef(new Animated.Value(0)).current;
   const spinLoop = useRef(null);
 
-  // Floating Position & Dragging with PanResponder
-  const windowDims = Dimensions.get('window');
+  // Anti-Disappearance Floating Position with PanResponder
   const pan = useRef(
     new Animated.ValueXY({
-      x: windowDims.width - 74,
-      y: windowDims.height - 165,
+      x: screenWidth - 74,
+      y: screenHeight - 165,
     })
   ).current;
+
   const currentPos = useRef({
-    x: windowDims.width - 74,
-    y: windowDims.height - 165,
+    x: screenWidth - 74,
+    y: screenHeight - 165,
   });
   const isDraggingRef = useRef(false);
 
+  // Sync listener for pan coordinates
   useEffect(() => {
     const listenerId = pan.addListener((value) => {
       currentPos.current = value;
@@ -111,6 +166,60 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
     };
   }, []);
 
+  // Screen rotation & dimension change safe-guard (Prevents bubble from disappearing off-screen)
+  useEffect(() => {
+    const curX = currentPos.current.x;
+    const curY = currentPos.current.y;
+
+    let targetX, targetY;
+    if (isLandscapeMode) {
+      // In landscape (phòng tập ngang), position safely in the top-right corner so it never blocks controls
+      targetX = Math.max(10, screenWidth - 70);
+      targetY = 16;
+    } else {
+      targetX = isNaN(curX) ? screenWidth - 74 : Math.max(10, Math.min(screenWidth - 74, curX));
+      targetY = isNaN(curY) ? screenHeight - 165 : Math.max(60, Math.min(screenHeight - 130, curY));
+    }
+
+    Animated.spring(pan, {
+      toValue: { x: targetX, y: targetY },
+      friction: 7,
+      useNativeDriver: false,
+    }).start(() => {
+      currentPos.current = { x: targetX, y: targetY };
+    });
+  }, [screenWidth, screenHeight, isLandscapeMode, resetTrigger]);
+
+  // Safe gesture release & terminate handler
+  const handleReleaseOrTerminate = () => {
+    try {
+      pan.flattenOffset();
+    } catch (e) {}
+
+    if (!isDraggingRef.current) {
+      setIsOpen(true);
+      try {
+        SOUNDS.playWeaponShot('smg');
+      } catch (e) {}
+    } else {
+      let curX = currentPos.current.x;
+      let curY = currentPos.current.y;
+      if (isNaN(curX)) curX = screenWidth - 74;
+      if (isNaN(curY)) curY = screenHeight - 165;
+
+      const targetX = curX < screenWidth / 2 ? 14 : screenWidth - 74;
+      const clampedY = Math.max(50, Math.min(screenHeight - 130, curY));
+
+      Animated.spring(pan, {
+        toValue: { x: targetX, y: clampedY },
+        friction: 6,
+        useNativeDriver: false,
+      }).start(() => {
+        currentPos.current = { x: targetX, y: clampedY };
+      });
+    }
+  };
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -119,7 +228,9 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
       },
       onPanResponderGrant: () => {
         isDraggingRef.current = false;
-        pan.extractOffset();
+        try {
+          pan.extractOffset();
+        } catch (e) {}
       },
       onPanResponderMove: (_, gestureState) => {
         if (Math.abs(gestureState.dx) > 5 || Math.abs(gestureState.dy) > 5) {
@@ -127,26 +238,10 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
         }
         pan.setValue({ x: gestureState.dx, y: gestureState.dy });
       },
-      onPanResponderRelease: () => {
-        pan.flattenOffset();
-        if (!isDraggingRef.current) {
-          setIsOpen(true);
-          try {
-            SOUNDS.playWeaponShot('smg');
-          } catch (e) {}
-        } else {
-          const currentX = currentPos.current.x;
-          const currentY = currentPos.current.y;
-          const curDims = Dimensions.get('window');
-          const targetX = currentX < curDims.width / 2 ? 14 : curDims.width - 74;
-          const clampedY = Math.max(70, Math.min(curDims.height - 150, currentY));
-          Animated.spring(pan, {
-            toValue: { x: targetX, y: clampedY },
-            friction: 6,
-            useNativeDriver: false,
-          }).start();
-        }
-      },
+      onPanResponderRelease: handleReleaseOrTerminate,
+      onPanResponderTerminate: handleReleaseOrTerminate,
+      onPanResponderTerminationRequest: () => false,
+      onShouldBlockNativeResponder: () => false,
     })
   ).current;
 
@@ -173,7 +268,9 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
       );
       spinLoop.current.start();
     } else {
-      spinLoop.current?.stop();
+      if (spinLoop.current && spinLoop.current.stop) {
+        spinLoop.current.stop();
+      }
       spinAnim.setValue(0);
     }
   }, [isPlaying]);
@@ -183,7 +280,17 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
     outputRange: ['0deg', '360deg'],
   });
 
-  // Load saved custom MP4 tracks on mount
+  // Toast Pop-up trigger
+  const showToastNotification = (msg) => {
+    setToastMessage(msg);
+    Animated.sequence([
+      Animated.timing(toastFadeAnim, { toValue: 1, duration: 250, useNativeDriver: true }),
+      Animated.delay(3500),
+      Animated.timing(toastFadeAnim, { toValue: 0, duration: 300, useNativeDriver: true }),
+    ]).start(() => setToastMessage(''));
+  };
+
+  // Load saved playlist & last played track on mount
   useEffect(() => {
     const loadSavedPlaylist = async () => {
       try {
@@ -191,8 +298,13 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
         if (saved) {
           const list = JSON.parse(saved);
           setCustomTracks(list);
-          if (list.length > 0) {
-            setCurrentTrack(list[0]);
+        }
+
+        const lastTrackData = await AsyncStorage.getItem('@last_played_track_info');
+        if (lastTrackData) {
+          const parsed = JSON.parse(lastTrackData);
+          if (parsed && parsed.uri) {
+            setCurrentTrack(parsed);
           }
         }
       } catch (e) {}
@@ -206,19 +318,62 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
     };
   }, []);
 
-  // Playback status listener
+  // Full playlist list combining user tracks & default tracks
+  const allAvailableTracks = useMemo(() => {
+    return [...customTracks, ...DEFAULT_TRACKS];
+  }, [customTracks]);
+
+  // Filtered tracks with Search input
+  const filteredPlaylist = useMemo(() => {
+    if (!searchTrackQuery.trim()) return allAvailableTracks;
+    const q = searchTrackQuery.toLowerCase().trim();
+    return allAvailableTracks.filter(
+      (t) =>
+        (t.name && t.name.toLowerCase().includes(q)) ||
+        (t.author && t.author.toLowerCase().includes(q)) ||
+        (t.formatType && t.formatType.toLowerCase().includes(q))
+    );
+  }, [allAvailableTracks, searchTrackQuery]);
+
+  // Autoplay next track in playlist (Phát tiếp tục bài hát)
+  const playNextTrack = async () => {
+    const list = allAvailableTracks;
+    if (list.length === 0) return;
+    const currentId = currentTrack ? currentTrack.id : null;
+    const currentIndex = list.findIndex((t) => t.id === currentId);
+    const nextIndex = (currentIndex + 1) % list.length;
+    await playTrack(list[nextIndex]);
+  };
+
+  // Previous track in playlist
+  const playPrevTrack = async () => {
+    const list = allAvailableTracks;
+    if (list.length === 0) return;
+    const currentId = currentTrack ? currentTrack.id : null;
+    const currentIndex = list.findIndex((t) => t.id === currentId);
+    const prevIndex = (currentIndex - 1 + list.length) % list.length;
+    await playTrack(list[prevIndex]);
+  };
+
+  // Playback status listener with continuous autoplay support
   const onPlaybackStatusUpdate = (status) => {
     if (status.isLoaded) {
       setPlaybackPosition(status.positionMillis || 0);
       setPlaybackDuration(status.durationMillis || 0);
       setIsPlaying(status.isPlaying);
-      if (status.didJustFinish && !status.isLooping) {
-        setIsPlaying(false);
+
+      // Khi kết thúc bài hát: tự động phát tiếp bài kế tiếp nếu chọn LOOP_ALL
+      if (status.didJustFinish) {
+        if (playMode === 'LOOP_ALL') {
+          playNextTrack();
+        } else {
+          setIsPlaying(false);
+        }
       }
     }
   };
 
-  // Play a track (handles both MP4 videos and MP3/Audio files)
+  // Play a track (supports MP3, M4A, WAV, AAC, MP4 video, online stream URLs)
   const playTrack = async (track) => {
     try {
       if (soundInstance.current) {
@@ -236,7 +391,7 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
         { uri: track.uri },
         {
           shouldPlay: true,
-          isLooping: isLooping,
+          isLooping: playMode === 'LOOP_ONE',
           volume: volume / 100,
         },
         onPlaybackStatusUpdate
@@ -245,10 +400,16 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
       soundInstance.current = sound;
       setCurrentTrack(track);
       setIsPlaying(true);
+
+      // Save last played track info for quick resume
+      await AsyncStorage.setItem('@last_played_track_info', JSON.stringify(track));
+
+      // Trigger pop-up toast notification
+      showToastNotification(`🎵 Đang phát [${track.formatType || 'AUDIO'}]: ${track.name}`);
     } catch (err) {
       Alert.alert(
-        '⚠️ Không Thể Phát File Này',
-        'File video MP4 hoặc audio có thể đã bị di chuyển hoặc không hỗ trợ trích xuất âm thanh.'
+        '⚠️ Không Thể Phát Bản Nhạc Này',
+        'Đường link hoặc file media có thể không truy cập được lúc này. Vui lòng kiểm tra kết nối mạng hoặc chọn file khác!'
       );
     }
   };
@@ -256,8 +417,10 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
   // Toggle Play / Pause
   const togglePlayPause = async () => {
     if (!soundInstance.current) {
-      const trackToPlay = currentTrack || customTracks[0] || DEFAULT_TRACKS[0];
-      await playTrack(trackToPlay);
+      const trackToPlay = currentTrack || allAvailableTracks[0];
+      if (trackToPlay) {
+        await playTrack(trackToPlay);
+      }
       return;
     }
 
@@ -286,13 +449,18 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
     }
   };
 
-  // Toggle loop mode
-  const toggleLoop = async () => {
-    const nextLoop = !isLooping;
-    setIsLooping(nextLoop);
+  // Toggle Play Mode (Lặp 1 bài vs Phát tiếp tục cả danh sách)
+  const togglePlayMode = async () => {
+    const nextMode = playMode === 'LOOP_ALL' ? 'LOOP_ONE' : 'LOOP_ALL';
+    setPlayMode(nextMode);
     if (soundInstance.current) {
-      await soundInstance.current.setIsLoopingAsync(nextLoop).catch(() => {});
+      await soundInstance.current.setIsLoopingAsync(nextMode === 'LOOP_ONE').catch(() => {});
     }
+    showToastNotification(
+      nextMode === 'LOOP_ALL'
+        ? '🔁 Chế độ: Phát tiếp tục liên tục toàn bộ danh sách'
+        : '🔂 Chế độ: Lặp lại 1 bài hát hiện tại'
+    );
   };
 
   // Change volume
@@ -303,21 +471,48 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
     }
   };
 
-  // Pick MP4 video from device
+  // Pick Media File from device (supports MP3, M4A, WAV, AAC, MP4 video)
   const pickMediaFile = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: ['video/mp4', 'video/*', 'audio/*', 'audio/mpeg', 'audio/mp4'],
+        type: [
+          'audio/*',
+          'video/*',
+          'audio/mpeg',
+          'audio/mp3',
+          'audio/m4a',
+          'audio/x-m4a',
+          'audio/aac',
+          'audio/wav',
+          'audio/ogg',
+          'audio/flac',
+          'video/mp4',
+        ],
         copyToCacheDirectory: true,
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const asset = result.assets[0];
+        const lowerName = (asset.name || '').toLowerCase();
+        let formatType = 'AUDIO';
+        if (lowerName.endsWith('.mp4') || (asset.mimeType && asset.mimeType.includes('video'))) {
+          formatType = 'MP4';
+        } else if (lowerName.endsWith('.m4a')) {
+          formatType = 'M4A';
+        } else if (lowerName.endsWith('.mp3')) {
+          formatType = 'MP3';
+        } else if (lowerName.endsWith('.wav')) {
+          formatType = 'WAV';
+        } else if (lowerName.endsWith('.aac')) {
+          formatType = 'AAC';
+        }
+
         const newTrack = {
           id: 'track_' + Date.now(),
-          name: asset.name || 'Video MP4 của bạn',
+          name: asset.name || `Nhạc ${formatType} của bạn`,
           uri: asset.uri,
           size: asset.size ? (asset.size / (1024 * 1024)).toFixed(1) + ' MB' : '',
+          formatType: formatType,
           isCustom: true,
           dateAdded: new Date().toLocaleDateString('vi-VN'),
         };
@@ -326,17 +521,59 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
         setCustomTracks(updated);
         await AsyncStorage.setItem('@my_custom_music_playlist', JSON.stringify(updated));
 
-        // Start playing the newly picked video immediately
+        // Start playing the newly picked file immediately
         await playTrack(newTrack);
 
         Alert.alert(
-          '🎉 Đã Nạp Video MP4!',
+          `🎉 Đã Thêm Nhạc ${formatType}!`,
           `Đang phát âm thanh từ: "${newTrack.name}"\n\nNhạc sẽ tiếp tục phát trong nền khi bạn thu nhỏ bong bóng để vào phòng tập hoặc leo rank!`
         );
       }
     } catch (err) {
-      Alert.alert('⚠️ Lỗi chọn file', 'Không thể chọn video MP4 lúc này. Vui lòng thử lại!');
+      Alert.alert('⚠️ Lỗi chọn file', 'Không thể chọn file media lúc này. Vui lòng thử lại!');
     }
+  };
+
+  // Add Track from URL Link (Link video, direct mp3/m4a/mp4, stream)
+  const handleAddLinkTrack = async (customUrl, customTitle) => {
+    const url = (customUrl || inputLinkUrl).trim();
+    if (!url) {
+      Alert.alert('⚠️ Chưa Nhập Link', 'Vui lòng dán link video/nhạc hoặc chọn một link mẫu có sẵn.');
+      return;
+    }
+
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      Alert.alert('⚠️ Link không hợp lệ', 'Đường link phải bắt đầu bằng http:// hoặc https://');
+      return;
+    }
+
+    const title = (customTitle || inputLinkTitle).trim() || `Nhạc Online #${Math.floor(Math.random() * 900 + 100)}`;
+    const lower = url.toLowerCase();
+    let format = 'LINK';
+    if (lower.includes('.mp3')) format = 'MP3';
+    else if (lower.includes('.m4a')) format = 'M4A';
+    else if (lower.includes('.mp4')) format = 'MP4';
+
+    const newTrack = {
+      id: 'link_' + Date.now(),
+      name: title,
+      uri: url,
+      size: 'Trực Tuyến (URL)',
+      formatType: format,
+      isCustom: true,
+      isLink: true,
+      dateAdded: new Date().toLocaleDateString('vi-VN'),
+    };
+
+    const updated = [newTrack, ...customTracks];
+    setCustomTracks(updated);
+    await AsyncStorage.setItem('@my_custom_music_playlist', JSON.stringify(updated));
+
+    setInputLinkUrl('');
+    setInputLinkTitle('');
+    setIsLinkModalVisible(false);
+
+    await playTrack(newTrack);
   };
 
   // Delete track from playlist
@@ -345,7 +582,7 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
     setCustomTracks(updated);
     await AsyncStorage.setItem('@my_custom_music_playlist', JSON.stringify(updated));
 
-    if (currentTrack?.id === trackId) {
+    if (currentTrack && currentTrack.id === trackId) {
       if (soundInstance.current) {
         await soundInstance.current.stopAsync().catch(() => {});
         await soundInstance.current.unloadAsync().catch(() => {});
@@ -386,7 +623,9 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
         SOUNDS.playHeadshotCrit();
       } catch (e) {}
       setTimeout(() => {
-        scrollViewRef.current?.scrollToEnd({ animated: true });
+        if (scrollViewRef.current && scrollViewRef.current.scrollToEnd) {
+          scrollViewRef.current.scrollToEnd({ animated: true });
+        }
       }, 150);
     }, 450);
   };
@@ -511,17 +750,15 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
 
   return (
     <>
-      {/* FLOATING ACTION CHAT BUBBLE (Có thể kéo thả vị trí, hiển thị trạng thái nhạc) */}
+      {/* FLOATING ACTION CHAT & MUSIC BUBBLE (Tự căn chỉnh không bao giờ biến mất) */}
       {!hidden && !isOpen && (
         <Animated.View
           style={[
             styles.floatingBubbleContainer,
             {
-              transform: [
-                ...pan.getTranslateTransform(),
-                { scale: pulseAnim },
-              ],
+              transform: [...pan.getTranslateTransform(), { scale: pulseAnim }],
             },
+            isLandscapeMode && styles.floatingBubbleLandscape,
           ]}
           {...panResponder.panHandlers}>
           <View style={[styles.floatingBubble, isPlaying && styles.floatingBubblePlaying]}>
@@ -530,18 +767,80 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
               <Text style={styles.pulseBadgeText}>{isPlaying ? 'LIVE' : 'AI'}</Text>
             </View>
           </View>
-          {/* Mini Music Tag when playing */}
+
+          {/* Mini Track Tag below bubble when playing */}
           {isPlaying && (
             <View style={styles.bubbleMiniTrackTag}>
               <Text style={styles.bubbleMiniTrackText} numberOfLines={1}>
-                ▶ {currentTrack?.name?.split('.')[0] || 'Đang phát'}
+                ▶ {currentTrack && currentTrack.name ? currentTrack.name.split('.')[0] : 'Đang phát'}
               </Text>
             </View>
           )}
         </Animated.View>
       )}
 
-      {/* FLOATING MODAL SHEET (CHỨA CẢ AI CHAT & TRÌNH PHÁT NHẠC MP4) */}
+      {/* FLOATING MINI PLAYER POP-UP WIDGET (Hiển thị nổi khi đang phát nhạc và đóng modal) */}
+      {!hidden && !isOpen && isPlaying && showMiniPlayer && (
+        <View
+          style={[
+            styles.floatingMiniPlayerBar,
+            isLandscapeMode ? styles.miniPlayerLandscape : styles.miniPlayerPortrait,
+          ]}>
+          <TouchableOpacity
+            style={styles.miniPlayerTrackInfo}
+            activeOpacity={0.8}
+            onPress={() => {
+              setActiveModalTab('MUSIC');
+              setIsOpen(true);
+            }}>
+            <Animated.View style={[styles.miniVinylDisc, { transform: [{ rotate: spin }] }]}>
+              <Text style={{ fontSize: 13 }}>🎵</Text>
+            </Animated.View>
+            <View style={{ flex: 1, marginRight: 6 }}>
+              <Text style={styles.miniPlayerTrackName} numberOfLines={1}>
+                {currentTrack && currentTrack.name ? currentTrack.name : 'Đang phát nhạc'}
+              </Text>
+              <Text style={styles.miniPlayerTimeText}>
+                {formatTime(playbackPosition)} / {playbackDuration > 0 ? formatTime(playbackDuration) : (currentTrack && currentTrack.duration ? currentTrack.duration : '03:45')} • {playMode === 'LOOP_ALL' ? '🔁 Tiếp tục' : '🔂 Lặp 1'}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Mini Controls */}
+          <View style={styles.miniPlayerControls}>
+            <TouchableOpacity style={styles.miniCtrlBtn} onPress={playPrevTrack}>
+              <Text style={styles.miniCtrlBtnText}>⏮</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.miniCtrlBtnPlay} onPress={togglePlayPause}>
+              <Text style={styles.miniCtrlBtnPlayText}>{isPlaying ? '⏸' : '▶'}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.miniCtrlBtn} onPress={playNextTrack}>
+              <Text style={styles.miniCtrlBtnText}>⏭</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.miniCtrlBtnClose}
+              onPress={() => setShowMiniPlayer(false)}>
+              <Text style={styles.miniCtrlBtnCloseText}>✕</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {/* TOAST POP-UP THÔNG BÁO KHI PHÁT NHẠC */}
+      {!!toastMessage && (
+        <Animated.View style={[styles.toastContainer, { opacity: toastFadeAnim }]}>
+          <View style={styles.toastBox}>
+            <Text style={styles.toastText} numberOfLines={2}>
+              {toastMessage}
+            </Text>
+          </View>
+        </Animated.View>
+      )}
+
+      {/* FLOATING MODAL SHEET (CHỨA AI CHAT & TRÌNH PHÁT NHẠC ĐẦY ĐỦ) */}
       <Modal
         visible={isOpen}
         animationType="slide"
@@ -565,22 +864,22 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
                 </View>
                 <View>
                   <Text style={styles.headerTitle}>
-                    {activeModalTab === 'MUSIC' ? 'Nhạc Chiến Game (MP4)' : 'AI Coach Kéo Tâm'}
+                    {activeModalTab === 'MUSIC' ? 'Trình Phát Nhạc Chiến Game' : 'AI Coach Kéo Tâm'}
                   </Text>
                   <Text style={styles.headerSubtitle}>
-                    {isPlaying ? `▶ Đang phát: ${currentTrack?.name?.split('.')[0]?.substring(0, 18)}...` : 'Trực tuyến • Chuẩn OB 2026'}
+                    {isPlaying
+                      ? `▶ Đang phát: ${currentTrack && currentTrack.name ? currentTrack.name.split('.')[0].substring(0, 20) : ''}...`
+                      : 'Trực tuyến • Chuẩn OB 2026'}
                   </Text>
                 </View>
               </View>
 
-              <TouchableOpacity
-                style={styles.closeBtn}
-                onPress={() => setIsOpen(false)}>
+              <TouchableOpacity style={styles.closeBtn} onPress={() => setIsOpen(false)}>
                 <Text style={styles.closeBtnText}>✕</Text>
               </TouchableOpacity>
             </View>
 
-            {/* TAB SWITCHER: [ 🤖 AI KÉO TÂM ] | [ 🎵 NHẠC CHIẾN MP4 ] */}
+            {/* TAB SWITCHER: [ 🤖 AI KÉO TÂM ] | [ 🎵 NHẠC CHIẾN (MP3/M4A/MP4/LINK) ] */}
             <View style={styles.sheetTabRow}>
               <TouchableOpacity
                 style={[styles.sheetTabBtn, activeModalTab === 'CHAT' && styles.sheetTabBtnActive]}
@@ -594,22 +893,18 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
                 style={[styles.sheetTabBtn, activeModalTab === 'MUSIC' && styles.sheetTabBtnActive]}
                 onPress={() => setActiveModalTab('MUSIC')}>
                 <Text style={[styles.sheetTabBtnText, activeModalTab === 'MUSIC' && styles.sheetTabBtnTextActive]}>
-                  🎵 Nhạc Chiến MP4 {isPlaying ? '• ▶' : ''}
+                  🎵 Nhạc Chiến {isPlaying ? '• ▶ LIVE' : ''}
                 </Text>
               </TouchableOpacity>
             </View>
 
-            {/* ================= VIEW 1: TRÌNH PHÁT NHẠC CHIẾN GAME MP4 ================= */}
+            {/* ================= VIEW 1: TRÌNH PHÁT NHẠC (MP3, M4A, MP4, LINK) ================= */}
             {activeModalTab === 'MUSIC' ? (
               <ScrollView style={styles.musicTabScroll} showsVerticalScrollIndicator={false}>
                 {/* NOW PLAYING CARD WITH SPINNING VINYL DISC */}
                 <View style={styles.nowPlayingCard}>
                   <View style={styles.vinylContainer}>
-                    <Animated.View
-                      style={[
-                        styles.vinylDisc,
-                        { transform: [{ rotate: spin }] },
-                      ]}>
+                    <Animated.View style={[styles.vinylDisc, { transform: [{ rotate: spin }] }]}>
                       <View style={styles.vinylRing1} />
                       <View style={styles.vinylRing2} />
                       <View style={styles.vinylCenterLabel}>
@@ -622,21 +917,25 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
                     <View style={styles.tagRow}>
                       <View style={styles.nowPlayingBadge}>
                         <Text style={styles.nowPlayingBadgeText}>
-                          {currentTrack?.isCustom ? '🎬 VIDEO MP4 CỦA BẠN' : '⚡ BẢN NHẠC CHIẾN PRO'}
+                          {currentTrack && currentTrack.formatType
+                            ? `⚡ ĐỊNH DẠNG: ${currentTrack.formatType}`
+                            : currentTrack && currentTrack.isCustom
+                            ? '📂 BÀI CỦA BẠN'
+                            : '⚡ BẢN NHẠC CHIẾN PRO'}
                         </Text>
                       </View>
-                      {isLooping && (
-                        <View style={styles.loopBadge}>
-                          <Text style={styles.loopBadgeText}>🔁 Lặp Lại</Text>
-                        </View>
-                      )}
+                      <TouchableOpacity style={styles.loopBadge} onPress={togglePlayMode}>
+                        <Text style={styles.loopBadgeText}>
+                          {playMode === 'LOOP_ALL' ? '🔁 Tự Động Tiếp Tục' : '🔂 Lặp 1 Bài'}
+                        </Text>
+                      </TouchableOpacity>
                     </View>
 
                     <Text style={styles.trackTitleText} numberOfLines={2}>
-                      {currentTrack?.name || 'Chưa chọn bài hát'}
+                      {currentTrack && currentTrack.name ? currentTrack.name : 'Chưa chọn bài hát'}
                     </Text>
                     <Text style={styles.trackSubText}>
-                      {currentTrack?.author || currentTrack?.size || 'Free Fire Audio Stream'}
+                      {currentTrack && (currentTrack.author || currentTrack.size) ? (currentTrack.author || currentTrack.size) : 'Free Fire Audio Stream'}
                     </Text>
 
                     {/* Progress Track */}
@@ -659,35 +958,33 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
                       <View style={styles.timeRow}>
                         <Text style={styles.timeText}>{formatTime(playbackPosition)}</Text>
                         <Text style={styles.timeText}>
-                          {playbackDuration > 0 ? formatTime(playbackDuration) : currentTrack?.duration || '03:45'}
+                          {playbackDuration > 0 ? formatTime(playbackDuration) : (currentTrack && currentTrack.duration ? currentTrack.duration : '03:45')}
                         </Text>
                       </View>
                     </View>
 
-                    {/* Controls Row */}
+                    {/* Controls Row (Hỗ trợ phát tiếp tục bài hát, next, prev, loop) */}
                     <View style={styles.controlsRow}>
                       <TouchableOpacity
-                        style={[styles.ctrlSecondaryBtn, isLooping && styles.ctrlSecondaryBtnActive]}
-                        onPress={toggleLoop}>
-                        <Text style={styles.ctrlIcon}>🔁</Text>
+                        style={[styles.ctrlSecondaryBtn, playMode === 'LOOP_ALL' && styles.ctrlSecondaryBtnActive]}
+                        onPress={togglePlayMode}>
+                        <Text style={styles.ctrlIcon}>{playMode === 'LOOP_ALL' ? '🔁' : '🔂'}</Text>
                       </TouchableOpacity>
 
-                      <TouchableOpacity style={styles.ctrlSecondaryBtn} onPress={stopPlayback}>
-                        <Text style={styles.ctrlIcon}>⏹</Text>
+                      <TouchableOpacity style={styles.ctrlSecondaryBtn} onPress={playPrevTrack}>
+                        <Text style={styles.ctrlIcon}>⏮</Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity style={styles.ctrlPlayBtn} onPress={togglePlayPause}>
                         <Text style={styles.ctrlPlayIcon}>{isPlaying ? '⏸' : '▶'}</Text>
                       </TouchableOpacity>
 
-                      <TouchableOpacity
-                        style={styles.ctrlSecondaryBtn}
-                        onPress={async () => {
-                          if (soundInstance.current) {
-                            await soundInstance.current.setPositionAsync(0).catch(() => {});
-                          }
-                        }}>
-                        <Text style={styles.ctrlIcon}>⏮</Text>
+                      <TouchableOpacity style={styles.ctrlSecondaryBtn} onPress={playNextTrack}>
+                        <Text style={styles.ctrlIcon}>⏭</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity style={styles.ctrlSecondaryBtn} onPress={stopPlayback}>
+                        <Text style={styles.ctrlIcon}>⏹</Text>
                       </TouchableOpacity>
                     </View>
 
@@ -708,109 +1005,197 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
                   </View>
                 </View>
 
-                {/* BIG BUTTON: ADD MUSIC FROM OWN MP4 VIDEO FILE */}
-                <TouchableOpacity style={styles.addMp4Btn} onPress={pickMediaFile} activeOpacity={0.85}>
-                  <View style={styles.addMp4IconBox}>
-                    <Text style={{ fontSize: 24 }}>📁</Text>
+                {/* 2 NÚT THÊM NHẠC: TỪ MÁY (MP3/M4A/MP4) & DÁN LINK ONLINE */}
+                <View style={styles.actionAddGrid}>
+                  <TouchableOpacity
+                    style={styles.addMediaActionBtn}
+                    onPress={pickMediaFile}
+                    activeOpacity={0.85}>
+                    <View style={styles.addMediaIconBox}>
+                      <Text style={{ fontSize: 20 }}>📁</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.addMediaBtnTitle}>CHỌN FILE TỪ MÁY</Text>
+                      <Text style={styles.addMediaBtnDesc}>Đuôi MP3, M4A, MP4 video, WAV, AAC</Text>
+                    </View>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.addMediaActionBtn, styles.addLinkActionBtn]}
+                    onPress={() => setIsLinkModalVisible(true)}
+                    activeOpacity={0.85}>
+                    <View style={[styles.addMediaIconBox, styles.addLinkIconBox]}>
+                      <Text style={{ fontSize: 20 }}>🔗</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.addMediaBtnTitle}>DÁN LINK VIDEO / NHẠC</Text>
+                      <Text style={styles.addMediaBtnDesc}>Link URL stream trực tuyến hoặc beat mẫu</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+
+                {/* MODAL / POP-UP DÁN LINK VIDEO & NHẠC */}
+                {isLinkModalVisible && (
+                  <View style={styles.linkInputCard}>
+                    <View style={styles.linkCardHeader}>
+                      <Text style={styles.linkCardTitle}>🔗 THÊM TỪ LINK VIDEO / NHẠC</Text>
+                      <TouchableOpacity onPress={() => setIsLinkModalVisible(false)}>
+                        <Text style={styles.linkCardClose}>✕ Đóng</Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    <TextInput
+                      style={styles.linkTextInput}
+                      placeholder="Dán đường link URL (https://...mp3, mp4, stream)"
+                      placeholderTextColor={COLORS.textMuted}
+                      value={inputLinkUrl}
+                      onChangeText={setInputLinkUrl}
+                      autoCapitalize="none"
+                    />
+
+                    <TextInput
+                      style={styles.linkTextInput}
+                      placeholder="Đặt tên bài hát (tùy chọn)..."
+                      placeholderTextColor={COLORS.textMuted}
+                      value={inputLinkTitle}
+                      onChangeText={setInputLinkTitle}
+                    />
+
+                    <TouchableOpacity
+                      style={styles.submitLinkBtn}
+                      onPress={() => handleAddLinkTrack()}>
+                      <Text style={styles.submitLinkBtnText}>⚡ THÊM VÀO PLAYLIST & PHÁT</Text>
+                    </TouchableOpacity>
+
+                    {/* Gợi ý link beat mẫu sẵn có */}
+                    <Text style={styles.presetLinkHeader}>💡 Hoặc chọn nhanh beat Esport hot:</Text>
+                    <View style={styles.presetLinkList}>
+                      {PRESET_STREAM_LINKS.map((preset, idx) => (
+                        <TouchableOpacity
+                          key={idx}
+                          style={styles.presetLinkPill}
+                          onPress={() => handleAddLinkTrack(preset.url, preset.name)}>
+                          <Text style={styles.presetLinkTag}>[{preset.tag}]</Text>
+                          <Text style={styles.presetLinkName} numberOfLines={1}>
+                            {preset.name}
+                          </Text>
+                          <Text style={styles.presetLinkPlus}>+</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
                   </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.addMp4BtnTitle}>+ CHỌN VIDEO MP4 TỪ MÁY CỦA BẠN</Text>
-                    <Text style={styles.addMp4BtnDesc}>
-                      Trích xuất phát nhạc từ video TikTok, Highlight FF, MP4 hoặc Audio trên máy
-                    </Text>
-                  </View>
-                  <Text style={styles.addMp4Arrow}>➔</Text>
-                </TouchableOpacity>
+                )}
+
+                {/* THANH TÌM KIẾM BÀI HÁT (SEARCH TRACKS) */}
+                <View style={styles.searchTrackContainer}>
+                  <Text style={styles.searchTrackIcon}>🔍</Text>
+                  <TextInput
+                    style={styles.searchTrackInput}
+                    placeholder="Tìm kiếm bài hát, video, link trong playlist..."
+                    placeholderTextColor={COLORS.textMuted}
+                    value={searchTrackQuery}
+                    onChangeText={setSearchTrackQuery}
+                  />
+                  {!!searchTrackQuery && (
+                    <TouchableOpacity
+                      style={styles.searchTrackClearBtn}
+                      onPress={() => setSearchTrackQuery('')}>
+                      <Text style={styles.searchTrackClearText}>✕</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
 
                 {/* PLAYLIST SECTION */}
-                <Text style={styles.playlistSectionTitle}>
-                  ⭐ DANH SÁCH BÀI HÁT ({customTracks.length + DEFAULT_TRACKS.length})
-                </Text>
+                <View style={styles.playlistHeaderRow}>
+                  <Text style={styles.playlistSectionTitle}>
+                    ⭐ DANH SÁCH BÀI HÁT ({filteredPlaylist.length})
+                  </Text>
+                  {allAvailableTracks.length > 0 && (
+                    <TouchableOpacity
+                      style={styles.resumePlayBtn}
+                      onPress={() => playTrack(currentTrack || allAvailableTracks[0])}>
+                      <Text style={styles.resumePlayBtnText}>▶ TIẾP TỤC BÀI ĐANG CHỌN</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
 
-                {/* Custom User Tracks */}
-                {customTracks.length > 0 && (
-                  <View style={{ marginBottom: 12 }}>
-                    <Text style={styles.playlistGroupLabel}>📂 Video MP4 Của Bạn ({customTracks.length})</Text>
-                    {customTracks.map((t) => {
-                      const isCurrent = currentTrack?.id === t.id;
+                {/* Danh sách các bài hát sau khi lọc tìm kiếm */}
+                <View style={{ marginBottom: 16 }}>
+                  {filteredPlaylist.length === 0 ? (
+                    <View style={styles.emptySearchBox}>
+                      <Text style={{ fontSize: 24, marginBottom: 4 }}>🔍</Text>
+                      <Text style={styles.emptySearchText}>
+                        Không tìm thấy bài hát nào khớp với "{searchTrackQuery}"
+                      </Text>
+                    </View>
+                  ) : (
+                    filteredPlaylist.map((t) => {
+                      const isCurrent = currentTrack && currentTrack.id === t.id;
+                      const formatBadge = t.formatType || (t.isLink ? 'LINK' : 'MP3');
                       return (
-                        <View key={t.id} style={[styles.trackItemCard, isCurrent && styles.trackItemCardActive]}>
+                        <View
+                          key={t.id}
+                          style={[styles.trackItemCard, isCurrent && styles.trackItemCardActive]}>
                           <TouchableOpacity
                             style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
                             onPress={() => playTrack(t)}>
                             <View style={styles.trackPlayIconBox}>
-                              <Text style={{ fontSize: 16 }}>{isCurrent && isPlaying ? '🔊' : '🎬'}</Text>
+                              <Text style={{ fontSize: 16 }}>
+                                {isCurrent && isPlaying ? '🔊' : t.isLink ? '🔗' : '🎵'}
+                              </Text>
                             </View>
                             <View style={{ flex: 1 }}>
-                              <Text style={[styles.trackItemName, isCurrent && styles.trackItemNameActive]} numberOfLines={1}>
-                                {t.name}
-                              </Text>
+                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                                <View style={styles.formatBadgeBox}>
+                                  <Text style={styles.formatBadgeText}>{formatBadge}</Text>
+                                </View>
+                                <Text
+                                  style={[styles.trackItemName, isCurrent && styles.trackItemNameActive]}
+                                  numberOfLines={1}>
+                                  {t.name}
+                                </Text>
+                              </View>
                               <Text style={styles.trackItemMeta}>
-                                {t.size ? `Kích thước: ${t.size}  •  ` : ''}Ngày thêm: {t.dateAdded}
+                                {t.author ? `${t.author}  •  ` : ''}
+                                {t.size ? `${t.size}  •  ` : ''}
+                                {t.duration ? `Thời lượng: ${t.duration}` : t.dateAdded ? `Ngày thêm: ${t.dateAdded}` : ''}
                               </Text>
                             </View>
                           </TouchableOpacity>
 
                           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                             <TouchableOpacity
-                              style={[styles.trackActionBtn, isCurrent && isPlaying && styles.trackActionBtnPlaying]}
+                              style={[
+                                styles.trackActionBtn,
+                                isCurrent && isPlaying && styles.trackActionBtnPlaying,
+                              ]}
                               onPress={() => (isCurrent ? togglePlayPause() : playTrack(t))}>
                               <Text style={styles.trackActionBtnText}>
                                 {isCurrent && isPlaying ? '⏸ TẠM DỪNG' : '▶ PHÁT'}
                               </Text>
                             </TouchableOpacity>
-                            <TouchableOpacity
-                              style={styles.trackDeleteBtn}
-                              onPress={() => handleDeleteTrack(t.id)}>
-                              <Text style={{ fontSize: 13, color: COLORS.accentRed }}>🗑️</Text>
-                            </TouchableOpacity>
+
+                            {t.isCustom && (
+                              <TouchableOpacity
+                                style={styles.trackDeleteBtn}
+                                onPress={() => handleDeleteTrack(t.id)}>
+                                <Text style={{ fontSize: 13, color: COLORS.accentRed }}>🗑️</Text>
+                              </TouchableOpacity>
+                            )}
                           </View>
                         </View>
                       );
-                    })}
-                  </View>
-                )}
-
-                {/* Pre-loaded Free Fire Beats */}
-                <View style={{ marginBottom: 16 }}>
-                  <Text style={styles.playlistGroupLabel}>⚡ Nhạc Chiến Free Fire Sẵn Có</Text>
-                  {DEFAULT_TRACKS.map((t) => {
-                    const isCurrent = currentTrack?.id === t.id;
-                    return (
-                      <View key={t.id} style={[styles.trackItemCard, isCurrent && styles.trackItemCardActive]}>
-                        <TouchableOpacity
-                          style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
-                          onPress={() => playTrack(t)}>
-                          <View style={styles.trackPlayIconBox}>
-                            <Text style={{ fontSize: 16 }}>{isCurrent && isPlaying ? '🔊' : '🎵'}</Text>
-                          </View>
-                          <View style={{ flex: 1 }}>
-                            <Text style={[styles.trackItemName, isCurrent && styles.trackItemNameActive]} numberOfLines={1}>
-                              {t.name}
-                            </Text>
-                            <Text style={styles.trackItemMeta}>{t.author}</Text>
-                          </View>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                          style={[styles.trackActionBtn, isCurrent && isPlaying && styles.trackActionBtnPlaying]}
-                          onPress={() => (isCurrent ? togglePlayPause() : playTrack(t))}>
-                          <Text style={styles.trackActionBtnText}>
-                            {isCurrent && isPlaying ? '⏸ TẠM DỪNG' : '▶ PHÁT'}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    );
-                  })}
+                    })
+                  )}
                 </View>
 
                 {/* Background Playing Note */}
                 <View style={styles.backgroundNoteBox}>
                   <Text style={styles.backgroundNoteText}>
-                    💡 <Text style={{ fontWeight: 'bold', color: COLORS.secondary }}>Chế độ phát nền:</Text> Bạn có thể bấm nút [✕] để thu nhỏ bong bóng chat. Nhạc sẽ vẫn phát liên tục trong nền để bạn vừa nghe vừa vào phòng tập bắn hoặc leo rank!
+                    💡 <Text style={{ fontWeight: 'bold', color: COLORS.secondary }}>Tính năng phát nền & Pop-up:</Text> Bạn có thể bấm [✕] để thu nhỏ bong bóng. Nhạc vẫn phát mượt mà trong nền kèm <Text style={{ color: '#00F0FF', fontWeight: 'bold' }}>thanh Mini Pop-up nổi</Text> để bạn vừa nghe vừa vào phòng tập ngắm bắn hoặc leo rank!
                   </Text>
                 </View>
-                <View style={{ height: 30 }} />
+                <View style={{ height: 35 }} />
               </ScrollView>
             ) : (
               /* ================= VIEW 2: AI COACH CHAT ================= */
@@ -820,7 +1205,7 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
                   <View style={styles.chatMiniMusicBanner}>
                     <Text style={{ fontSize: 13, marginRight: 6 }}>🎵</Text>
                     <Text style={styles.chatMiniMusicTitle} numberOfLines={1}>
-                      {currentTrack?.name}
+                      {currentTrack && currentTrack.name ? currentTrack.name : ''}
                     </Text>
                     <TouchableOpacity style={styles.chatMiniMusicToggle} onPress={togglePlayPause}>
                       <Text style={styles.chatMiniMusicToggleText}>{isPlaying ? '⏸' : '▶'}</Text>
@@ -957,12 +1342,15 @@ export default function AiChatBubble({ onApplyToTrainer, onSaveConfig, hidden = 
 }
 
 const styles = StyleSheet.create({
-  // Floating Bubble
+  // Floating Bubble (Anti-Disappearance)
   floatingBubbleContainer: {
     position: 'absolute',
     top: 0,
     left: 0,
     zIndex: 9999,
+  },
+  floatingBubbleLandscape: {
+    opacity: 0.9,
   },
   floatingBubble: {
     width: 60,
@@ -1023,6 +1411,137 @@ const styles = StyleSheet.create({
     color: '#00F0FF',
     fontSize: 8,
     fontWeight: '800',
+  },
+
+  // Floating Mini Player Pop-up Widget
+  floatingMiniPlayerBar: {
+    position: 'absolute',
+    zIndex: 9998,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(14, 18, 26, 0.95)',
+    borderRadius: 24,
+    borderWidth: 1.5,
+    borderColor: '#00F0FF',
+    shadowColor: '#00F0FF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 12,
+  },
+  miniPlayerPortrait: {
+    bottom: 84,
+    left: 14,
+    right: 80,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  miniPlayerLandscape: {
+    top: 14,
+    left: 16,
+    right: 86,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  miniPlayerTrackInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  miniVinylDisc: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#0B0D14',
+    borderWidth: 1.5,
+    borderColor: '#00F0FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 8,
+  },
+  miniPlayerTrackName: {
+    color: '#FFF',
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  miniPlayerTimeText: {
+    color: '#00F0FF',
+    fontSize: 9,
+    fontWeight: '600',
+    marginTop: 1,
+  },
+  miniPlayerControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  miniCtrlBtn: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  miniCtrlBtnText: {
+    fontSize: 12,
+    color: '#FFF',
+  },
+  miniCtrlBtnPlay: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#00F0FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  miniCtrlBtnPlayText: {
+    fontSize: 14,
+    color: '#07050E',
+    fontWeight: '900',
+  },
+  miniCtrlBtnClose: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 4,
+  },
+  miniCtrlBtnCloseText: {
+    color: COLORS.textMuted,
+    fontSize: 11,
+    fontWeight: '800',
+  },
+
+  // Toast Pop-up Notification
+  toastContainer: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    right: 20,
+    zIndex: 10000,
+    alignItems: 'center',
+  },
+  toastBox: {
+    backgroundColor: 'rgba(10, 14, 22, 0.95)',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderWidth: 1.5,
+    borderColor: '#00F0FF',
+    shadowColor: '#00F0FF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 12,
+  },
+  toastText: {
+    color: '#FFF',
+    fontSize: 11,
+    fontWeight: '800',
+    textAlign: 'center',
   },
 
   // Modal Backdrop & Sheet
@@ -1284,7 +1803,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 16,
+    gap: 12,
     marginTop: 12,
   },
   ctrlSecondaryBtn: {
@@ -1351,58 +1870,202 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
 
-  // Add MP4 Button
-  addMp4Btn: {
+  // 2 Action Buttons: Pick Local Media & Add Link
+  actionAddGrid: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 14,
+  },
+  addMediaActionBtn: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'linear-gradient(135deg, rgba(255, 106, 0, 0.2), rgba(0, 240, 255, 0.1))',
-    backgroundColor: 'rgba(30, 20, 50, 0.95)',
-    borderRadius: 20,
-    padding: 14,
+    backgroundColor: 'rgba(255, 106, 0, 0.1)',
+    borderRadius: 16,
+    padding: 10,
     borderWidth: 1.5,
     borderColor: COLORS.primaryBright,
-    marginBottom: 16,
-    gap: 12,
+    gap: 8,
   },
-  addMp4IconBox: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
+  addLinkActionBtn: {
+    backgroundColor: 'rgba(0, 240, 255, 0.1)',
+    borderColor: '#00F0FF',
+  },
+  addMediaIconBox: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
     backgroundColor: 'rgba(255, 106, 0, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  addMp4BtnTitle: {
-    color: '#FFF',
-    fontSize: 13,
-    fontWeight: '900',
-    letterSpacing: 0.5,
+  addLinkIconBox: {
+    backgroundColor: 'rgba(0, 240, 255, 0.2)',
   },
-  addMp4BtnDesc: {
+  addMediaBtnTitle: {
+    color: '#FFF',
+    fontSize: 11,
+    fontWeight: '900',
+  },
+  addMediaBtnDesc: {
+    color: COLORS.textMuted,
+    fontSize: 8.5,
+    marginTop: 2,
+    lineHeight: 12,
+  },
+
+  // Link Modal / Input Card
+  linkInputCard: {
+    backgroundColor: 'rgba(16, 20, 30, 0.98)',
+    borderRadius: 18,
+    padding: 14,
+    borderWidth: 1.5,
+    borderColor: '#00F0FF',
+    marginBottom: 14,
+  },
+  linkCardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  linkCardTitle: {
+    color: '#00F0FF',
+    fontSize: 12,
+    fontWeight: '900',
+  },
+  linkCardClose: {
+    color: COLORS.textMuted,
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  linkTextInput: {
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    color: '#FFF',
+    fontSize: 11,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    marginBottom: 8,
+  },
+  submitLinkBtn: {
+    backgroundColor: '#00F0FF',
+    borderRadius: 10,
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  submitLinkBtnText: {
+    color: '#07050E',
+    fontSize: 11,
+    fontWeight: '900',
+  },
+  presetLinkHeader: {
     color: COLORS.textMuted,
     fontSize: 10,
-    marginTop: 2,
-    lineHeight: 14,
+    fontWeight: '700',
+    marginBottom: 6,
   },
-  addMp4Arrow: {
-    color: COLORS.primaryBright,
-    fontSize: 18,
+  presetLinkList: {
+    gap: 5,
+  },
+  presetLinkPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  presetLinkTag: {
+    color: COLORS.secondary,
+    fontSize: 9,
+    fontWeight: '900',
+    marginRight: 6,
+  },
+  presetLinkName: {
+    flex: 1,
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  presetLinkPlus: {
+    color: '#00F0FF',
+    fontSize: 14,
     fontWeight: '900',
   },
 
-  // Playlist Section
+  // Search Track Container
+  searchTrackContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    marginBottom: 12,
+  },
+  searchTrackIcon: {
+    fontSize: 14,
+    marginRight: 8,
+  },
+  searchTrackInput: {
+    flex: 1,
+    color: '#FFF',
+    fontSize: 12,
+    padding: 0,
+  },
+  searchTrackClearBtn: {
+    padding: 4,
+  },
+  searchTrackClearText: {
+    color: COLORS.textMuted,
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  emptySearchBox: {
+    alignItems: 'center',
+    paddingVertical: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    borderRadius: 14,
+  },
+  emptySearchText: {
+    color: COLORS.textMuted,
+    fontSize: 11,
+    textAlign: 'center',
+  },
+
+  // Playlist Section Header
+  playlistHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
   playlistSectionTitle: {
     color: COLORS.secondary,
     fontSize: 13,
     fontWeight: '900',
-    marginBottom: 8,
     letterSpacing: 0.5,
   },
-  playlistGroupLabel: {
-    color: COLORS.textMuted,
-    fontSize: 11,
-    fontWeight: '700',
-    marginBottom: 6,
+  resumePlayBtn: {
+    backgroundColor: 'rgba(0, 240, 255, 0.15)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#00F0FF',
+  },
+  resumePlayBtnText: {
+    color: '#00F0FF',
+    fontSize: 8.5,
+    fontWeight: '900',
   },
   trackItemCard: {
     flexDirection: 'row',
@@ -1428,6 +2091,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
+  },
+  formatBadgeBox: {
+    backgroundColor: 'rgba(0, 240, 255, 0.2)',
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    borderRadius: 4,
+    borderWidth: 0.5,
+    borderColor: '#00F0FF',
+  },
+  formatBadgeText: {
+    color: '#00F0FF',
+    fontSize: 8,
+    fontWeight: '900',
   },
   trackItemName: {
     color: '#FFF',
