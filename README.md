@@ -10,8 +10,9 @@
 
 ## 📲 Tải File Cài Đặt (Android APK)
 
-Bạn có thể tải ngay tệp APK chính thức tại mục **[Releases](https://github.com/Thinhduong988/App-nh-y/releases/tag/v1.0.4)**:
-- **Tệp cài đặt trực tiếp**: [Do_Nhay_Free_Fire_AI_Pro_v1.0.4.apk](https://github.com/Thinhduong988/App-nh-y/releases/download/v1.0.4/Do_Nhay_Free_Fire_AI_Pro_v1.0.4.apk) (~62MB)
+Bạn có thể tải các phiên bản phát hành chính thức tại mục **[Releases](https://github.com/Thinhduong988/App-nh-y/releases)**:
+- 🚀 **Bản v1.0.4 (Mới Nhất - Có Nút Nổi Phủ Màn Hình Free Fire)**: [Do_Nhay_Free_Fire_AI_Pro_v1.0.4.apk](https://github.com/Thinhduong988/App-nh-y/releases/download/v1.0.4/Do_Nhay_Free_Fire_AI_Pro_v1.0.4.apk) (~62MB)
+- 📦 **Bản v1.0.3 (Giao Diện Cyber Esports & AI 5.0)**: [Do_Nhay_Free_Fire_AI_Pro_v1.0.3.apk](https://github.com/Thinhduong988/App-nh-y/releases/download/v1.0.3/Do_Nhay_Free_Fire_AI_Pro_v1.0.3.apk) (~62MB)
 - Hỗ trợ mọi thiết bị Android từ Android 8.0 đến Android 15.
 
 ---
