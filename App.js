@@ -14,6 +14,7 @@ import {
   Share,
   Platform,
   KeyboardAvoidingView,
+  Linking,
 } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -559,6 +560,47 @@ export default function App() {
                 <Text style={[styles.statNumber, { color: COLORS.secondary }]}>200</Text>
                 <Text style={styles.statLabel}>Thang Chuẩn</Text>
               </View>
+            </View>
+
+            
+            {/* Quick Launch Free Fire Center */}
+            <Text style={styles.sectionTitle}>🚀 KHỞI ĐỘNG FREE FIRE 1 CHẠM</Text>
+            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
+              <TouchableOpacity
+                style={{ flex: 1, backgroundColor: COLORS.surface, borderColor: COLORS.primary, borderWidth: 1, borderRadius: 12, padding: 10, alignItems: 'center' }}
+                onPress={() => {
+                  Linking.openURL('freefire://').catch(() => {
+                    Linking.openURL('https://play.google.com/store/apps/details?id=com.dts.freefireth');
+                  });
+                }}>
+                <Text style={{ fontSize: 22, marginBottom: 4 }}>🔥</Text>
+                <Text style={{ fontSize: 11, fontWeight: '900', color: '#fff' }}>Free Fire</Text>
+                <Text style={{ fontSize: 9, color: COLORS.secondary, fontWeight: '800' }}>Bản Chuẩn</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{ flex: 1, backgroundColor: COLORS.surface, borderColor: COLORS.secondary, borderWidth: 1, borderRadius: 12, padding: 10, alignItems: 'center' }}
+                onPress={() => {
+                  Linking.openURL('freefiremax://').catch(() => {
+                    Linking.openURL('https://play.google.com/store/apps/details?id=com.dts.freefiremax');
+                  });
+                }}>
+                <Text style={{ fontSize: 22, marginBottom: 4 }}>⚡</Text>
+                <Text style={{ fontSize: 11, fontWeight: '900', color: '#fff' }}>FF MAX</Text>
+                <Text style={{ fontSize: 9, color: COLORS.secondary, fontWeight: '800' }}>Đồ Họa HD</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{ flex: 1, backgroundColor: COLORS.surface, borderColor: '#00F0FF', borderWidth: 1, borderRadius: 12, padding: 10, alignItems: 'center' }}
+                onPress={() => {
+                  Linking.openURL('freefirevn://').catch(() => {
+                    Linking.openURL('https://ff.garena.vn/');
+                  });
+                }}>
+                <Text style={{ fontSize: 22, marginBottom: 4 }}>🇻🇳</Text>
+                <Text style={{ fontSize: 11, fontWeight: '900', color: '#fff' }}>FF VN</Text>
+                <Text style={{ fontSize: 9, color: '#00F0FF', fontWeight: '800' }}>Garena VN</Text>
+              </TouchableOpacity>
             </View>
 
             {/* Quick Access Tools */}
