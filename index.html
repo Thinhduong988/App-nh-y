@@ -2178,6 +2178,22 @@ const DEVICES = [{"id": "ap-ip17pm", "brand": "Apple", "name": "iPhone 17 Pro Ma
   // Initial render
   render();
 
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const qDev = urlParams.get('device');
+    const qTab = urlParams.get('tab');
+    if (qDev) {
+      openDeviceById(qDev);
+    } else if (qTab) {
+      switchTab(qTab);
+      if (qTab === 'gen') {
+        setTimeout(() => { if (typeof runAIGenerator === 'function') runAIGenerator(); }, 100);
+      }
+    }
+  } catch (e) {
+    console.error(e);
+  }
+
 </script>
 
 </body>
