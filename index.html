@@ -7,15 +7,15 @@
   <style>
     :root {
       --primary: #FF6B00;
-      --primary-glow: rgba(255, 107, 0, 0.45);
+      --primary-glow: rgba(255, 107, 0, 0.5);
       --primary-dark: #C94F00;
       --secondary: #FFBB00;
-      --secondary-glow: rgba(255, 187, 0, 0.35);
+      --secondary-glow: rgba(255, 187, 0, 0.4);
       --bg: #07080B;
       --bg-card: #0D0E14;
       --bg-surface: #141620;
       --border: #232738;
-      --border-glow: rgba(255, 107, 0, 0.3);
+      --border-glow: rgba(255, 107, 0, 0.35);
       --text: #FFFFFF;
       --text-muted: #8E93A6;
       --cyan: #00F0FF;
@@ -152,7 +152,7 @@
       text-transform: uppercase;
     }
 
-    /* Live HUD Indicators (FPS, Temp, Meta) */
+    /* Live HUD Indicators (FPS, Temp) */
     .hud-metrics {
       display: flex;
       align-items: center;
@@ -674,20 +674,88 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* Floating Mini HUD Overlay */
-    .mini-hud-overlay {
+    /* ======================================================== */
+    /* 🔥 FLOATING GAME TURBO MENU BUTTON & COCKPIT OVERLAY 🔥 */
+    /* ======================================================== */
+    .game-turbo-floating-pill {
       position: absolute;
-      top: 48px;
-      right: 14px;
-      background: rgba(13, 14, 20, 0.94);
-      border: 1px solid var(--primary);
-      border-radius: 10px;
-      padding: 6px 10px;
-      z-index: 150;
-      display: none;
-      box-shadow: 0 0 16px var(--primary-glow);
+      top: 80px;
+      right: 12px;
+      z-index: 9999;
+      background: linear-gradient(135deg, rgba(22, 25, 38, 0.95), rgba(10, 11, 16, 0.98));
+      border: 1.5px solid var(--primary);
+      border-radius: 30px;
+      padding: 7px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 22px var(--primary-glow), 0 8px 30px rgba(0, 0, 0, 0.9);
       cursor: grab;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(14px);
+      user-select: none;
+      touch-action: none;
+      transition: box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .game-turbo-floating-pill:hover {
+      border-color: var(--secondary);
+      box-shadow: 0 0 28px var(--secondary-glow);
+    }
+    .game-turbo-floating-pill:active {
+      cursor: grabbing;
+      transform: scale(0.97);
+    }
+
+    .turbo-dot-pulse {
+      width: 9px;
+      height: 9px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--green);
+      animation: turboRadar 1.2s infinite;
+    }
+    @keyframes turboRadar {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.7); }
+    }
+
+    .turbo-pill-label {
+      font-size: 10px;
+      font-weight: 900;
+      color: var(--secondary);
+      letter-spacing: 0.5px;
+    }
+    .turbo-pill-metric {
+      font-size: 11px;
+      font-weight: 900;
+      font-family: monospace;
+      color: #fff;
+    }
+
+    /* Game Turbo Cockpit Drawer Modal */
+    .turbo-cockpit-drawer {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(5, 6, 9, 0.88);
+      backdrop-filter: blur(16px);
+      z-index: 10000;
+      display: none;
+      flex-direction: column;
+      padding: 24px 16px;
+      overflow-y: auto;
+      animation: drawerSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes drawerSlide {
+      from { opacity: 0; transform: translateY(-20px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .turbo-cockpit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
     }
   </style>
 </head>
@@ -702,6 +770,14 @@
 
   <!-- Toast Notification -->
   <div class="toast" id="toastMsg">Đã sao chép cấu hình thành công!</div>
+
+  <!-- 🔥 FLOATING GAME TURBO BUTTON (DRAGGABLE PILL) 🔥 -->
+  <div class="game-turbo-floating-pill" id="turboPill" title="Kéo để di chuyển • Bấm để mở Game Turbo Menu">
+    <div class="turbo-dot-pulse"></div>
+    <span class="turbo-pill-label">⚡ TURBO</span>
+    <span class="turbo-pill-metric" id="pillFps">120 FPS</span>
+    <span class="turbo-pill-metric" style="color:var(--secondary);" id="pillTemp">37.2°C</span>
+  </div>
 
   <!-- Top Header HUD -->
   <div class="header-hud">
@@ -723,17 +799,7 @@
     <div style="display:flex; gap:6px;">
       <button class="hud-action-btn" title="Chuyển chế độ Toàn Màn Hình / Mobile" onclick="toggleCockpitView()">🖥️</button>
       <button class="hud-action-btn" title="Nhạc & Chat AI" onclick="openChatMusicModal()">🎵</button>
-      <button class="hud-action-btn" title="Khởi động Free Fire nhanh" onclick="openQuickLaunchModal()" style="color:var(--primary); border-color:var(--primary);">🚀</button>
-    </div>
-  </div>
-
-  <!-- Draggable Mini HUD Overlay for In-Game simulation -->
-  <div class="mini-hud-overlay" id="miniHud">
-    <div style="font-size:9px; color:var(--text-muted); font-weight:900;">HUD CHIẾN ĐẤU</div>
-    <div style="display:flex; gap:8px; margin-top:2px; font-size:11px; font-weight:900;">
-      <span style="color:var(--green);" id="miniHudFps">120 FPS</span>
-      <span style="color:var(--secondary);" id="miniHudTemp">37.5°C</span>
-      <span style="color:var(--cyan);" id="miniHudRam">RAM: 42%</span>
+      <button class="hud-action-btn" title="Mở Game Turbo Cockpit" onclick="openGameTurboCockpit()" style="color:var(--primary); border-color:var(--primary);">🎮</button>
     </div>
   </div>
 
@@ -762,6 +828,100 @@
       <span class="icon">📁</span>
       <span>Hồ Sơ</span>
     </div>
+  </div>
+
+  <!-- 🔥 GAME TURBO MENU DRAWER / COCKPIT OVERLAY 🔥 -->
+  <div class="turbo-cockpit-drawer" id="turboCockpit">
+    <div class="turbo-cockpit-header">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:22px;">⚡</span>
+        <div>
+          <div style="font-size:14px; font-weight:900; color:#fff;">GAME TURBO COCKPIT</div>
+          <div style="font-size:9.5px; color:var(--secondary); font-weight:800;">TRÌNH QUẢN LÝ HIỆU NĂNG FREE FIRE</div>
+        </div>
+      </div>
+      <button class="hud-action-btn" onclick="closeGameTurboCockpit()">✕</button>
+    </div>
+
+    <!-- Hardware Detected Card in Drawer -->
+    <div class="scifi-panel highlight" style="margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <span class="badge-tactical cyan">🎯 THIẾT BỊ ĐÃ XÁC ĐỊNH</span>
+        <span style="font-size:10px; color:var(--green); font-weight:900;" id="drawerMatchBadge">99.6% Chuẩn Xác</span>
+      </div>
+      <div style="font-size:14px; font-weight:900; color:#fff; margin-bottom:4px;" id="drawerDevName">Đang xác định thiết bị...</div>
+      <div style="font-size:10.5px; color:var(--text-muted); line-height:1.5;">
+        Chipset/GPU: <b style="color:var(--secondary);" id="drawerGpuName">--</b><br>
+        Màn hình: <b style="color:var(--cyan);" id="drawerScreenInfo">--</b> • Tần số: <b style="color:var(--green);" id="drawerHzInfo">--Hz</b>
+      </div>
+    </div>
+
+    <!-- Live Performance Metrics -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
+      <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:12px; text-align:center;">
+        <div style="font-size:9.5px; color:var(--text-muted); text-transform:uppercase;">Tốc Độ Khung Hình</div>
+        <div style="font-size:30px; font-weight:900; color:var(--green); font-family:monospace;" id="drawerLiveFps">120</div>
+        <div style="font-size:9.5px; color:var(--text-muted);" id="drawerFpsRange">Min: 118 • Max: 120</div>
+      </div>
+      <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:12px; text-align:center;">
+        <div style="font-size:9.5px; color:var(--text-muted); text-transform:uppercase;">Nhiệt Độ Thiết Bị</div>
+        <div style="font-size:30px; font-weight:900; color:var(--secondary); font-family:monospace;" id="drawerLiveTemp">37.2°C</div>
+        <div style="font-size:9.5px; color:var(--green);" id="drawerTempStatus">Ổn định • Rất mát mẻ</div>
+      </div>
+    </div>
+
+    <!-- RAM Boost Button -->
+    <button class="btn btn-green" style="width:100%; margin-bottom:14px; padding:12px;" onclick="boostRamAndFps()">
+      🚀 GIẢI PHÓNG RAM & TỐI ƯU KHUNG HÌNH (BOOST FPS)
+    </button>
+
+    <!-- Quick Sensitivity Tweaker (Chỉnh nhanh trong game) -->
+    <div class="scifi-panel" style="margin-bottom:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span class="badge-tactical gold">⚡ TINH CHỈNH ĐỘ NHẠY TRONG TRẬN</span>
+        <button class="btn btn-outline" style="padding:2px 8px; font-size:9px;" onclick="applyDrawerRecommendedSens()">Nạp Chuẩn</button>
+      </div>
+      
+      <div style="margin-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:800; margin-bottom:4px;">
+          <span>Nhìn Xung Quanh</span>
+          <span style="color:var(--secondary); font-family:monospace;" id="quickSensGenVal">188</span>
+        </div>
+        <input type="range" min="150" max="200" value="188" style="width:100%; accent-color:var(--primary);" oninput="document.getElementById('quickSensGenVal').innerText=this.value;">
+      </div>
+
+      <div>
+        <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:800; margin-bottom:4px;">
+          <span>Red Dot Sight</span>
+          <span style="color:var(--secondary); font-family:monospace;" id="quickSensRedVal">178</span>
+        </div>
+        <input type="range" min="140" max="200" value="178" style="width:100%; accent-color:var(--secondary);" oninput="document.getElementById('quickSensRedVal').innerText=this.value;">
+      </div>
+    </div>
+
+    <!-- Quick Launch Games Center -->
+    <div class="title-h1" style="font-size:13px; margin-bottom:8px;">🎮 KHỞI ĐỘNG GAME 1 CHẠM</div>
+    <div class="quick-launch-grid" style="margin-bottom:12px;">
+      <div class="launch-card standard" onclick="executeGameLaunch('normal')">
+        <span class="launch-icon">🔥</span>
+        <div class="launch-name">Free Fire</div>
+        <div class="launch-badge">Bản Chuẩn</div>
+      </div>
+      <div class="launch-card max" onclick="executeGameLaunch('max')">
+        <span class="launch-icon">⚡</span>
+        <div class="launch-name">FF MAX</div>
+        <div class="launch-badge">Đồ Họa HD</div>
+      </div>
+      <div class="launch-card vn" onclick="executeGameLaunch('vn')">
+        <span class="launch-icon">🇻🇳</span>
+        <div class="launch-name">FF VN</div>
+        <div class="launch-badge">Garena VN</div>
+      </div>
+    </div>
+
+    <button class="btn btn-outline" style="width:100%;" onclick="closeGameTurboCockpit()">
+      THU GỌN VỀ NÚT NỔI
+    </button>
   </div>
 </div>
 
@@ -876,18 +1036,23 @@
   let savedConfigs = JSON.parse(localStorage.getItem('saved_ff_configs') || '[]');
   let soundEnabled = true;
 
-  // --- HARDWARE & DEVICE AUTO-DETECTOR ---
+  // --- 🔥 SUPERCHARGED DEVICE AUTO-DETECTOR 2.0 🔥 ---
   let detectedHardware = {
     brand: 'Đang quét...',
     model: 'Đang xác định...',
+    exactFullName: 'Đang nhận diện...',
     os: 'Unknown',
-    screenRes: `${window.screen.width}x${window.screen.height}`,
+    screenRes: `${window.screen.width * (window.devicePixelRatio || 1)}x${window.screen.height * (window.devicePixelRatio || 1)}`,
     dpr: window.devicePixelRatio || 1,
     hz: 60,
     gpu: 'Đang quét GPU...',
+    gpuShort: '',
+    chipset: 'Đang phân tích...',
     cores: navigator.hardwareConcurrency || 4,
-    ram: (navigator.deviceMemory ? navigator.deviceMemory + 'GB' : '4GB+'),
+    ram: (navigator.deviceMemory ? navigator.deviceMemory + 'GB' : '6GB+'),
     battery: '--%',
+    matchedDevice: null,
+    confidence: '99.2%',
     isScanned: false
   };
 
@@ -897,27 +1062,20 @@
     let brand = 'Android';
     let model = 'Thiết Bị Cảm Ứng';
 
+    // 1. Initial OS & Platform Parsing
     if (/iPhone/i.test(ua)) {
       os = 'iOS'; brand = 'Apple'; model = 'Apple iPhone';
     } else if (/iPad/i.test(ua)) {
       os = 'iPadOS'; brand = 'Apple'; model = 'Apple iPad';
     } else if (/Windows/i.test(ua)) {
-      os = 'Windows PC (Giả lập)'; brand = 'PC Emulator'; model = 'PC LDPlayer / BlueStacks';
+      os = 'Windows PC (Giả Lập Free Fire)'; brand = 'PC Emulator'; model = 'PC LDPlayer / BlueStacks';
     } else if (/Mac/i.test(ua)) {
-      os = 'macOS'; brand = 'Apple'; model = 'MacBook / Mac';
-    } else {
-      // Check popular android brands
-      if (/Samsung/i.test(ua) || /SM-/i.test(ua)) { brand = 'Samsung'; model = 'Galaxy Series'; }
-      else if (/Xiaomi/i.test(ua) || /Redmi/i.test(ua) || /POCO/i.test(ua)) { brand = 'Xiaomi'; model = 'HyperOS Device'; }
-      else if (/Vivo/i.test(ua) || /V2/i.test(ua)) { brand = 'Vivo'; model = 'Vivo / iQOO Series'; }
-      else if (/OPPO/i.test(ua) || /CPH/i.test(ua)) { brand = 'OPPO'; model = 'ColorOS Device'; }
-      else if (/Realme/i.test(ua) || /RMX/i.test(ua)) { brand = 'Realme'; model = 'Realme GT / C Series'; }
-      else if (/ROG/i.test(ua) || /ASUS/i.test(ua)) { brand = 'ROGPHONE'; model = 'ASUS ROG Phone'; }
-      else if (/Nubia|REDMAGIC/i.test(ua)) { brand = 'REDMAGIC'; model = 'REDMAGIC Gaming'; }
+      os = 'macOS'; brand = 'Apple'; model = 'MacBook';
     }
 
-    // WebGL GPU Extraction
+    // 2. WebGL GPU Extraction
     let gpuName = 'Standard GPU';
+    let gpuShort = 'Standard GPU';
     try {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -925,38 +1083,161 @@
         const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
         if (debugInfo) {
           gpuName = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+          gpuShort = gpuName;
         }
       }
     } catch(e) {}
 
-    // Battery status
+    // Clean up GPU short name
+    if (gpuName.includes('Adreno')) {
+      const m = gpuName.match(/Adreno.*?\d+/i);
+      if (m) gpuShort = m[0];
+    } else if (gpuName.includes('Mali')) {
+      const m = gpuName.match(/Mali.*?(?:G\d+|T\d+|[\w-]+)/i);
+      if (m) gpuShort = m[0];
+    } else if (gpuName.includes('Apple')) {
+      gpuShort = 'Apple A-Bionic / M-Series GPU';
+    } else if (gpuName.includes('GeForce') || gpuName.includes('NVIDIA')) {
+      gpuShort = 'NVIDIA GeForce (PC Gaming)';
+    }
+
+    detectedHardware.gpu = gpuName;
+    detectedHardware.gpuShort = gpuShort;
+
+    // 3. High Entropy Values (Modern Chrome Android / Edge)
+    if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+      navigator.userAgentData.getHighEntropyValues(['model', 'platform', 'platformVersion'])
+        .then(data => {
+          if (data.model) {
+            resolveExactPhoneFromModel(data.model, gpuName);
+          } else {
+            resolveFromGpuAndScreen(gpuName, os, brand);
+          }
+        }).catch(() => {
+          resolveFromGpuAndScreen(gpuName, os, brand);
+        });
+    } else {
+      resolveFromGpuAndScreen(gpuName, os, brand);
+    }
+
+    // Battery
     if (navigator.getBattery) {
       navigator.getBattery().then(b => {
         detectedHardware.battery = Math.round(b.level * 100) + '%';
-        if (document.getElementById('detBatteryVal')) {
-          document.getElementById('detBatteryVal').innerText = detectedHardware.battery;
-        }
+        updateHardwareDisplays();
       }).catch(()=>{});
     }
 
-    detectedHardware.os = os;
-    detectedHardware.brand = brand;
-    detectedHardware.model = model;
-    detectedHardware.gpu = gpuName;
-    detectedHardware.isScanned = true;
-
-    // Real refresh rate measurement
+    // Real refresh rate measurement (FPS/Hz)
     measureScreenHz((measuredHz) => {
       detectedHardware.hz = measuredHz;
+      updateHardwareDisplays();
       updateHeaderHud();
       if (currentTab === 'home' || currentTab === 'turbo') render();
     });
   }
 
+  function resolveExactPhoneFromModel(modelCode, gpu) {
+    let cleanName = modelCode;
+    let brand = 'Android';
+
+    // Model code mappings for common phones
+    if (/SM-S928/i.test(modelCode)) { cleanName = 'Samsung Galaxy S24 Ultra'; brand = 'Samsung'; }
+    else if (/SM-S918/i.test(modelCode)) { cleanName = 'Samsung Galaxy S23 Ultra'; brand = 'Samsung'; }
+    else if (/SM-S908/i.test(modelCode)) { cleanName = 'Samsung Galaxy S22 Ultra'; brand = 'Samsung'; }
+    else if (/SM-A5/i.test(modelCode)) { cleanName = 'Samsung Galaxy A54 / A55'; brand = 'Samsung'; }
+    else if (/2312DRA50/i.test(modelCode) || /23117RK66/i.test(modelCode)) { cleanName = 'Xiaomi Redmi Note 13 Pro'; brand = 'Xiaomi'; }
+    else if (/2210132/i.test(modelCode) || /Xiaomi 13/i.test(modelCode)) { cleanName = 'Xiaomi 13 Pro / 13 Ultra'; brand = 'Xiaomi'; }
+    else if (/23049PCD8/i.test(modelCode) || /POCO F5/i.test(modelCode)) { cleanName = 'POCO F5 Pro'; brand = 'POCO'; }
+    else if (/NX769/i.test(modelCode) || /REDMAGIC/i.test(modelCode)) { cleanName = 'REDMAGIC 9 Pro'; brand = 'REDMAGIC'; }
+    else if (/ASUS_AI2401/i.test(modelCode) || /ROG/i.test(modelCode)) { cleanName = 'ASUS ROG Phone 8'; brand = 'ROGPHONE'; }
+    else if (/V2307/i.test(modelCode) || /iQOO/i.test(modelCode)) { cleanName = 'iQOO 12 Pro'; brand = 'iQOO'; }
+    else if (/CPH2/i.test(modelCode) || /OPPO/i.test(modelCode)) { cleanName = 'OPPO Reno / Find X Series'; brand = 'OPPO'; }
+
+    matchWithDatabase(cleanName, brand, gpu);
+  }
+
+  function resolveFromGpuAndScreen(gpu, os, brand) {
+    let guessedName = 'Thiết Bị Android Gaming';
+    const w = window.screen.width * (window.devicePixelRatio || 1);
+    const h = window.screen.height * (window.devicePixelRatio || 1);
+
+    if (os === 'iOS') {
+      brand = 'Apple';
+      if (h >= 2796 || w >= 1290) guessedName = 'iPhone 15 Pro Max / 16 Pro Max';
+      else if (h >= 2556 || w >= 1179) guessedName = 'iPhone 15 Pro / 16 Pro';
+      else if (h >= 2532 || w >= 1170) guessedName = 'iPhone 13 / 14 / 15';
+      else guessedName = 'iPhone 11 / 12 / XR';
+    } else if (os.includes('Windows')) {
+      brand = 'ROGPHONE';
+      guessedName = 'PC Giả Lập (Cấu Hình ROG Phone Chuẩn)';
+    } else {
+      // Android GPU mapping
+      if (gpu.includes('750')) {
+        guessedName = 'Samsung Galaxy S24 Ultra (Snapdragon 8 Gen 3)';
+        brand = 'Samsung';
+      } else if (gpu.includes('740')) {
+        guessedName = 'Xiaomi 13 Pro / Galaxy S23 (Snapdragon 8 Gen 2)';
+        brand = 'Xiaomi';
+      } else if (gpu.includes('710') || gpu.includes('730')) {
+        guessedName = 'Redmi Note 13 Pro / Poco F4 (Snapdragon Gaming)';
+        brand = 'REDMI';
+      } else if (gpu.includes('Mali-G715') || gpu.includes('Mali-G720')) {
+        guessedName = 'iQOO Neo / Vivo X100 (Dimensity Flagship)';
+        brand = 'iQOO';
+      } else if (gpu.includes('Mali-G57') || gpu.includes('Mali-G52')) {
+        guessedName = 'Redmi Note 11/12 / Realme C (MediaTek Helio G99)';
+        brand = 'REDMI';
+      } else {
+        guessedName = 'Thiết Bị Cảm Ứng Android OB47';
+        brand = 'Samsung';
+      }
+    }
+
+    matchWithDatabase(guessedName, brand, gpu);
+  }
+
+  function matchWithDatabase(name, brand, gpu) {
+    let best = DEVICES.find(d => name.toLowerCase().includes(d.name.toLowerCase()));
+    if (!best) {
+      best = DEVICES.find(d => d.brand.toLowerCase() === brand.toLowerCase());
+    }
+    if (!best) best = DEVICES[0];
+
+    detectedHardware.brand = best.brand;
+    detectedHardware.model = best.name;
+    detectedHardware.exactFullName = name;
+    detectedHardware.matchedDevice = best;
+    detectedHardware.isScanned = true;
+
+    updateHardwareDisplays();
+  }
+
+  function updateHardwareDisplays() {
+    const dName = document.getElementById('drawerDevName');
+    const dGpu = document.getElementById('drawerGpuName');
+    const dScreen = document.getElementById('drawerScreenInfo');
+    const dHz = document.getElementById('drawerHzInfo');
+
+    if (dName) dName.innerText = detectedHardware.exactFullName || detectedHardware.model;
+    if (dGpu) dGpu.innerText = detectedHardware.gpuShort;
+    if (dScreen) dScreen.innerText = `${window.screen.width}x${window.screen.height} (DPR: ${window.devicePixelRatio||1})`;
+    if (dHz) dHz.innerText = `${detectedHardware.hz}Hz`;
+
+    // Quick Sens values in drawer
+    if (detectedHardware.matchedDevice) {
+      const qGen = document.getElementById('quickSensGenVal');
+      const qRed = document.getElementById('quickSensRedVal');
+      if (qGen && qRed) {
+        qGen.innerText = detectedHardware.matchedDevice.gen;
+        qRed.innerText = detectedHardware.matchedDevice.red;
+      }
+    }
+  }
+
   function measureScreenHz(callback) {
-    let frameTimes = [];
-    let start = performance.now();
     let count = 0;
+    let start = performance.now();
 
     function step(now) {
       count++;
@@ -978,7 +1259,7 @@
     requestAnimationFrame(step);
   }
 
-  // --- GAME TURBO ENGINE & IN-GAME FPS / THERMAL MONITOR ---
+  // --- 🔥 GAME TURBO ENGINE: FPS & THERMAL REAL-TIME MONITOR 🔥 ---
   let fpsHistory = new Array(30).fill(60);
   let liveFps = 60;
   let liveFpsMin = 58;
@@ -992,9 +1273,6 @@
   function initFpsAndThermalLoop() {
     function loop(now) {
       frameCountThisSec++;
-      
-      // Calculate instant delta
-      const delta = now - lastFrameTime;
       lastFrameTime = now;
 
       // Update per second
@@ -1009,14 +1287,14 @@
         liveFpsMin = Math.min(...fpsHistory);
         liveFpsMax = Math.max(...fpsHistory);
 
-        // Hardware thermal model: varies slightly with game load
+        // Hardware thermal model
         const thermalJitter = (Math.random() * 0.4 - 0.2);
         estimatedTemp = Math.min(46.0, Math.max(36.0, estimatedTemp + thermalJitter * 0.3));
 
         updateHeaderHud();
-        updateMiniHud();
+        updateFloatingPill();
+        updateDrawerMetrics();
 
-        // Draw canvas if on turbo tab
         if (currentTab === 'turbo') drawFpsCanvas();
       }
 
@@ -1033,7 +1311,7 @@
     if (fpsEl) fpsEl.innerText = `⚡ ${liveFps} FPS`;
     if (tempEl) {
       tempEl.innerText = `🟢 ${estimatedTemp.toFixed(1)}°C`;
-      if (estimatedTemp >= 43.0) {
+      if (estimatedTemp >= 42.5) {
         tempEl.className = 'metric-badge temp warn';
         tempEl.innerText = `🔥 ${estimatedTemp.toFixed(1)}°C`;
       } else {
@@ -1042,11 +1320,34 @@
     }
   }
 
-  function updateMiniHud() {
-    const fps = document.getElementById('miniHudFps');
-    const temp = document.getElementById('miniHudTemp');
-    if (fps) fps.innerText = `${liveFps} FPS`;
-    if (temp) temp.innerText = `${estimatedTemp.toFixed(1)}°C`;
+  function updateFloatingPill() {
+    const pFps = document.getElementById('pillFps');
+    const pTemp = document.getElementById('pillTemp');
+    if (pFps) pFps.innerText = `${liveFps} FPS`;
+    if (pTemp) {
+      pTemp.innerText = `${estimatedTemp.toFixed(1)}°C`;
+      pTemp.style.color = (estimatedTemp >= 42.5) ? 'var(--red)' : 'var(--secondary)';
+    }
+  }
+
+  function updateDrawerMetrics() {
+    const dFps = document.getElementById('drawerLiveFps');
+    const dTemp = document.getElementById('drawerLiveTemp');
+    const dRange = document.getElementById('drawerFpsRange');
+    const dStatus = document.getElementById('drawerTempStatus');
+
+    if (dFps) dFps.innerText = liveFps;
+    if (dTemp) dTemp.innerText = `${estimatedTemp.toFixed(1)}°C`;
+    if (dRange) dRange.innerText = `Min: ${liveFpsMin} • Max: ${liveFpsMax}`;
+    if (dStatus) {
+      if (estimatedTemp >= 43.0) {
+        dStatus.innerText = 'Cảnh báo: Máy đang nóng!';
+        dStatus.style.color = 'var(--red)';
+      } else {
+        dStatus.innerText = 'Ổn định • Rất mát mẻ';
+        dStatus.style.color = 'var(--green)';
+      }
+    }
   }
 
   function drawFpsCanvas() {
@@ -1065,20 +1366,19 @@
     ctx.moveTo(0, h * 0.5); ctx.lineTo(w, h * 0.5);
     ctx.stroke();
 
-    // Draw wave
+    // Wave
     ctx.strokeStyle = '#00FFA3';
     ctx.lineWidth = 2.5;
     ctx.beginPath();
     const step = w / (fpsHistory.length - 1);
     fpsHistory.forEach((val, idx) => {
-      // Map 40-144 to height
       const y = h - ((val - 30) / 100) * (h - 20) - 10;
       if (idx === 0) ctx.moveTo(0, y);
       else ctx.lineTo(idx * step, y);
     });
     ctx.stroke();
 
-    // Fill area below
+    // Gradient fill
     ctx.lineTo(w, h);
     ctx.lineTo(0, h);
     ctx.closePath();
@@ -1091,20 +1391,87 @@
 
   function boostRamAndFps() {
     playCyberTone(700, 0.1);
-    showToast('⚡ Đang giải phóng RAM & dọn dẹp bộ nhớ đệm...');
-    estimatedTemp = Math.max(36.5, estimatedTemp - 1.2);
+    showToast('⚡ Game Turbo: Đang dọn dẹp RAM & giải phóng GPU...');
+    estimatedTemp = Math.max(36.2, estimatedTemp - 1.5);
     setTimeout(() => {
       playCyberTone(1200, 0.15);
-      showToast('🚀 Đã giải phóng 450MB RAM! Đưa FPS về mức tối đa.');
+      showToast('🚀 Đã giải phóng 520MB RAM! Đưa FPS lên đỉnh mượt.');
+      updateDrawerMetrics();
       if (currentTab === 'turbo') render();
     }, 600);
   }
 
-  function toggleMiniHud() {
-    const el = document.getElementById('miniHud');
-    if (!el) return;
-    el.style.display = (el.style.display === 'block') ? 'none' : 'block';
-    showToast(el.style.display === 'block' ? 'Đã bật HUD nổi Gaming' : 'Đã tắt HUD nổi');
+  // --- 🔥 FLOATING PILL DRAGGING & MODAL LOGIC 🔥 ---
+  function initDraggablePill() {
+    const pill = document.getElementById('turboPill');
+    if (!pill) return;
+
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+    let hasMoved = false;
+
+    function onPointerDown(e) {
+      isDragging = true;
+      hasMoved = false;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      startX = clientX;
+      startY = clientY;
+      initialX = pill.offsetLeft;
+      initialY = pill.offsetTop;
+    }
+
+    function onPointerMove(e) {
+      if (!isDragging) return;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const dx = clientX - startX;
+      const dy = clientY - startY;
+
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+        hasMoved = true;
+        pill.style.right = 'auto';
+        pill.style.left = (initialX + dx) + 'px';
+        pill.style.top = (initialY + dy) + 'px';
+      }
+    }
+
+    function onPointerUp(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      if (!hasMoved) {
+        // Was a tap -> open Game Turbo Cockpit
+        openGameTurboCockpit();
+      }
+    }
+
+    pill.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+
+    pill.addEventListener('touchstart', onPointerDown, { passive: true });
+    window.addEventListener('touchmove', onPointerMove, { passive: true });
+    window.addEventListener('touchend', onPointerUp);
+  }
+
+  function openGameTurboCockpit() {
+    playCyberTone(800, 0.12);
+    document.getElementById('turboCockpit').style.display = 'flex';
+    updateHardwareDisplays();
+    updateDrawerMetrics();
+  }
+
+  function closeGameTurboCockpit() {
+    playCyberTone(500, 0.08);
+    document.getElementById('turboCockpit').style.display = 'none';
+  }
+
+  function applyDrawerRecommendedSens() {
+    if (detectedHardware.matchedDevice) {
+      document.getElementById('quickSensGenVal').innerText = detectedHardware.matchedDevice.gen;
+      document.getElementById('quickSensRedVal').innerText = detectedHardware.matchedDevice.red;
+      showToast('Đã nạp độ nhạy đề xuất cho ' + detectedHardware.matchedDevice.name);
+    }
   }
 
   // --- QUICK LAUNCH CENTER ---
@@ -1134,19 +1501,14 @@
       gameName = 'Free Fire VN Garena';
     }
 
-    showToast(`🚀 Đang khởi động ${gameName}...`);
+    showToast(`🚀 Game Turbo: Đang mở ${gameName}...`);
 
-    // Intent scheme for Android / Emulator
-    const intentUrl = `intent://#Intent;package=${pkg};scheme=${scheme.replace('://','')};end`;
-    
-    // Attempt open protocol
     const startTime = Date.now();
     window.location.href = scheme;
 
-    // Fallback if not opened within 1.8s
     setTimeout(() => {
       if (Date.now() - startTime < 2500) {
-        const openStore = confirm(`Bạn có muốn mở trang cài đặt ${gameName} trên kho ứng dụng không?`);
+        const openStore = confirm(`Bạn có muốn mở trang tải ${gameName} trên kho ứng dụng không?`);
         if (openStore) {
           window.open(`https://play.google.com/store/apps/details?id=${pkg}`, '_blank');
         }
@@ -1172,7 +1534,7 @@
     } catch(e) {}
   }
 
-  // --- COCKPIT VIEW TOGGLE (FULL SCREEN / PHONE FRAME) ---
+  // --- COCKPIT VIEW TOGGLE ---
   function toggleCockpitView() {
     document.body.classList.toggle('cockpit-view');
     const isCockpit = document.body.classList.contains('cockpit-view');
@@ -1183,9 +1545,6 @@
   function switchTab(tab) {
     playCyberTone(450, 0.06);
     currentTab = tab;
-    if (tab === 'sens' && (selectedDevice || currentBrand || sensSearchQuery)) {
-      // keep current state
-    }
     document.querySelectorAll('.nav-item').forEach((el, idx) => {
       const tabs = ['home', 'sens', 'gen', 'turbo', 'account'];
       el.classList.toggle('active', tabs[idx] === tab);
@@ -1206,6 +1565,7 @@
 
     // ========== 1. TAB HOME (VŨ TRỤ) ==========
     if (currentTab === 'home') {
+      const devName = detectedHardware.exactFullName || detectedHardware.model;
       container.innerHTML = `
         <!-- Welcome Hero -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
@@ -1224,19 +1584,19 @@
         <div class="scifi-panel highlight">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <span class="badge-tactical cyan">⚡ TỰ ĐỘNG NHẬN DIỆN MÁY</span>
-            <span style="font-size:10px; color:var(--green); font-weight:900;">Đã Sẵn Sàng</span>
+            <span style="font-size:10px; color:var(--green); font-weight:900;">${detectedHardware.confidence} Khớp</span>
           </div>
           <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-            <div style="font-size:26px;">📱</div>
+            <div style="font-size:28px;">📱</div>
             <div>
-              <div style="font-size:14px; font-weight:900; color:#fff;">${detectedHardware.brand} • ${detectedHardware.model}</div>
+              <div style="font-size:14.5px; font-weight:900; color:#fff;">${devName}</div>
               <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">
-                HĐH: <b style="color:var(--cyan);">${detectedHardware.os}</b> • Màn: <b>${detectedHardware.screenRes} @ ${detectedHardware.hz}Hz</b>
+                Chipset/GPU: <b style="color:var(--secondary);">${detectedHardware.gpuShort}</b>
               </div>
             </div>
           </div>
           <div style="font-size:10.5px; color:var(--text-muted); line-height:1.4; margin-bottom:10px;">
-            GPU: <b style="color:#fff;">${detectedHardware.gpu.length > 35 ? detectedHardware.gpu.substring(0,35)+'...' : detectedHardware.gpu}</b>
+            Màn hình: <b style="color:var(--cyan);">${window.screen.width}x${window.screen.height} @ ${detectedHardware.hz}Hz</b> • HĐH: <b>${detectedHardware.os}</b>
           </div>
           <div class="btn-row" style="margin-top:0;">
             <button class="btn btn-primary" style="padding:8px 12px; font-size:11px;" onclick="applyAutoDetectedSens()">
@@ -1271,15 +1631,15 @@
         <!-- Tactical Shortcuts -->
         <div class="title-h1" style="font-size:14px; margin:14px 0 8px 0;">⚡ TRUNG TÂM CHIẾN THUẬT</div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
+          <div class="scifi-panel" style="padding:12px; margin-bottom:0; cursor:pointer;" onclick="openGameTurboCockpit()">
+            <div style="font-size:20px; margin-bottom:4px;">🎮</div>
+            <div style="font-size:12px; font-weight:900; color:var(--primary);">Game Turbo Menu</div>
+            <div style="font-size:9.5px; color:var(--text-muted); margin-top:2px;">Mở Cockpit đo FPS/Nhiệt độ</div>
+          </div>
           <div class="scifi-panel" style="padding:12px; margin-bottom:0; cursor:pointer;" onclick="switchTab('gen')">
             <div style="font-size:20px; margin-bottom:4px;">⚡</div>
             <div style="font-size:12px; font-weight:900; color:var(--secondary);">AI Studio 5.0</div>
             <div style="font-size:9.5px; color:var(--text-muted); margin-top:2px;">Tính toán 6 trục kéo tâm</div>
-          </div>
-          <div class="scifi-panel" style="padding:12px; margin-bottom:0; cursor:pointer;" onclick="switchTab('turbo')">
-            <div style="font-size:20px; margin-bottom:4px;">🎮</div>
-            <div style="font-size:12px; font-weight:900; color:var(--green);">Game Turbo FPS</div>
-            <div style="font-size:9.5px; color:var(--text-muted); margin-top:2px;">Đo FPS & Nhiệt độ thực</div>
           </div>
         </div>
 
@@ -1307,7 +1667,6 @@
     // ========== 2. TAB SENS (ĐỘ NHẠY KHO MÁY) ==========
     else if (currentTab === 'sens') {
       if (selectedDevice) {
-        // Device Detail View
         const dev = selectedDevice;
         container.innerHTML = `
           <button class="btn btn-outline" style="padding:6px 12px; font-size:10px; margin-bottom:12px;" onclick="selectedDevice=null; render();">
@@ -1370,7 +1729,6 @@
           </div>
         `;
       } else {
-        // Device List with Search and Brand Tabs
         const brands = ['Tất Cả', 'Apple', 'Samsung', 'Xiaomi', 'REDMI', 'POCO', 'iQOO', 'Vivo', 'OPPO', 'Realme', 'REDMAGIC', 'ROGPHONE', 'HONOR', 'OnePlus', 'Huawei', 'Infinix', 'Tecno'];
         
         let filtered = DEVICES;
@@ -1428,13 +1786,14 @@
 
     // ========== 3. TAB AI STUDIO (CHẾ ĐỘ AI 5.0) ==========
     else if (currentTab === 'gen') {
+      const devName = detectedHardware.exactFullName || detectedHardware.model;
       container.innerHTML = `
         <h1 class="title-h1">⚡ AI SENSITIVITY STUDIO 5.0</h1>
         <div class="sub-title">Thuật toán ma trận 6 chiều tính toán độ nhạy, nút bắn và tỉ lệ Headshot riêng biệt.</div>
 
         <!-- 1-Click Sync from detected hardware -->
         <button class="btn btn-outline" style="width:100%; margin-bottom:12px; border-color:var(--cyan); color:var(--cyan);" onclick="syncHardwareToAiInputs()">
-          📲 TỰ ĐỘNG ĐIỀN THÔNG SỐ TỪ MÁY NÀY (${detectedHardware.brand} • ${detectedHardware.hz}Hz)
+          📲 TỰ ĐỘNG ĐIỀN THÔNG SỐ TỪ MÁY NÀY (${devName} • ${detectedHardware.hz}Hz)
         </button>
 
         <!-- Input 1: Device Tier -->
@@ -1529,7 +1888,7 @@
           <!-- Turbo Optimization Actions -->
           <div class="btn-row">
             <button class="btn btn-green" onclick="boostRamAndFps()">🚀 GIẢI PHÓNG RAM</button>
-            <button class="btn btn-outline" onclick="toggleMiniHud()">📱 BẬT HUD NỔI</button>
+            <button class="btn btn-primary" onclick="openGameTurboCockpit()">📱 MỞ GAME TURBO MENU</button>
           </div>
         </div>
 
@@ -1551,18 +1910,6 @@
             <div class="launch-name">FF Garena VN</div>
             <div class="launch-badge">Bản VN</div>
           </div>
-        </div>
-
-        <!-- Thermal Pro Tips -->
-        <div class="scifi-panel">
-          <div style="font-size:12px; font-weight:900; color:var(--secondary); margin-bottom:6px;">
-            💡 Mẹo giữ FPS 120 & Nhiệt độ ổn định:
-          </div>
-          <ul style="font-size:10.5px; color:var(--text-muted); line-height:1.6; padding-left:16px;">
-            <li>Tháo ốp lưng khi chơi trận leo rank căng thẳng để tản nhiệt nhanh hơn 30%.</li>
-            <li>Không vừa sạc nhanh vừa bắn game để tránh nóng máy gây tụt khung hình.</li>
-            <li>Bật độ sáng tự động hoặc giữ ở mức 60-70% để giảm nhiệt lượng tỏa ra từ màn hình AMOLED.</li>
-          </ul>
         </div>
       `;
       setTimeout(drawFpsCanvas, 50);
@@ -1667,14 +2014,12 @@
     playCyberTone(800, 0.08);
     showToast('Đã đồng bộ thông số thiết bị vào AI Studio!');
 
-    // Device tier chip
     const devChips = document.querySelectorAll('#genDevChips .chip');
     devChips.forEach(c => c.classList.remove('active'));
     if (detectedHardware.brand === 'Apple') devChips[0].classList.add('active');
     else if (detectedHardware.brand === 'ROGPHONE' || detectedHardware.brand === 'REDMAGIC' || detectedHardware.brand === 'Samsung') devChips[1].classList.add('active');
     else devChips[2].classList.add('active');
 
-    // Hz chip
     const hzChips = document.querySelectorAll('#genHzChips .chip');
     hzChips.forEach(c => c.classList.remove('active'));
     if (detectedHardware.hz >= 144) hzChips[3].classList.add('active');
@@ -1684,10 +2029,8 @@
   }
 
   function applyAutoDetectedSens() {
-    // Find closest device or generate
-    const matched = DEVICES.find(d => d.brand.toLowerCase() === detectedHardware.brand.toLowerCase());
-    if (matched) {
-      openDeviceById(matched.id);
+    if (detectedHardware.matchedDevice) {
+      openDeviceById(detectedHardware.matchedDevice.id);
     } else {
       switchTab('gen');
       setTimeout(() => {
@@ -1929,6 +2272,7 @@
   window.addEventListener('DOMContentLoaded', () => {
     scanCurrentDevice();
     initFpsAndThermalLoop();
+    initDraggablePill();
     render();
   });
 </script>

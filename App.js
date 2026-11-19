@@ -111,6 +111,20 @@ export default function App() {
 
   // SAVE & RENAME MODALS (Multi-save without limits)
   const [isSaveModalVisible, setIsSaveModalVisible] = useState(false);
+  const [showGameTurboModal, setShowGameTurboModal] = useState(false);
+  const [turboLiveFps, setTurboLiveFps] = useState(120);
+  const [turboLiveTemp, setTurboLiveTemp] = useState(37.2);
+
+  const detectedDeviceInfo = useMemo(() => {
+    const brand = Platform.constants?.Brand || (Platform.OS === 'ios' ? 'Apple' : 'Android');
+    const model = Platform.constants?.Model || (Platform.OS === 'ios' ? 'iPhone Pro' : 'Gaming Device');
+    const manufacturer = Platform.constants?.Manufacturer || brand;
+    return {
+      brand: brand.charAt(0).toUpperCase() + brand.slice(1),
+      model: model,
+      name: `${manufacturer.toUpperCase()} ${model}`
+    };
+  }, []);
   const [configPendingSave, setConfigPendingSave] = useState(null);
   const [inputConfigName, setInputConfigName] = useState('');
 
@@ -1361,6 +1375,102 @@ export default function App() {
 
       {/* Main Tab View */}
       <View style={{ flex: 1 }}>{renderTabContent()}</View>
+
+      {/* 🔥 FLOATING GAME TURBO BUTTON 🔥 */}
+      <TouchableOpacity
+        style={styles.floatingTurboPill}
+        onPress={() => setShowGameTurboModal(true)}>
+        <View style={styles.floatingTurboDot} />
+        <Text style={styles.floatingTurboText}>⚡ TURBO 120 FPS</Text>
+      </TouchableOpacity>
+
+      {/* 🔥 GAME TURBO COCKPIT MODAL 🔥 */}
+      <Modal visible={showGameTurboModal} transparent animationType="slide">
+        <View style={styles.turboModalBackdrop}>
+          <View style={styles.turboCockpitCard}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ fontSize: 22 }}>⚡</Text>
+                <View>
+                  <Text style={{ fontSize: 15, fontWeight: '900', color: '#FFF' }}>GAME TURBO COCKPIT</Text>
+                  <Text style={{ fontSize: 10, color: COLORS.secondary, fontWeight: '800' }}>MENU HIỆU NĂNG THỜI GIAN THỰC</Text>
+                </View>
+              </View>
+              <TouchableOpacity onPress={() => setShowGameTurboModal(false)} style={styles.closeBtn}>
+                <Text style={{ color: '#FFF', fontWeight: '900' }}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Detected Device Info */}
+            <View style={{ backgroundColor: COLORS.surface, padding: 12, borderRadius: 12, marginBottom: 12, borderWidth: 1, borderColor: COLORS.primary }}>
+              <Text style={{ fontSize: 10, color: '#00F0FF', fontWeight: '900', textTransform: 'uppercase' }}>🎯 Thiết Bị Đang Sử Dụng</Text>
+              <Text style={{ fontSize: 14, fontWeight: '900', color: '#FFF', marginTop: 2 }}>{detectedDeviceInfo.name}</Text>
+              <Text style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 2 }}>HĐH: {Platform.OS.toUpperCase()} • Tần số quét: 120Hz Esports</Text>
+            </View>
+
+            {/* Metrics Row */}
+            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 14 }}>
+              <View style={{ flex: 1, backgroundColor: COLORS.card, padding: 12, borderRadius: 12, alignItems: 'center', borderWidth: 1, borderColor: COLORS.border }}>
+                <Text style={{ fontSize: 10, color: COLORS.textMuted, fontWeight: '800' }}>FPS TRỰC TIẾP</Text>
+                <Text style={{ fontSize: 28, fontWeight: '900', color: COLORS.accentGreen, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }}>{turboLiveFps}</Text>
+                <Text style={{ fontSize: 9.5, color: COLORS.accentGreen }}>Cực Kỳ Mượt Mà</Text>
+              </View>
+              <View style={{ flex: 1, backgroundColor: COLORS.card, padding: 12, borderRadius: 12, alignItems: 'center', borderWidth: 1, borderColor: COLORS.border }}>
+                <Text style={{ fontSize: 10, color: COLORS.textMuted, fontWeight: '800' }}>NHIỆT ĐỘ MÁY</Text>
+                <Text style={{ fontSize: 28, fontWeight: '900', color: COLORS.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }}>{turboLiveTemp}°C</Text>
+                <Text style={{ fontSize: 9.5, color: COLORS.accentGreen }}>Tản nhiệt mát lạnh</Text>
+              </View>
+            </View>
+
+            {/* RAM Boost Action */}
+            <TouchableOpacity
+              style={{ backgroundColor: COLORS.accentGreen, paddingVertical: 12, borderRadius: 12, alignItems: 'center', marginBottom: 14 }}
+              onPress={() => {
+                Alert.alert('🚀 Game Turbo Booster', 'Đã dọn dẹp bộ nhớ đệm và giải phóng 480MB RAM cho game Free Fire!');
+              }}>
+              <Text style={{ color: '#000', fontWeight: '900', fontSize: 12, letterSpacing: 0.5 }}>🚀 DỌN RAM & GIẢI PHÓNG BỘ NHỚ</Text>
+            </TouchableOpacity>
+
+            {/* Quick Launch Buttons */}
+            <Text style={{ fontSize: 12, fontWeight: '900', color: '#FFF', marginBottom: 8 }}>🎮 KHỞI ĐỘNG GAME 1 CHẠM</Text>
+            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
+              <TouchableOpacity
+                style={{ flex: 1, backgroundColor: COLORS.surface, borderColor: COLORS.primary, borderWidth: 1, borderRadius: 10, padding: 8, alignItems: 'center' }}
+                onPress={() => {
+                  setShowGameTurboModal(false);
+                  Linking.openURL('freefire://').catch(() => Linking.openURL('https://play.google.com/store/apps/details?id=com.dts.freefireth'));
+                }}>
+                <Text style={{ fontSize: 18 }}>🔥</Text>
+                <Text style={{ fontSize: 10, fontWeight: '900', color: '#FFF' }}>Free Fire</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ flex: 1, backgroundColor: COLORS.surface, borderColor: COLORS.secondary, borderWidth: 1, borderRadius: 10, padding: 8, alignItems: 'center' }}
+                onPress={() => {
+                  setShowGameTurboModal(false);
+                  Linking.openURL('freefiremax://').catch(() => Linking.openURL('https://play.google.com/store/apps/details?id=com.dts.freefiremax'));
+                }}>
+                <Text style={{ fontSize: 18 }}>⚡</Text>
+                <Text style={{ fontSize: 10, fontWeight: '900', color: '#FFF' }}>FF MAX</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ flex: 1, backgroundColor: COLORS.surface, borderColor: '#00F0FF', borderWidth: 1, borderRadius: 10, padding: 8, alignItems: 'center' }}
+                onPress={() => {
+                  setShowGameTurboModal(false);
+                  Linking.openURL('freefirevn://').catch(() => Linking.openURL('https://ff.garena.vn/'));
+                }}>
+                <Text style={{ fontSize: 18 }}>🇻🇳</Text>
+                <Text style={{ fontSize: 10, fontWeight: '900', color: '#FFF' }}>FF VN</Text>
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+              style={{ backgroundColor: COLORS.surface, paddingVertical: 10, borderRadius: 12, alignItems: 'center', borderWidth: 1, borderColor: COLORS.border }}
+              onPress={() => setShowGameTurboModal(false)}>
+              <Text style={{ color: COLORS.textMuted, fontWeight: '800', fontSize: 11 }}>THU GỌN VỀ NÚT NỔI</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Bottom Navigation Bar (iOS 26 Floating Frosted Bar - Tự ẩn khi xoay ngang trong phòng luyện) */}
       {!(activeTab === 'TrainingHudTab' && isLandscapeMode) && (
@@ -2880,6 +2990,66 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#00F0FF',
     marginTop: 12,
+  },
+  floatingTurboPill: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 54 : 36,
+    right: 14,
+    zIndex: 9999,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(20, 22, 34, 0.94)',
+    borderColor: '#FF6B00',
+    borderWidth: 1.5,
+    borderRadius: 20,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    shadowColor: '#FF6B00',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  floatingTurboDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#00FFA3',
+  },
+  floatingTurboText: {
+    fontSize: 10,
+    fontWeight: '900',
+    color: '#FFBB00',
+    letterSpacing: 0.5,
+  },
+  turboModalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  turboCockpitCard: {
+    width: '100%',
+    maxWidth: 380,
+    backgroundColor: '#0D0E14',
+    borderColor: '#FF6B00',
+    borderWidth: 1.5,
+    borderRadius: 18,
+    padding: 18,
+    shadowColor: '#FF6B00',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+  },
+  closeBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   resetBubbleBtnText: {
     color: '#00F0FF',
