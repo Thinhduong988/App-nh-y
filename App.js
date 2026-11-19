@@ -15,6 +15,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   Linking,
+  NativeModules,
 } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -22,6 +23,8 @@ import { COLORS } from './src/theme/colors';
 import { BRANDS, SUB_SERIES_MAP, MOCK_DATA, PRO_TIPS } from './src/data/sensitivityData';
 import TrainingAndHudStudio from './src/components/TrainingAndHudStudio';
 import AiChatBubble from './src/components/AiChatBubble';
+
+const { FloatingOverlayModule } = NativeModules;
 
 export default function App() {
   // Navigation & Screen State
@@ -114,6 +117,32 @@ export default function App() {
   const [showGameTurboModal, setShowGameTurboModal] = useState(false);
   const [turboLiveFps, setTurboLiveFps] = useState(120);
   const [turboLiveTemp, setTurboLiveTemp] = useState(37.2);
+
+  const toggleSystemFloatingOverlay = async () => {
+    if (!FloatingOverlayModule) {
+      setShowGameTurboModal(true);
+      return;
+    }
+    try {
+      const hasPerm = await FloatingOverlayModule.checkPermission();
+      if (!hasPerm) {
+        Alert.alert(
+          'Cấp quyền hiển thị trên ứng dụng khác',
+          'Để nút Game Turbo (Đo FPS & Nhiệt độ) hiển thị phủ trên màn hình khi bạn đang chơi Free Fire, vui lòng bật quyền "Xuất hiện trên cùng" (Draw over other apps).',
+          [
+            { text: 'Hủy', style: 'cancel' },
+            { text: 'Bật quyền ngay', onPress: () => FloatingOverlayModule.requestPermission() }
+          ]
+        );
+      } else {
+        FloatingOverlayModule.startOverlay();
+        Alert.alert('⚡ Đã kích hoạt nút nổi!', 'Nút Game Turbo đã xuất hiện và sẽ nổi trên màn hình khi bạn vào Free Fire.');
+      }
+    } catch (e) {
+      console.log(e);
+      setShowGameTurboModal(true);
+    }
+  };
 
   const detectedDeviceInfo = useMemo(() => {
     const brand = Platform.constants?.Brand || (Platform.OS === 'ios' ? 'Apple' : 'Android');
@@ -577,6 +606,26 @@ export default function App() {
             </View>
 
             
+            {/* Real System Overlay Trigger Card */}
+            <View style={{ backgroundColor: 'rgba(255, 107, 0, 0.12)', borderColor: COLORS.primary, borderWidth: 1.5, borderRadius: 14, padding: 14, marginBottom: 16 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <Text style={{ fontSize: 13, fontWeight: '900', color: '#FFF' }}>⚡ NÚT NỔI PHỦ MÀN HÌNH (KHI VÀO GAME)</Text>
+                <View style={{ backgroundColor: COLORS.accentGreen, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 }}>
+                  <Text style={{ fontSize: 9, fontWeight: '900', color: '#000' }}>CHUẨN ESPORTS</Text>
+                </View>
+              </View>
+              <Text style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 16, marginBottom: 10 }}>
+                Kích hoạt để nút Game Turbo (đo FPS, Nhiệt độ & Chỉnh độ nhạy) <Text style={{ color: COLORS.secondary, fontWeight: 'bold' }}>luôn nổi trên màn hình khi bạn đang bắn Free Fire</Text>!
+              </Text>
+              <TouchableOpacity
+                style={{ backgroundColor: COLORS.primary, paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}
+                onPress={toggleSystemFloatingOverlay}>
+                <Text style={{ fontSize: 12, fontWeight: '900', color: '#000' }}>
+                  🔘 KÍCH HOẠT NÚT NỔI TRÊN FREE FIRE
+                </Text>
+              </TouchableOpacity>
+            </View>
+
             {/* Quick Launch Free Fire Center */}
             <Text style={styles.sectionTitle}>🚀 KHỞI ĐỘNG FREE FIRE 1 CHẠM</Text>
             <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
