@@ -160,6 +160,25 @@ export default function App() {
     }
   };
 
+  const handleLaunchGameWithOverlay = async (gameUrl, storeUrl) => {
+    // Tự động bật nút nổi GG Game Space khi bấm vào bất kỳ nút mở Free Fire nào
+    if (FloatingOverlayModule) {
+      try {
+        const hasPerm = await FloatingOverlayModule.checkPermission();
+        if (hasPerm) {
+          FloatingOverlayModule.startOverlay();
+        } else {
+          FloatingOverlayModule.requestPermission();
+        }
+      } catch (e) {
+        console.log('Auto overlay on launch error', e);
+      }
+    }
+    Linking.openURL(gameUrl).catch(() => {
+      Linking.openURL(storeUrl).catch(() => {});
+    });
+  };
+
   const detectedDeviceInfo = useMemo(() => {
     const brand = Platform.constants?.Brand || (Platform.OS === 'ios' ? 'Apple' : 'Android');
     const model = Platform.constants?.Model || (Platform.OS === 'ios' ? 'iPhone Pro' : 'Gaming Device');
@@ -661,11 +680,7 @@ export default function App() {
             <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
               <TouchableOpacity
                 style={{ flex: 1, backgroundColor: COLORS.surface, borderColor: COLORS.primary, borderWidth: 1, borderRadius: 12, padding: 10, alignItems: 'center' }}
-                onPress={() => {
-                  Linking.openURL('freefire://').catch(() => {
-                    Linking.openURL('https://play.google.com/store/apps/details?id=com.dts.freefireth');
-                  });
-                }}>
+                onPress={() => handleLaunchGameWithOverlay('freefire://', 'https://play.google.com/store/apps/details?id=com.dts.freefireth')}>
                 <Text style={{ fontSize: 22, marginBottom: 4 }}>🔥</Text>
                 <Text style={{ fontSize: 11, fontWeight: '900', color: '#fff' }}>Free Fire</Text>
                 <Text style={{ fontSize: 9, color: COLORS.secondary, fontWeight: '800' }}>Bản Chuẩn</Text>
@@ -673,11 +688,7 @@ export default function App() {
 
               <TouchableOpacity
                 style={{ flex: 1, backgroundColor: COLORS.surface, borderColor: COLORS.secondary, borderWidth: 1, borderRadius: 12, padding: 10, alignItems: 'center' }}
-                onPress={() => {
-                  Linking.openURL('freefiremax://').catch(() => {
-                    Linking.openURL('https://play.google.com/store/apps/details?id=com.dts.freefiremax');
-                  });
-                }}>
+                onPress={() => handleLaunchGameWithOverlay('freefiremax://', 'https://play.google.com/store/apps/details?id=com.dts.freefiremax')}>
                 <Text style={{ fontSize: 22, marginBottom: 4 }}>⚡</Text>
                 <Text style={{ fontSize: 11, fontWeight: '900', color: '#fff' }}>FF MAX</Text>
                 <Text style={{ fontSize: 9, color: COLORS.secondary, fontWeight: '800' }}>Đồ Họa HD</Text>
@@ -685,11 +696,7 @@ export default function App() {
 
               <TouchableOpacity
                 style={{ flex: 1, backgroundColor: COLORS.surface, borderColor: '#00F0FF', borderWidth: 1, borderRadius: 12, padding: 10, alignItems: 'center' }}
-                onPress={() => {
-                  Linking.openURL('freefirevn://').catch(() => {
-                    Linking.openURL('https://ff.garena.vn/');
-                  });
-                }}>
+                onPress={() => handleLaunchGameWithOverlay('freefirevn://', 'https://ff.garena.vn/')}>
                 <Text style={{ fontSize: 22, marginBottom: 4 }}>🇻🇳</Text>
                 <Text style={{ fontSize: 11, fontWeight: '900', color: '#fff' }}>FF VN</Text>
                 <Text style={{ fontSize: 9, color: '#00F0FF', fontWeight: '800' }}>Garena VN</Text>
@@ -1502,7 +1509,7 @@ export default function App() {
                 <TouchableOpacity onPress={() => Alert.alert('🎯 Độ nhạy OB47', 'Đã match cấu hình chuẩn kéo tâm Free Fire!')}>
                   <Text style={{ fontSize: 16 }}>🎯</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => Linking.openURL('freefire://').catch(() => Linking.openURL('https://play.google.com/store/apps/details?id=com.dts.freefireth'))}>
+                <TouchableOpacity onPress={() => { setShowGameTurboModal(false); handleLaunchGameWithOverlay('freefire://', 'https://play.google.com/store/apps/details?id=com.dts.freefireth'); }}>
                   <Text style={{ fontSize: 16 }}>🎮</Text>
                 </TouchableOpacity>
               </View>
@@ -1610,7 +1617,7 @@ export default function App() {
                 <TouchableOpacity style={styles.gameSpaceGridBtn} onPress={() => Alert.alert('🔒 Chống Chạm Viền', 'Đã khóa cảm ứng mép viền màn hình!')}>
                   <Text style={styles.gameSpaceGridBtnText}>🔒 Khóa Chạm Viền</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.gameSpaceGridBtn, { borderColor: '#FF6B00' }]} onPress={() => { setShowGameTurboModal(false); Linking.openURL('freefire://').catch(() => Linking.openURL('https://play.google.com/store/apps/details?id=com.dts.freefireth')); }}>
+                <TouchableOpacity style={[styles.gameSpaceGridBtn, { borderColor: '#FF6B00' }]} onPress={() => { setShowGameTurboModal(false); handleLaunchGameWithOverlay('freefire://', 'https://play.google.com/store/apps/details?id=com.dts.freefireth'); }}>
                   <Text style={[styles.gameSpaceGridBtnText, { color: '#FF6B00' }]}>🎮 VÀO FREE FIRE</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.gameSpaceGridBtn, { borderColor: '#FF3355' }]} onPress={stopSystemFloatingOverlay}>
