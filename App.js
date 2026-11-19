@@ -696,6 +696,31 @@ export default function App() {
               </TouchableOpacity>
             </View>
 
+            {/* Free Fire Wiki & Music Center */}
+            <View style={{ backgroundColor: 'rgba(0, 240, 255, 0.08)', borderColor: '#00F0FF', borderWidth: 1, borderRadius: 14, padding: 14, marginBottom: 16 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <Text style={{ fontSize: 13, fontWeight: '900', color: '#FFF' }}>🌐 WIKI FREE FIRE & 🎵 NHẠC CHIẾN</Text>
+                <View style={{ backgroundColor: '#00F0FF', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                  <Text style={{ fontSize: 9, fontWeight: '900', color: '#000' }}>GARENA OFFICIAL</Text>
+                </View>
+              </View>
+              <Text style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 16, marginBottom: 10 }}>
+                Tra cứu cổng dữ liệu thông số súng <Text style={{ color: '#00F0FF', fontWeight: 'bold' }}>wiki.ff.garena.vn</Text> và bật nhạc chiến Phonk/EDM hype trực tiếp khi chơi!
+              </Text>
+              <View style={{ flexDirection: 'row', gap: 8 }}>
+                <TouchableOpacity
+                  style={{ flex: 1.2, backgroundColor: '#00F0FF', paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}
+                  onPress={() => Linking.openURL('https://wiki.ff.garena.vn/').catch(() => Alert.alert('Lỗi', 'Không thể mở web.'))}>
+                  <Text style={{ fontSize: 11, fontWeight: '900', color: '#000' }}>🌐 MỞ WIKI GARENA ↗</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ flex: 1, backgroundColor: 'rgba(255, 187, 0, 0.15)', borderColor: COLORS.secondary, borderWidth: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}
+                  onPress={() => setBubbleResetTrigger(prev => prev + 1)}>
+                  <Text style={{ fontSize: 11, fontWeight: '900', color: COLORS.secondary }}>🎵 BẬT NHẠC CHIẾN</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
             {/* Quick Access Tools */}
             <Text style={styles.sectionTitle}>🛠️ CÔNG CỤ TÁC CHIẾN ESPORTS</Text>
             <View style={styles.quickToolsRow}>

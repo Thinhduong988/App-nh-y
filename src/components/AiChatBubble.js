@@ -942,13 +942,13 @@ export default function AiChatBubble({
               </TouchableOpacity>
             </View>
 
-            {/* TAB SWITCHER: [ 🤖 AI KÉO TÂM ] | [ 🎵 NHẠC CHIẾN (MP3/M4A/MP4/LINK) ] */}
+            {/* TAB SWITCHER: [ 🤖 AI KÉO TÂM ] | [ 🎵 NHẠC CHIẾN ] | [ 🌐 WIKI FF ] */}
             <View style={styles.sheetTabRow}>
               <TouchableOpacity
                 style={[styles.sheetTabBtn, activeModalTab === 'CHAT' && styles.sheetTabBtnActive]}
                 onPress={() => setActiveModalTab('CHAT')}>
                 <Text style={[styles.sheetTabBtnText, activeModalTab === 'CHAT' && styles.sheetTabBtnTextActive]}>
-                  🤖 AI Coach Kéo Tâm
+                  🤖 AI Coach
                 </Text>
               </TouchableOpacity>
 
@@ -956,7 +956,15 @@ export default function AiChatBubble({
                 style={[styles.sheetTabBtn, activeModalTab === 'MUSIC' && styles.sheetTabBtnActive]}
                 onPress={() => setActiveModalTab('MUSIC')}>
                 <Text style={[styles.sheetTabBtnText, activeModalTab === 'MUSIC' && styles.sheetTabBtnTextActive]}>
-                  🎵 Nhạc Chiến {isPlaying ? '• ▶ LIVE' : ''}
+                  🎵 Nhạc Chiến {isPlaying ? '• ▶' : ''}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.sheetTabBtn, activeModalTab === 'WIKI' && styles.sheetTabBtnActive]}
+                onPress={() => setActiveModalTab('WIKI')}>
+                <Text style={[styles.sheetTabBtnText, activeModalTab === 'WIKI' && styles.sheetTabBtnTextActive]}>
+                  🌐 Wiki Free Fire
                 </Text>
               </TouchableOpacity>
             </View>
@@ -1285,6 +1293,78 @@ export default function AiChatBubble({
                   </Text>
                 </View>
                 <View style={{ height: 35 }} />
+              </ScrollView>
+            ) : activeModalTab === 'WIKI' ? (
+              /* ================= VIEW 3: GARENA FREE FIRE WIKI ================= */
+              <ScrollView style={styles.musicTabScroll} showsVerticalScrollIndicator={false}>
+                {/* Official Link Banner */}
+                <View style={{ backgroundColor: 'rgba(255, 106, 0, 0.15)', borderColor: COLORS.primaryBright, borderWidth: 1.5, borderRadius: 14, padding: 14, marginBottom: 14 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '900', color: '#FFF' }}>🌟 GARENA FREE FIRE WIKI</Text>
+                    <View style={{ backgroundColor: COLORS.accentGreen, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                      <Text style={{ fontSize: 9, fontWeight: '900', color: '#000' }}>CHÍNH THỨC</Text>
+                    </View>
+                  </View>
+                  <Text style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 16, marginBottom: 10 }}>
+                    Cổng tra cứu dữ liệu gốc chính thức của Garena: Thông số vũ khí, độ giật, sát thương, nhân vật và bản đồ OB47.
+                  </Text>
+                  <TouchableOpacity
+                    style={{ backgroundColor: COLORS.primary, paddingVertical: 10, borderRadius: 10, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', gap: 6 }}
+                    onPress={() => Linking.openURL('https://wiki.ff.garena.vn/').catch(() => Alert.alert('Lỗi', 'Không thể mở liên kết.'))}>
+                    <Text style={{ fontSize: 12, fontWeight: '900', color: '#000' }}>🌐 MỞ WIKI: wiki.ff.garena.vn ↗</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Wiki Weapon Category Showcase */}
+                <Text style={{ fontSize: 12, fontWeight: '900', color: '#FFF', marginBottom: 8 }}>🔫 KHO VŨ KHÍ & SÁT THƯƠNG OB47</Text>
+                
+                {/* Shotgun */}
+                <View style={{ backgroundColor: COLORS.surface, borderColor: COLORS.border, borderWidth: 1, borderRadius: 12, padding: 12, marginBottom: 10 }}>
+                  <Text style={{ fontSize: 12, fontWeight: '900', color: COLORS.secondary }}>💥 DÒNG SHOTGUN (CẬN CHIẾN DÍNH ĐẦU)</Text>
+                  <Text style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4, lineHeight: 17 }}>
+                    • <Text style={{ color: '#FFF', fontWeight: 'bold' }}>M1887</Text>: Sát thương 100 • Tầm xa 15 • Tốc bắn 40 • Băng 2 viên (Sát thương sốc cao nhất){'\n'}
+                    • <Text style={{ color: '#FFF', fontWeight: 'bold' }}>M1014</Text>: Sát thương 94 • Băng đạn 6 viên • Tốc độ xả đạn cực nhanh{'\n'}
+                    • <Text style={{ color: '#FFF', fontWeight: 'bold' }}>Charge Buster</Text>: Tích tụ năng lượng • Xuyên giáp cấp 3
+                  </Text>
+                </View>
+
+                {/* SMG */}
+                <View style={{ backgroundColor: COLORS.surface, borderColor: COLORS.border, borderWidth: 1, borderRadius: 12, padding: 12, marginBottom: 10 }}>
+                  <Text style={{ fontSize: 12, fontWeight: '900', color: '#00F0FF' }}>⚡ DÒNG SMG (SẤY TẦM TRUNG - ĐẦU ĐỎ)</Text>
+                  <Text style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4, lineHeight: 17 }}>
+                    • <Text style={{ color: '#FFF', fontWeight: 'bold' }}>MP40</Text>: Sát thương 48 • Tốc bắn 83 • Độ giật thấp, dễ kéo tâm chữ J{'\n'}
+                    • <Text style={{ color: '#FFF', fontWeight: 'bold' }}>UMP</Text>: Sát thương 50 • Xuyên giáp 67% • Đạn đầm, ổn định nhất meta{'\n'}
+                    • <Text style={{ color: '#FFF', fontWeight: 'bold' }}>Thompson</Text>: Băng đạn 42 viên • Bền bỉ khi sấy nhiều mục tiêu
+                  </Text>
+                </View>
+
+                {/* Súng trường */}
+                <View style={{ backgroundColor: COLORS.surface, borderColor: COLORS.border, borderWidth: 1, borderRadius: 12, padding: 12, marginBottom: 10 }}>
+                  <Text style={{ fontSize: 12, fontWeight: '900', color: COLORS.accentGreen }}>🎯 DÒNG SÚNG TRƯỜNG & SNIPER</Text>
+                  <Text style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4, lineHeight: 17 }}>
+                    • <Text style={{ color: '#FFF', fontWeight: 'bold' }}>AK47 / Woodpecker</Text>: Sát thương 61-71 • Gõ đầu 1 viên cực thốn{'\n'}
+                    • <Text style={{ color: '#FFF', fontWeight: 'bold' }}>SCAR / M4A1</Text>: Độ ổn định cao, tâm ngắm không bị bè{'\n'}
+                    • <Text style={{ color: '#FFF', fontWeight: 'bold' }}>AWM / M82B</Text>: Sát thương 90-100 • Bắn xuyên keo (M82B)
+                  </Text>
+                </View>
+
+                {/* Nhân vật & Kỹ năng */}
+                <Text style={{ fontSize: 12, fontWeight: '900', color: '#FFF', marginBottom: 8, marginTop: 4 }}>👤 NHÂN VẬT & COMBO KỸ NĂNG LEO RANK</Text>
+                <View style={{ backgroundColor: COLORS.surface, borderColor: COLORS.border, borderWidth: 1, borderRadius: 12, padding: 12, marginBottom: 14 }}>
+                  <Text style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 18 }}>
+                    • <Text style={{ color: COLORS.secondary, fontWeight: 'bold' }}>Tatsuya</Text>: Lướt thần tốc 3 lần liên tiếp, né đạn và áp sát shotgun cực mạnh.{'\n'}
+                    • <Text style={{ color: '#00F0FF', fontWeight: 'bold' }}>Alok</Text>: Tạo vòng hào quang hồi 30 HP và tăng 15% tốc chạy.{'\n'}
+                    • <Text style={{ color: COLORS.accentGreen, fontWeight: 'bold' }}>Chrono</Text>: Tạo lá chắn chặn 800 sát thương, bảo vệ khi hồi sinh.{'\n'}
+                    • <Text style={{ color: '#FF3355', fontWeight: 'bold' }}>Dimitri + Kelly</Text>: Tự hồi sinh đồng đội trong vòng nhịp điệu + Chạy nhanh 6%.
+                  </Text>
+                </View>
+
+                {/* Bottom Direct Link */}
+                <TouchableOpacity
+                  style={{ backgroundColor: 'rgba(0, 240, 255, 0.12)', borderColor: '#00F0FF', borderWidth: 1, paddingVertical: 12, borderRadius: 12, alignItems: 'center', marginBottom: 25 }}
+                  onPress={() => Linking.openURL('https://wiki.ff.garena.vn/').catch(() => {})}>
+                  <Text style={{ color: '#00F0FF', fontWeight: '900', fontSize: 12 }}>🚀 MỞ TOÀN BỘ WIKI TRÊN TRÌNH DUYỆT ↗</Text>
+                </TouchableOpacity>
               </ScrollView>
             ) : (
               /* ================= VIEW 2: AI COACH CHAT ================= */

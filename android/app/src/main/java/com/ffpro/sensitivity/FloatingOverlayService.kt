@@ -1,19 +1,18 @@
 package com.ffpro.sensitivity
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.drawable.GradientDrawable
 import android.os.BatteryManager
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.view.Choreographer
 import android.view.Gravity
 import android.view.MotionEvent
@@ -33,9 +32,8 @@ import java.util.Locale
 class FloatingOverlayService : Service() {
 
     companion object {
+        private const val TAG = "FloatingOverlayService"
         var isRunning = false
-        private const val CHANNEL_ID = "ff_game_space_overlay_channel"
-        private const val NOTIFICATION_ID = 1001
     }
 
     private var windowManager: WindowManager? = null
@@ -49,12 +47,10 @@ class FloatingOverlayService : Service() {
     private var bubbleBatteryText: TextView? = null
     private var hudFpsText: TextView? = null
     private var hudCpuText: TextView? = null
-    private var hudGpuText: TextView? = null
     private var hudTempText: TextView? = null
     private var hudBatteryText: TextView? = null
     private var hudTimeText: TextView? = null
     private var hudModeBtn: TextView? = null
-    private var currentDpiLabel: TextView? = null
     private val dpiButtons = mutableListOf<TextView>()
 
     private var isExpanded = false
@@ -65,38 +61,50 @@ class FloatingOverlayService : Service() {
     private var currentModeIndex = 0
     private val modes = arrayOf("⚡ CÂN BẰNG", "🔥 TURBO BEAST", "🏆 ESPORTS 120HZ")
     private var selectedDpi = 480
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     private val frameCallback = object : Choreographer.FrameCallback {
         override fun doFrame(frameTimeNanos: Long) {
-            frameCount++
-            val nowMs = frameTimeNanos / 1_000_000L
-            if (lastFpsTimestamp == 0L) {
-                lastFpsTimestamp = nowMs
-            } else if (nowMs - lastFpsTimestamp >= 1000L) {
-                currentFps = frameCount
-                frameCount = 0
-                lastFpsTimestamp = nowMs
+            try {
+                frameCount++
+                val nowMs = frameTimeNanos / 1_000_000L
+                if (lastFpsTimestamp == 0L) {
+                    lastFpsTimestamp = nowMs
+                } else if (nowMs - lastFpsTimestamp >= 1000L) {
+                    currentFps = frameCount
+                    frameCount = 0
+                    lastFpsTimestamp = nowMs
 
-                // Update thermals with small natural jitter
-                val jitter = ((Math.random() * 0.4) - 0.2).toFloat()
-                estimatedTemp = Math.min(45.0f, Math.max(36.0f, estimatedTemp + jitter * 0.2f))
+                    // Update thermals with small natural jitter
+                    val jitter = ((Math.random() * 0.4) - 0.2).toFloat()
+                    estimatedTemp = Math.min(45.0f, Math.max(36.0f, estimatedTemp + jitter * 0.2f))
 
-                val batteryPct = getBatteryPercentage()
-                val cpuFreq = getCpuFrequency()
-                val timeStr = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+                    val batteryPct = getBatteryPercentage()
+                    val cpuFreq = getCpuFrequency()
+                    val timeStr = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
 
-                // Update Circle Bubble
-                bubbleFpsText?.text = "$currentFps"
-                bubbleBatteryText?.text = "$batteryPct%"
+                    // Update Circle Bubble
+                    bubbleFpsText?.text = "$currentFps"
+                    bubbleBatteryText?.text = "$batteryPct%"
 
-                // Update Expanded HUD
-                hudFpsText?.text = "$currentFps"
-                hudCpuText?.text = cpuFreq
-                hudTempText?.text = "${String.format(Locale.US, "%.1f", estimatedTemp)}°C"
-                hudBatteryText?.text = "$batteryPct%"
-                hudTimeText?.text = timeStr
+                    // Update Expanded HUD
+                    hudFpsText?.text = "$currentFps"
+                    hudCpuText?.text = cpuFreq
+                    hudTempText?.text = "${String.format(Locale.US, "%.1f", estimatedTemp)}°C"
+                    hudBatteryText?.text = "$batteryPct%"
+                    hudTimeText?.text = timeStr
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Frame callback update error", e)
             }
-            Choreographer.getInstance().postFrameCallback(this)
+
+            if (isRunning) {
+                try {
+                    Choreographer.getInstance().postFrameCallback(this)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error posting next frame callback", e)
+                }
+            }
         }
     }
 
@@ -104,65 +112,63 @@ class FloatingOverlayService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        isRunning = true
-        windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
-        createNotificationChannel()
-        startForegroundServiceNotification()
-
-        val overlayType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-        } else {
-            @Suppress("DEPRECATION")
-            WindowManager.LayoutParams.TYPE_PHONE
-        }
-
-        layoutParams = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            overlayType,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            PixelFormat.TRANSLUCENT
-        ).apply {
-            gravity = Gravity.TOP or Gravity.START
-            x = 30
-            y = 220
-        }
-
-        buildUI()
-        windowManager?.addView(rootContainer, layoutParams)
-        Choreographer.getInstance().postFrameCallback(frameCallback)
-    }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "GG Game Space Overlay",
-                NotificationManager.IMPORTANCE_LOW
-            ).apply {
-                description = "Hiển thị nút nổi GG Game Space trên màn hình Free Fire"
+        try {
+            // Verify overlay permission
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+                Log.w(TAG, "Permission SYSTEM_ALERT_WINDOW not granted, stopping service safely")
+                mainHandler.post {
+                    Toast.makeText(this, "Vui lòng cấp quyền 'Xuất hiện trên cùng' để bật nút nổi!", Toast.LENGTH_LONG).show()
+                }
+                stopSelf()
+                return
             }
-            val manager = getSystemService(NotificationManager::class.java)
-            manager?.createNotificationChannel(channel)
-        }
-    }
 
-    private fun startForegroundServiceNotification() {
-        val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Notification.Builder(this, CHANNEL_ID)
-        } else {
-            @Suppress("DEPRECATION")
-            Notification.Builder(this)
+            isRunning = true
+            windowManager = getSystemService(Context.WINDOW_SERVICE) as? WindowManager
+            if (windowManager == null) {
+                Log.e(TAG, "WindowManager is null, stopping service")
+                stopSelf()
+                return
+            }
+
+            val overlayType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            } else {
+                @Suppress("DEPRECATION")
+                WindowManager.LayoutParams.TYPE_PHONE
+            }
+
+            layoutParams = WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                overlayType,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                PixelFormat.TRANSLUCENT
+            ).apply {
+                gravity = Gravity.TOP or Gravity.START
+                x = 30
+                y = 220
+            }
+
+            buildUI()
+
+            if (rootContainer != null) {
+                windowManager?.addView(rootContainer, layoutParams)
+                Choreographer.getInstance().postFrameCallback(frameCallback)
+                Log.i(TAG, "FloatingOverlayService initialized and view added to WindowManager successfully")
+            } else {
+                Log.e(TAG, "rootContainer is null")
+                stopSelf()
+            }
+        } catch (t: Throwable) {
+            Log.e(TAG, "Fatal crash avoided in onCreate()", t)
+            mainHandler.post {
+                Toast.makeText(this, "Không thể khởi động nút nổi: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
+            }
+            isRunning = false
+            stopSelf()
         }
-        val notification = builder
-            .setContentTitle("🎮 GG Game Space Đang Hoạt Động")
-            .setContentText("Nút nổi Game Turbo & FPS đang sẵn sàng cho Free Fire")
-            .setSmallIcon(android.R.drawable.ic_menu_compass)
-            .setOngoing(true)
-            .build()
-        startForeground(NOTIFICATION_ID, notification)
     }
 
     private fun dp(value: Float): Int {
@@ -175,12 +181,9 @@ class FloatingOverlayService : Service() {
             val bm = getSystemService(Context.BATTERY_SERVICE) as? BatteryManager
             if (bm != null) {
                 val cap = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-                if (cap > 0) return cap
+                if (cap in 1..100) return cap
             }
-            val intent = registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-            val level = intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: 85
-            val scale = intent?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: 100
-            (level * 100 / scale.toFloat()).toInt()
+            85
         } catch (e: Exception) {
             85
         }
@@ -189,7 +192,7 @@ class FloatingOverlayService : Service() {
     private fun getCpuFrequency(): String {
         return try {
             val file = File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq")
-            if (file.exists()) {
+            if (file.exists() && file.canRead()) {
                 val khz = file.readText().trim().toLong()
                 val ghz = khz / 1_000_000.0
                 String.format(Locale.US, "%.2f GHz", ghz)
@@ -250,7 +253,7 @@ class FloatingOverlayService : Service() {
         }
 
         // ==========================================
-        // 2. EXPANDED GG GAME SPACE HUD (GIỐNG ẢNH GAMING PHONE)
+        // 2. EXPANDED GG GAME SPACE HUD (GAMING PHONE HUD)
         // ==========================================
         gameSpaceView = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -316,7 +319,7 @@ class FloatingOverlayService : Service() {
                 val turnOffBtn = TextView(this@FloatingOverlayService).apply {
                     text = "🔴 TẮT NÚT NỔI"
                     setTextColor(Color.parseColor("#FF3355"))
-                    textSize = 11f
+                    textSize = 10f
                     typeface = android.graphics.Typeface.DEFAULT_BOLD
                     setPadding(dp(8f), dp(4f), dp(8f), dp(4f))
                     background = GradientDrawable().apply {
@@ -357,7 +360,7 @@ class FloatingOverlayService : Service() {
                     setMargins(0, 0, dp(6f), 0)
                 }
 
-                // 1. CPU WING DIAL (Theo phong cách cánh neon trái)
+                // 1. CPU WING DIAL
                 val cpuWing = LinearLayout(this@FloatingOverlayService).apply {
                     orientation = LinearLayout.VERTICAL
                     gravity = Gravity.CENTER
@@ -413,7 +416,7 @@ class FloatingOverlayService : Service() {
                 }
                 addView(cpuWing)
 
-                // 2. QUICK DPI CARD (THAY ĐỔI DPI NHANH)
+                // 2. QUICK DPI CARD
                 val dpiCard = LinearLayout(this@FloatingOverlayService).apply {
                     orientation = LinearLayout.VERTICAL
                     setPadding(dp(10f), dp(8f), dp(10f), dp(8f))
@@ -477,7 +480,7 @@ class FloatingOverlayService : Service() {
                     addView(dpiRow)
 
                     val devSettingsBtn = TextView(this@FloatingOverlayService).apply {
-                        text = "⚙️ Mở Cài Đặt Tùy Chọn Nhà Phát Triển (Đổi DPI máy)"
+                        text = "⚙️ Mở Cài Đặt Nhà Phát Triển (Đổi DPI máy)"
                         setTextColor(Color.parseColor("#8E93A6"))
                         textSize = 9f
                         gravity = Gravity.CENTER
@@ -594,7 +597,7 @@ class FloatingOverlayService : Service() {
                 }
                 addView(gpuWing)
 
-                // 2. ACTION GRID (BẢNG CÁC NÚT TÍNH NĂNG NHƯ TRONG ẢNH)
+                // 2. ACTION GRID
                 val gridLayout = LinearLayout(this@FloatingOverlayService).apply {
                     orientation = LinearLayout.VERTICAL
                     layoutParams = LinearLayout.LayoutParams(
@@ -808,82 +811,94 @@ class FloatingOverlayService : Service() {
         var hasMoved = false
 
         circularBubbleView?.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    initialX = layoutParams?.x ?: 0
-                    initialY = layoutParams?.y ?: 0
-                    initialTouchX = event.rawX
-                    initialTouchY = event.rawY
-                    hasMoved = false
-                    true
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    val dx = (event.rawX - initialTouchX).toInt()
-                    val dy = (event.rawY - initialTouchY).toInt()
-                    if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-                        hasMoved = true
-                        layoutParams?.x = initialX + dx
-                        layoutParams?.y = initialY + dy
-                        windowManager?.updateViewLayout(rootContainer, layoutParams)
+            try {
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        initialX = layoutParams?.x ?: 0
+                        initialY = layoutParams?.y ?: 0
+                        initialTouchX = event.rawX
+                        initialTouchY = event.rawY
+                        hasMoved = false
+                        true
                     }
-                    true
-                }
-                MotionEvent.ACTION_UP -> {
-                    if (!hasMoved) {
-                        toggleExpanded(true)
+                    MotionEvent.ACTION_MOVE -> {
+                        val dx = (event.rawX - initialTouchX).toInt()
+                        val dy = (event.rawY - initialTouchY).toInt()
+                        if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+                            hasMoved = true
+                            layoutParams?.x = initialX + dx
+                            layoutParams?.y = initialY + dy
+                            if (rootContainer != null && windowManager != null) {
+                                windowManager?.updateViewLayout(rootContainer, layoutParams)
+                            }
+                        }
+                        true
                     }
-                    true
+                    MotionEvent.ACTION_UP -> {
+                        if (!hasMoved) {
+                            toggleExpanded(true)
+                        }
+                        true
+                    }
+                    else -> false
                 }
-                else -> false
+            } catch (e: Exception) {
+                Log.e(TAG, "Touch event error", e)
+                true
             }
         }
     }
 
     private fun toggleExpanded(expand: Boolean) {
-        isExpanded = expand
-        val overlayType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-        } else {
-            @Suppress("DEPRECATION")
-            WindowManager.LayoutParams.TYPE_PHONE
-        }
-
-        if (expand) {
-            circularBubbleView?.visibility = View.GONE
-            gameSpaceView?.visibility = View.VISIBLE
-
-            // Expanded full landscape HUD
-            val displayMetrics = resources.displayMetrics
-            val hudWidth = Math.min(displayMetrics.widthPixels - dp(20f), dp(620f))
-
-            layoutParams = WindowManager.LayoutParams(
-                hudWidth,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                overlayType,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
-                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                PixelFormat.TRANSLUCENT
-            ).apply {
-                gravity = Gravity.CENTER
+        try {
+            isExpanded = expand
+            val overlayType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            } else {
+                @Suppress("DEPRECATION")
+                WindowManager.LayoutParams.TYPE_PHONE
             }
-        } else {
-            gameSpaceView?.visibility = View.GONE
-            circularBubbleView?.visibility = View.VISIBLE
 
-            layoutParams = WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                overlayType,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                PixelFormat.TRANSLUCENT
-            ).apply {
-                gravity = Gravity.TOP or Gravity.START
-                x = 30
-                y = 220
+            if (expand) {
+                circularBubbleView?.visibility = View.GONE
+                gameSpaceView?.visibility = View.VISIBLE
+
+                val displayMetrics = resources.displayMetrics
+                val hudWidth = Math.min(displayMetrics.widthPixels - dp(20f), dp(620f))
+
+                layoutParams = WindowManager.LayoutParams(
+                    hudWidth,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    overlayType,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                    PixelFormat.TRANSLUCENT
+                ).apply {
+                    gravity = Gravity.CENTER
+                }
+            } else {
+                gameSpaceView?.visibility = View.GONE
+                circularBubbleView?.visibility = View.VISIBLE
+
+                layoutParams = WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    overlayType,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                    PixelFormat.TRANSLUCENT
+                ).apply {
+                    gravity = Gravity.TOP or Gravity.START
+                    x = 30
+                    y = 220
+                }
             }
+            if (rootContainer != null && windowManager != null) {
+                windowManager?.updateViewLayout(rootContainer, layoutParams)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "toggleExpanded error", e)
         }
-        windowManager?.updateViewLayout(rootContainer, layoutParams)
     }
 
     private fun launchMainApp() {
@@ -900,28 +915,40 @@ class FloatingOverlayService : Service() {
     private fun launchFreeFire() {
         val packages = arrayOf("com.dts.freefireth", "com.dts.freefiremax", "com.dts.freefirevn")
         for (pkg in packages) {
-            val intent = packageManager.getLaunchIntentForPackage(pkg)
-            if (intent != null) {
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-                return
+            try {
+                val intent = packageManager.getLaunchIntentForPackage(pkg)
+                if (intent != null) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    return
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Launch error for $pkg", e)
             }
         }
         Toast.makeText(this, "Chưa tìm thấy Free Fire cài đặt trên máy!", Toast.LENGTH_SHORT).show()
     }
 
     private fun stopOverlayCompletely() {
-        Toast.makeText(this, "🔴 Đã tắt hoàn toàn nút nổi GG Game Space!", Toast.LENGTH_SHORT).show()
-        stopSelf()
+        try {
+            Toast.makeText(this, "🔴 Đã tắt hoàn toàn nút nổi GG Game Space!", Toast.LENGTH_SHORT).show()
+            stopSelf()
+        } catch (e: Exception) {
+            Log.e(TAG, "stopOverlayCompletely error", e)
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         isRunning = false
-        Choreographer.getInstance().removeFrameCallback(frameCallback)
-        if (rootContainer != null) {
-            windowManager?.removeView(rootContainer)
-            rootContainer = null
+        try {
+            Choreographer.getInstance().removeFrameCallback(frameCallback)
+            if (rootContainer != null && windowManager != null) {
+                windowManager?.removeView(rootContainer)
+                rootContainer = null
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "onDestroy cleanup error", e)
         }
     }
 }
