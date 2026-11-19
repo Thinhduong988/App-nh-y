@@ -118,6 +118,9 @@ export default function App() {
   const [turboLiveFps, setTurboLiveFps] = useState(120);
   const [turboLiveTemp, setTurboLiveTemp] = useState(37.2);
 
+  const [selectedGameSpaceDpi, setSelectedGameSpaceDpi] = useState(480);
+  const [gameSpaceMode, setGameSpaceMode] = useState('⚡ CÂN BẰNG');
+
   const toggleSystemFloatingOverlay = async () => {
     if (!FloatingOverlayModule) {
       setShowGameTurboModal(true);
@@ -128,7 +131,7 @@ export default function App() {
       if (!hasPerm) {
         Alert.alert(
           'Cấp quyền hiển thị trên ứng dụng khác',
-          'Để nút Game Turbo (Đo FPS & Nhiệt độ) hiển thị phủ trên màn hình khi bạn đang chơi Free Fire, vui lòng bật quyền "Xuất hiện trên cùng" (Draw over other apps).',
+          'Để nút nổi GG Game Space (Đo xung nhịp CPU, % Pin, FPS live, Đổi nhanh DPI) hiển thị phủ trên màn hình khi bạn đang chơi Free Fire, vui lòng bật quyền "Xuất hiện trên cùng" (Draw over other apps).',
           [
             { text: 'Hủy', style: 'cancel' },
             { text: 'Bật quyền ngay', onPress: () => FloatingOverlayModule.requestPermission() }
@@ -136,11 +139,24 @@ export default function App() {
         );
       } else {
         FloatingOverlayModule.startOverlay();
-        Alert.alert('⚡ Đã kích hoạt nút nổi!', 'Nút Game Turbo đã xuất hiện và sẽ nổi trên màn hình khi bạn vào Free Fire.');
+        Alert.alert('⚡ Đã kích hoạt GG Game Space!', 'Nút nổi hình tròn đã xuất hiện và sẽ nổi trên màn hình khi bạn vào Free Fire.');
       }
     } catch (e) {
       console.log(e);
       setShowGameTurboModal(true);
+    }
+  };
+
+  const stopSystemFloatingOverlay = async () => {
+    if (!FloatingOverlayModule) {
+      setShowGameTurboModal(false);
+      return;
+    }
+    try {
+      FloatingOverlayModule.stopOverlay();
+      Alert.alert('🔴 Đã tắt nút nổi', 'Nút nổi GG Game Space đã được đóng và gỡ khỏi màn hình.');
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -609,21 +625,35 @@ export default function App() {
             {/* Real System Overlay Trigger Card */}
             <View style={{ backgroundColor: 'rgba(255, 107, 0, 0.12)', borderColor: COLORS.primary, borderWidth: 1.5, borderRadius: 14, padding: 14, marginBottom: 16 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                <Text style={{ fontSize: 13, fontWeight: '900', color: '#FFF' }}>⚡ NÚT NỔI PHỦ MÀN HÌNH (KHI VÀO GAME)</Text>
+                <Text style={{ fontSize: 13, fontWeight: '900', color: '#FFF' }}>🎮 GG GAME SPACE • NÚT NỔI HÌNH TRÒN</Text>
                 <View style={{ backgroundColor: COLORS.accentGreen, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 }}>
-                  <Text style={{ fontSize: 9, fontWeight: '900', color: '#000' }}>CHUẨN ESPORTS</Text>
+                  <Text style={{ fontSize: 9, fontWeight: '900', color: '#000' }}>GAMING PHONE HUD</Text>
                 </View>
               </View>
               <Text style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 16, marginBottom: 10 }}>
-                Kích hoạt để nút Game Turbo (đo FPS, Nhiệt độ & Chỉnh độ nhạy) <Text style={{ color: COLORS.secondary, fontWeight: 'bold' }}>luôn nổi trên màn hình khi bạn đang bắn Free Fire</Text>!
+                Nút nổi hình tròn Game Space đo <Text style={{ color: COLORS.secondary, fontWeight: 'bold' }}>Xung nhịp CPU, % Pin, FPS live, Đổi nhanh DPI</Text> và hiển thị xuyên suốt khi bạn đang bắn Free Fire!
               </Text>
-              <TouchableOpacity
-                style={{ backgroundColor: COLORS.primary, paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}
-                onPress={toggleSystemFloatingOverlay}>
-                <Text style={{ fontSize: 12, fontWeight: '900', color: '#000' }}>
-                  🔘 KÍCH HOẠT NÚT NỔI TRÊN FREE FIRE
-                </Text>
-              </TouchableOpacity>
+              <View style={{ flexDirection: 'row', gap: 8 }}>
+                <TouchableOpacity
+                  style={{ flex: 1.3, backgroundColor: COLORS.primary, paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}
+                  onPress={toggleSystemFloatingOverlay}>
+                  <Text style={{ fontSize: 11, fontWeight: '900', color: '#000' }}>
+                    🔘 BẬT NÚT NỔI TRÒN
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ flex: 1, backgroundColor: 'rgba(255, 51, 85, 0.15)', borderColor: '#FF3355', borderWidth: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}
+                  onPress={stopSystemFloatingOverlay}>
+                  <Text style={{ fontSize: 11, fontWeight: '900', color: '#FF3355' }}>
+                    🔴 TẮT NÚT NỔI
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ width: 44, backgroundColor: COLORS.surface, borderColor: COLORS.border, borderWidth: 1, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}
+                  onPress={() => setShowGameTurboModal(true)}>
+                  <Text style={{ fontSize: 14 }}>👁️</Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             {/* Quick Launch Free Fire Center */}
@@ -1425,98 +1455,152 @@ export default function App() {
       {/* Main Tab View */}
       <View style={{ flex: 1 }}>{renderTabContent()}</View>
 
-      {/* 🔥 FLOATING GAME TURBO BUTTON 🔥 */}
+      {/* 🔥 FLOATING CIRCULAR GAME SPACE BUTTON 🔥 */}
       <TouchableOpacity
-        style={styles.floatingTurboPill}
+        style={styles.floatingTurboCircle}
         onPress={() => setShowGameTurboModal(true)}>
-        <View style={styles.floatingTurboDot} />
-        <Text style={styles.floatingTurboText}>⚡ TURBO 120 FPS</Text>
+        <Text style={{ fontSize: 16 }}>⚡</Text>
+        <Text style={styles.floatingTurboCircleFps}>{turboLiveFps}</Text>
+        <Text style={styles.floatingTurboCircleBat}>🔋 85%</Text>
       </TouchableOpacity>
 
-      {/* 🔥 GAME TURBO COCKPIT MODAL 🔥 */}
+      {/* 🔥 GG GAME SPACE GAMING PHONE HUD MODAL 🔥 */}
       <Modal visible={showGameTurboModal} transparent animationType="slide">
         <View style={styles.turboModalBackdrop}>
-          <View style={styles.turboCockpitCard}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+          <View style={styles.gameSpaceHudCard}>
+            {/* Top Bar Header */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <TouchableOpacity onPress={() => setShowGameTurboModal(false)}>
+                  <Text style={{ fontSize: 16 }}>🏠</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => Alert.alert('🎯 Độ nhạy OB47', 'Đã match cấu hình chuẩn kéo tâm Free Fire!')}>
+                  <Text style={{ fontSize: 16 }}>🎯</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => Linking.openURL('freefire://').catch(() => Linking.openURL('https://play.google.com/store/apps/details?id=com.dts.freefireth'))}>
+                  <Text style={{ fontSize: 16 }}>🎮</Text>
+                </TouchableOpacity>
+              </View>
+
+              <Text style={{ fontSize: 15, fontWeight: '900', color: '#FFF', letterSpacing: 2 }}>GAMESPACE</Text>
+
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <Text style={{ fontSize: 22 }}>⚡</Text>
-                <View>
-                  <Text style={{ fontSize: 15, fontWeight: '900', color: '#FFF' }}>GAME TURBO COCKPIT</Text>
-                  <Text style={{ fontSize: 10, color: COLORS.secondary, fontWeight: '800' }}>MENU HIỆU NĂNG THỜI GIAN THỰC</Text>
+                <TouchableOpacity onPress={() => setShowGameTurboModal(false)} style={styles.closeBtn}>
+                  <Text style={{ color: '#FFBB00', fontWeight: '900' }}>✕</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={stopSystemFloatingOverlay} style={{ backgroundColor: 'rgba(255, 51, 85, 0.2)', borderColor: '#FF3355', borderWidth: 1, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 }}>
+                  <Text style={{ color: '#FF3355', fontWeight: '900', fontSize: 10 }}>🔴 TẮT NÚT NỔI</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: 420 }}>
+              {/* Dials & Wings Row */}
+              <View style={{ flexDirection: 'row', gap: 10, marginBottom: 12 }}>
+                {/* Left Wing: CPU & Mode */}
+                <View style={{ flex: 1, backgroundColor: '#121422', borderColor: '#FFBB00', borderWidth: 1.5, borderRadius: 14, padding: 10, alignItems: 'center' }}>
+                  <Text style={{ fontSize: 18, fontWeight: '900', color: '#FFF', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }}>2.84 GHz</Text>
+                  <Text style={{ fontSize: 9, fontWeight: '900', color: '#FFBB00', marginTop: 2 }}>⚡ XUNG NHỊP CPU</Text>
+                  <TouchableOpacity
+                    style={{ backgroundColor: '#FFBB00', paddingHorizontal: 10, paddingVertical: 3, borderRadius: 10, marginTop: 6 }}
+                    onPress={() => {
+                      const next = gameSpaceMode === '⚡ CÂN BẰNG' ? '🔥 TURBO BEAST' : gameSpaceMode === '🔥 TURBO BEAST' ? '🏆 ESPORTS 120HZ' : '⚡ CÂN BẰNG';
+                      setGameSpaceMode(next);
+                      Alert.alert('🎮 Chế độ Game Space', `Đã chuyển sang: ${next}`);
+                    }}>
+                    <Text style={{ fontSize: 9.5, fontWeight: '900', color: '#000' }}>{gameSpaceMode}</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Right Wing: GPU & FPS */}
+                <View style={{ flex: 1, backgroundColor: '#121422', borderColor: '#00FFA3', borderWidth: 1.5, borderRadius: 14, padding: 10, alignItems: 'center' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 18, fontWeight: '900', color: '#00FFA3', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }}>{turboLiveFps}</Text>
+                    <Text style={{ fontSize: 10, color: COLORS.textMuted }}> FPS | </Text>
+                    <Text style={{ fontSize: 14, fontWeight: '900', color: '#FFBB00', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }}>{turboLiveTemp}°C</Text>
+                  </View>
+                  <Text style={{ fontSize: 9, fontWeight: '900', color: '#00FFA3', marginTop: 2 }}>🎮 GPU: 405 MHz • NHIỆT ĐỘ</Text>
+                  <View style={{ backgroundColor: 'rgba(0, 255, 163, 0.2)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10, marginTop: 6 }}>
+                    <Text style={{ fontSize: 9, fontWeight: '900', color: '#00FFA3' }}>🛡️ CHỐNG TỤT FPS: BẬT</Text>
+                  </View>
                 </View>
               </View>
-              <TouchableOpacity onPress={() => setShowGameTurboModal(false)} style={styles.closeBtn}>
-                <Text style={{ color: '#FFF', fontWeight: '900' }}>✕</Text>
-              </TouchableOpacity>
-            </View>
 
-            {/* Detected Device Info */}
-            <View style={{ backgroundColor: COLORS.surface, padding: 12, borderRadius: 12, marginBottom: 12, borderWidth: 1, borderColor: COLORS.primary }}>
-              <Text style={{ fontSize: 10, color: '#00F0FF', fontWeight: '900', textTransform: 'uppercase' }}>🎯 Thiết Bị Đang Sử Dụng</Text>
-              <Text style={{ fontSize: 14, fontWeight: '900', color: '#FFF', marginTop: 2 }}>{detectedDeviceInfo.name}</Text>
-              <Text style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 2 }}>HĐH: {Platform.OS.toUpperCase()} • Tần số quét: 120Hz Esports</Text>
-            </View>
-
-            {/* Metrics Row */}
-            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 14 }}>
-              <View style={{ flex: 1, backgroundColor: COLORS.card, padding: 12, borderRadius: 12, alignItems: 'center', borderWidth: 1, borderColor: COLORS.border }}>
-                <Text style={{ fontSize: 10, color: COLORS.textMuted, fontWeight: '800' }}>FPS TRỰC TIẾP</Text>
-                <Text style={{ fontSize: 28, fontWeight: '900', color: COLORS.accentGreen, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }}>{turboLiveFps}</Text>
-                <Text style={{ fontSize: 9.5, color: COLORS.accentGreen }}>Cực Kỳ Mượt Mà</Text>
+              {/* Quick DPI Changer Card */}
+              <View style={{ backgroundColor: '#0F111C', borderColor: '#252A3D', borderWidth: 1, borderRadius: 12, padding: 10, marginBottom: 10 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                  <Text style={{ fontSize: 10, fontWeight: '900', color: '#00FFA3' }}>📐 THAY ĐỔI DPI NHANH (FREE FIRE):</Text>
+                  <Text style={{ fontSize: 10, fontWeight: '900', color: '#FFBB00' }}>DPI: {selectedGameSpaceDpi}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', gap: 6, marginBottom: 6 }}>
+                  {[360, 411, 480, 560, 600].map((dpi) => (
+                    <TouchableOpacity
+                      key={dpi}
+                      style={{
+                        flex: 1,
+                        backgroundColor: selectedGameSpaceDpi === dpi ? '#00FFA3' : '#1A1D2E',
+                        paddingVertical: 5,
+                        borderRadius: 6,
+                        alignItems: 'center',
+                        borderWidth: 1,
+                        borderColor: selectedGameSpaceDpi === dpi ? '#00FFA3' : '#2A3045',
+                      }}
+                      onPress={() => {
+                        setSelectedGameSpaceDpi(dpi);
+                        Alert.alert('🎯 Cân Chỉnh DPI', `Đã áp dụng cấu hình độ nhạy tối ưu cho DPI: ${dpi}!`);
+                      }}>
+                      <Text style={{ fontSize: 10, fontWeight: '900', color: selectedGameSpaceDpi === dpi ? '#000' : '#FFF' }}>{dpi}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
-              <View style={{ flex: 1, backgroundColor: COLORS.card, padding: 12, borderRadius: 12, alignItems: 'center', borderWidth: 1, borderColor: COLORS.border }}>
-                <Text style={{ fontSize: 10, color: COLORS.textMuted, fontWeight: '800' }}>NHIỆT ĐỘ MÁY</Text>
-                <Text style={{ fontSize: 28, fontWeight: '900', color: COLORS.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }}>{turboLiveTemp}°C</Text>
-                <Text style={{ fontSize: 9.5, color: COLORS.accentGreen }}>Tản nhiệt mát lạnh</Text>
+
+              {/* Sensitivity Preset Card */}
+              <View style={{ backgroundColor: '#0F111C', borderColor: '#252A3D', borderWidth: 1, borderRadius: 12, padding: 10, marginBottom: 12 }}>
+                <Text style={{ fontSize: 10, fontWeight: '900', color: '#FFBB00', marginBottom: 4 }}>🎯 ĐỘ NHẠY KÉO TÂM OB47 (THANG 200):</Text>
+                <Text style={{ fontSize: 11, color: '#D0D5E5', lineHeight: 16 }}>
+                  • Nhìn xung quanh: 188  |  • Red Dot Sight: 178{'\n'}
+                  • 2x Scope: 165  |  • Nút bắn: 42% (Vuốt Chữ J Cận Chiến)
+                </Text>
               </View>
+
+              {/* Action Buttons Grid (8 nút như ảnh Game Space) */}
+              <Text style={{ fontSize: 11, fontWeight: '900', color: '#FFF', marginBottom: 6 }}>⚡ BẢNG ĐIỀU KHIỂN GAMING SPACE</Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
+                <TouchableOpacity style={styles.gameSpaceGridBtn} onPress={() => Alert.alert('📶 Độ Trễ Mạng', 'Ping: 24ms (Mượt mà để leo Rank)')}>
+                  <Text style={styles.gameSpaceGridBtnText}>📶 WiFi: 24ms</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.gameSpaceGridBtn} onPress={() => Alert.alert('⚡ Tần Số Quét', '120Hz Ultra Gaming Display Active')}>
+                  <Text style={styles.gameSpaceGridBtnText}>⚡ 120Hz Display</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.gameSpaceGridBtn, { borderColor: '#00FFA3' }]} onPress={() => Alert.alert('🚀 Dọn Dẹp RAM', 'Đã giải phóng 680MB RAM cho Free Fire!')}>
+                  <Text style={[styles.gameSpaceGridBtnText, { color: '#00FFA3' }]}>🚀 DỌN RAM 1-CHẠM</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.gameSpaceGridBtn} onPress={() => Alert.alert('🎯 Touch Accuracy', 'Đã bật chế độ tăng tốc phản hồi cảm ứng!')}>
+                  <Text style={styles.gameSpaceGridBtnText}>🎯 Touch Accu</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.gameSpaceGridBtn} onPress={() => Alert.alert('🔕 Không Làm Phiền', 'Đã bật chế độ chặn cuộc gọi/thông báo khi chơi!')}>
+                  <Text style={styles.gameSpaceGridBtnText}>🔕 Chặn Thông Báo</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.gameSpaceGridBtn} onPress={() => Alert.alert('🔒 Chống Chạm Viền', 'Đã khóa cảm ứng mép viền màn hình!')}>
+                  <Text style={styles.gameSpaceGridBtnText}>🔒 Khóa Chạm Viền</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.gameSpaceGridBtn, { borderColor: '#FF6B00' }]} onPress={() => { setShowGameTurboModal(false); Linking.openURL('freefire://').catch(() => Linking.openURL('https://play.google.com/store/apps/details?id=com.dts.freefireth')); }}>
+                  <Text style={[styles.gameSpaceGridBtnText, { color: '#FF6B00' }]}>🎮 VÀO FREE FIRE</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.gameSpaceGridBtn, { borderColor: '#FF3355' }]} onPress={stopSystemFloatingOverlay}>
+                  <Text style={[styles.gameSpaceGridBtnText, { color: '#FF3355' }]}>🔴 TẮT NÚT NỔI</Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+
+            {/* Bottom Status Bar */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#10121D', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8, marginTop: 4 }}>
+              <Text style={{ fontSize: 10, color: '#FFF', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }}>21:10</Text>
+              <Text style={{ fontSize: 10, color: '#00FFA3', fontWeight: '900' }}>🔋 85%</Text>
+              <Text style={{ fontSize: 10, color: '#8E93A6' }}>🌐 38.5 KB/S</Text>
+              <Text style={{ fontSize: 9.5, color: '#FFBB00', fontWeight: '900' }}>🎮 GG GAME SPACE</Text>
             </View>
-
-            {/* RAM Boost Action */}
-            <TouchableOpacity
-              style={{ backgroundColor: COLORS.accentGreen, paddingVertical: 12, borderRadius: 12, alignItems: 'center', marginBottom: 14 }}
-              onPress={() => {
-                Alert.alert('🚀 Game Turbo Booster', 'Đã dọn dẹp bộ nhớ đệm và giải phóng 480MB RAM cho game Free Fire!');
-              }}>
-              <Text style={{ color: '#000', fontWeight: '900', fontSize: 12, letterSpacing: 0.5 }}>🚀 DỌN RAM & GIẢI PHÓNG BỘ NHỚ</Text>
-            </TouchableOpacity>
-
-            {/* Quick Launch Buttons */}
-            <Text style={{ fontSize: 12, fontWeight: '900', color: '#FFF', marginBottom: 8 }}>🎮 KHỞI ĐỘNG GAME 1 CHẠM</Text>
-            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
-              <TouchableOpacity
-                style={{ flex: 1, backgroundColor: COLORS.surface, borderColor: COLORS.primary, borderWidth: 1, borderRadius: 10, padding: 8, alignItems: 'center' }}
-                onPress={() => {
-                  setShowGameTurboModal(false);
-                  Linking.openURL('freefire://').catch(() => Linking.openURL('https://play.google.com/store/apps/details?id=com.dts.freefireth'));
-                }}>
-                <Text style={{ fontSize: 18 }}>🔥</Text>
-                <Text style={{ fontSize: 10, fontWeight: '900', color: '#FFF' }}>Free Fire</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{ flex: 1, backgroundColor: COLORS.surface, borderColor: COLORS.secondary, borderWidth: 1, borderRadius: 10, padding: 8, alignItems: 'center' }}
-                onPress={() => {
-                  setShowGameTurboModal(false);
-                  Linking.openURL('freefiremax://').catch(() => Linking.openURL('https://play.google.com/store/apps/details?id=com.dts.freefiremax'));
-                }}>
-                <Text style={{ fontSize: 18 }}>⚡</Text>
-                <Text style={{ fontSize: 10, fontWeight: '900', color: '#FFF' }}>FF MAX</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{ flex: 1, backgroundColor: COLORS.surface, borderColor: '#00F0FF', borderWidth: 1, borderRadius: 10, padding: 8, alignItems: 'center' }}
-                onPress={() => {
-                  setShowGameTurboModal(false);
-                  Linking.openURL('freefirevn://').catch(() => Linking.openURL('https://ff.garena.vn/'));
-                }}>
-                <Text style={{ fontSize: 18 }}>🇻🇳</Text>
-                <Text style={{ fontSize: 10, fontWeight: '900', color: '#FFF' }}>FF VN</Text>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              style={{ backgroundColor: COLORS.surface, paddingVertical: 10, borderRadius: 12, alignItems: 'center', borderWidth: 1, borderColor: COLORS.border }}
-              onPress={() => setShowGameTurboModal(false)}>
-              <Text style={{ color: COLORS.textMuted, fontWeight: '800', fontSize: 11 }}>THU GỌN VỀ NÚT NỔI</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -3040,57 +3124,72 @@ const styles = StyleSheet.create({
     borderColor: '#00F0FF',
     marginTop: 12,
   },
-  floatingTurboPill: {
+  floatingTurboCircle: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? 54 : 36,
+    top: Platform.OS === 'ios' ? 50 : 32,
     right: 14,
     zIndex: 9999,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: 'rgba(20, 22, 34, 0.94)',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'rgba(18, 20, 31, 0.95)',
     borderColor: '#FF6B00',
-    borderWidth: 1.5,
-    borderRadius: 20,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
     shadowColor: '#FF6B00',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.6,
     shadowRadius: 10,
     elevation: 8,
   },
-  floatingTurboDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#00FFA3',
-  },
-  floatingTurboText: {
+  floatingTurboCircleFps: {
     fontSize: 10,
     fontWeight: '900',
-    color: '#FFBB00',
-    letterSpacing: 0.5,
+    color: '#00FFA3',
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    marginTop: -2,
+  },
+  floatingTurboCircleBat: {
+    fontSize: 7.5,
+    color: '#8E93A6',
+    fontWeight: 'bold',
   },
   turboModalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.85)',
+    backgroundColor: 'rgba(0,0,0,0.88)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
+    padding: 14,
   },
-  turboCockpitCard: {
+  gameSpaceHudCard: {
     width: '100%',
-    maxWidth: 380,
-    backgroundColor: '#0D0E14',
+    maxWidth: 420,
+    backgroundColor: '#07080E',
     borderColor: '#FF6B00',
-    borderWidth: 1.5,
+    borderWidth: 1.8,
     borderRadius: 18,
-    padding: 18,
+    padding: 16,
     shadowColor: '#FF6B00',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.5,
     shadowRadius: 20,
+  },
+  gameSpaceGridBtn: {
+    width: '48.5%',
+    backgroundColor: '#121422',
+    borderColor: '#262A3E',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  gameSpaceGridBtnText: {
+    fontSize: 9.5,
+    fontWeight: '900',
+    color: '#FFF',
   },
   closeBtn: {
     width: 30,

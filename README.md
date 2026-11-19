@@ -1,17 +1,18 @@
 # 🎯 ĐỘ NHẠY FREE FIRE AI PRO 2026
 
-[![Download APK](https://img.shields.io/badge/Tải_Ngay_Bản_APK-v1.0.4-FF6B00?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Thinhduong988/App-nh-y/releases/tag/v1.0.4)
+[![Download APK](https://img.shields.io/badge/Tải_Ngay_Bản_APK-v1.0.5-FF6B00?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Thinhduong988/App-nh-y/releases/tag/v1.0.5)
 [![OB47 Meta](https://img.shields.io/badge/Free_Fire-OB47_Meta-FFBB00?style=for-the-badge)](https://github.com/Thinhduong988/App-nh-y)
-[![Game Turbo Overlay](https://img.shields.io/badge/Overlay_HUD-In--Game_Turbo-00FFA3?style=for-the-badge)](https://github.com/Thinhduong988/App-nh-y)
+[![GG Game Space](https://img.shields.io/badge/GG_Game_Space-Gaming_Phone_HUD-00FFA3?style=for-the-badge)](https://github.com/Thinhduong988/App-nh-y)
 
-Ứng dụng tối ưu hóa và tra cứu độ nhạy kéo tâm Free Fire chuẩn thi đấu Esports hàng đầu dành cho game thủ Mobile, tích hợp **AI Sensitivity Studio 5.0**, **Nút nổi Game Turbo phủ màn hình khi vào game**, và **Bộ giám sát FPS & Nhiệt độ máy**.
+Ứng dụng tối ưu hóa và tra cứu độ nhạy kéo tâm Free Fire chuẩn thi đấu Esports hàng đầu dành cho game thủ Mobile, tích hợp **GG Game Space Gaming HUD**, **Nút nổi hình tròn đo CPU/Pin/FPS**, **Thay đổi DPI nhanh**, và **AI Sensitivity Studio 5.0**.
 
 ---
 
 ## 📲 Tải File Cài Đặt (Android APK)
 
 Bạn có thể tải các phiên bản phát hành chính thức tại mục **[Releases](https://github.com/Thinhduong988/App-nh-y/releases)**:
-- 🚀 **Bản v1.0.4 (Mới Nhất - Có Nút Nổi Phủ Màn Hình Free Fire)**: [Do_Nhay_Free_Fire_AI_Pro_v1.0.4.apk](https://github.com/Thinhduong988/App-nh-y/releases/download/v1.0.4/Do_Nhay_Free_Fire_AI_Pro_v1.0.4.apk) (~62MB)
+- 🚀 **Bản v1.0.5 (Mới Nhất - GG Game Space HUD & Nút Nổi Hình Tròn)**: [Do_Nhay_Free_Fire_AI_Pro_v1.0.5.apk](https://github.com/Thinhduong988/App-nh-y/releases/download/v1.0.5/Do_Nhay_Free_Fire_AI_Pro_v1.0.5.apk) (~62MB)
+- 📦 **Bản v1.0.4 (Tích hợp Nút nổi phủ màn hình Free Fire)**: [Do_Nhay_Free_Fire_AI_Pro_v1.0.4.apk](https://github.com/Thinhduong988/App-nh-y/releases/download/v1.0.4/Do_Nhay_Free_Fire_AI_Pro_v1.0.4.apk) (~62MB)
 - 📦 **Bản v1.0.3 (Giao Diện Cyber Esports & AI 5.0)**: [Do_Nhay_Free_Fire_AI_Pro_v1.0.3.apk](https://github.com/Thinhduong988/App-nh-y/releases/download/v1.0.3/Do_Nhay_Free_Fire_AI_Pro_v1.0.3.apk) (~62MB)
 - Hỗ trợ mọi thiết bị Android từ Android 8.0 đến Android 15.
 

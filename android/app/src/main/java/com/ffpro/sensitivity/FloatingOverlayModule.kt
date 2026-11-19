@@ -39,12 +39,21 @@ class FloatingOverlayModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun startOverlay() {
         val intent = Intent(reactApplicationContext, FloatingOverlayService::class.java)
-        reactApplicationContext.startService(intent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            reactApplicationContext.startForegroundService(intent)
+        } else {
+            reactApplicationContext.startService(intent)
+        }
     }
 
     @ReactMethod
     fun stopOverlay() {
         val intent = Intent(reactApplicationContext, FloatingOverlayService::class.java)
         reactApplicationContext.stopService(intent)
+    }
+
+    @ReactMethod
+    fun isOverlayRunning(promise: Promise) {
+        promise.resolve(FloatingOverlayService.isRunning)
     }
 }
