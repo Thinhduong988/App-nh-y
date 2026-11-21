@@ -70,34 +70,50 @@ export default function App() {
     isLoggedIn: false,
   });
 
+  // Cloud Sensitivity OTA & App Update System
+  const CURRENT_APP_VERSION = '1.0.6';
+  const [allSensitivityData, setAllSensitivityData] = useState(MOCK_DATA);
+  const [cloudSensitivityMeta, setCloudSensitivityMeta] = useState(null);
+  const [newReleaseInfo, setNewReleaseInfo] = useState(null);
+  const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+
+  const mergeSensitivityData = (cloudConfigs) => {
+    if (!Array.isArray(cloudConfigs) || cloudConfigs.length === 0) return;
+    setAllSensitivityData((prev) => {
+      const cloudIds = new Set(cloudConfigs.map((c) => c.id));
+      const kept = prev.filter((item) => !cloudIds.has(item.id));
+      return [...cloudConfigs, ...kept];
+    });
+  };
+
   // Categorized Devices Memos (Nhiều lựa chọn cấu hình máy)
   const devices2026 = useMemo(() => {
-    return MOCK_DATA.filter((item) => item.is2026);
-  }, []);
+    return allSensitivityData.filter((item) => item.is2026);
+  }, [allSensitivityData]);
 
   const devicesGaming = useMemo(() => {
-    return MOCK_DATA.filter((item) =>
+    return allSensitivityData.filter((item) =>
       ['REDMAGIC', 'ROGPHONE', 'POCO', 'iQOO'].includes(item.brand) ||
       (item.deviceName && (item.deviceName.includes('GT') || item.deviceName.includes('Pro') || item.deviceName.includes('Ultra')))
     );
-  }, []);
+  }, [allSensitivityData]);
 
   const devicesMidrange = useMemo(() => {
-    return MOCK_DATA.filter((item) =>
+    return allSensitivityData.filter((item) =>
       ['REDMI', 'Realme', 'Vivo', 'OPPO', 'Samsung'].includes(item.brand) && !item.is2026
     );
-  }, []);
+  }, [allSensitivityData]);
 
   const devicesBudget = useMemo(() => {
-    return MOCK_DATA.filter((item) =>
+    return allSensitivityData.filter((item) =>
       ['Infinix', 'Tecno'].includes(item.brand) ||
       (item.deviceName && (item.deviceName.includes('C') || item.deviceName.includes('A') || item.deviceName.includes('Spark') || item.deviceName.includes('Hot') || item.deviceName.includes('Smart')))
     );
-  }, []);
+  }, [allSensitivityData]);
 
   const devicesIos = useMemo(() => {
-    return MOCK_DATA.filter((item) => item.brand === 'Apple');
-  }, []);
+    return allSensitivityData.filter((item) => item.brand === 'Apple');
+  }, [allSensitivityData]);
 
   // Generator Tool State (5D Matrix)
   const [genDeviceType, setGenDeviceType] = useState('Android Trung');
@@ -196,6 +212,72 @@ export default function App() {
   const [renameTargetItem, setRenameTargetItem] = useState(null);
   const [inputRenameName, setInputRenameName] = useState('');
 
+  // Helper: Kiểm tra cập nhật ứng dụng từ GitHub Releases
+  const checkGitHubUpdates = async (isManual = false) => {
+    if (isManual) setIsCheckingUpdate(true);
+    try {
+      const response = await fetch('https://api.github.com/repos/Thinhduong988/App-nh-y/releases/latest');
+      if (response.ok) {
+        const release = await response.json();
+        if (release && release.tag_name) {
+          const latestVer = release.tag_name.replace(/^v/, '').trim();
+          if (latestVer !== CURRENT_APP_VERSION) {
+            const apk = release.assets?.find((a) => a.name.endsWith('.apk'));
+            const downloadUrl = apk ? apk.browser_download_url : release.html_url;
+            setNewReleaseInfo({
+              version: release.tag_name,
+              title: release.name || `Bản phát hành ${release.tag_name}`,
+              notes: release.body || 'Bản cập nhật tính năng mới từ nhà phát triển.',
+              downloadUrl,
+            });
+            if (isManual) {
+              Alert.alert('🚀 Đã có bản mới!', `Phát hiện phiên bản ${release.tag_name}. Bạn có thể tải ngay.`);
+            }
+            return;
+          }
+        }
+      }
+      if (isManual) {
+        Alert.alert('✅ Đang ở bản mới nhất', `Ứng dụng của bạn (${CURRENT_APP_VERSION}) đang là bản mới nhất. Dữ liệu độ nhạy AI vẫn được cập nhật tự động qua Cloud OTA!`);
+      }
+    } catch (e) {
+      if (isManual) {
+        Alert.alert('Lỗi kết nối', 'Không thể kết nối đến GitHub để kiểm tra bản mới.');
+      }
+    } finally {
+      if (isManual) setIsCheckingUpdate(false);
+    }
+  };
+
+  // Helper: Đồng bộ dữ liệu độ nhạy Cloud OTA (Không cần update app)
+  const syncCloudSensitivity = async () => {
+    try {
+      // 1. Đọc từ bộ nhớ đệm máy
+      const cached = await AsyncStorage.getItem('@online_sensitivity_db');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && Array.isArray(parsed.cloudConfigs)) {
+          setCloudSensitivityMeta(parsed);
+          mergeSensitivityData(parsed.cloudConfigs);
+        }
+      }
+
+      // 2. Tải trực tiếp dữ liệu mới nhất từ GitHub raw
+      const rawUrl = 'https://raw.githubusercontent.com/Thinhduong988/App-nh-y/main/src/data/onlineSensitivity.json?t=' + Date.now();
+      const res = await fetch(rawUrl);
+      if (res.ok) {
+        const cloudData = await res.json();
+        if (cloudData && Array.isArray(cloudData.cloudConfigs)) {
+          setCloudSensitivityMeta(cloudData);
+          mergeSensitivityData(cloudData.cloudConfigs);
+          await AsyncStorage.setItem('@online_sensitivity_db', JSON.stringify(cloudData));
+        }
+      }
+    } catch (err) {
+      console.log('Cloud sensitivity sync error (using local data)', err);
+    }
+  };
+
   // Initial Load from AsyncStorage
   useEffect(() => {
     const initializeApp = async () => {
@@ -215,6 +297,10 @@ export default function App() {
         } else {
           setCurrentScreen('Auth');
         }
+
+        // Tự động đồng bộ độ nhạy Cloud OTA và kiểm tra bản mới
+        syncCloudSensitivity();
+        checkGitHubUpdates(false);
       } catch (err) {
         console.error(err);
         setCurrentScreen('Auth');
@@ -455,15 +541,15 @@ export default function App() {
   const globalFilteredDevices = useMemo(() => {
     if (!globalSearchQuery.trim()) return [];
     const q = globalSearchQuery.toLowerCase();
-    return MOCK_DATA.filter(
+    return allSensitivityData.filter(
       (item) =>
         (item.deviceName || '').toLowerCase().includes(q) ||
         (item.brand || '').toLowerCase().includes(q)
     );
-  }, [globalSearchQuery]);
+  }, [globalSearchQuery, allSensitivityData]);
 
   const filteredData = useMemo(() => {
-    return MOCK_DATA.filter((item) => {
+    return allSensitivityData.filter((item) => {
       const matchBrand = (item.brand || '').toLowerCase() === (selectedBrand || '').toLowerCase();
       const matchSeries = selectedSubSeries === 'All' || item.series === selectedSubSeries;
       const matchSearch =
@@ -471,7 +557,7 @@ export default function App() {
         (item.deviceName || '').toLowerCase().includes(deviceSearchQuery.toLowerCase());
       return matchBrand && matchSeries && matchSearch;
     });
-  }, [selectedBrand, selectedSubSeries, deviceSearchQuery]);
+  }, [selectedBrand, selectedSubSeries, deviceSearchQuery, allSensitivityData]);
 
   // Filtered saved configs
   const filteredSavedConfigs = useMemo(() => {
@@ -624,10 +710,33 @@ export default function App() {
               </TouchableOpacity>
             </View>
 
+            {/* Cloud Sensitivity OTA & App Version Status Bar */}
+            <View style={{ backgroundColor: '#0B0D15', borderColor: '#00FFA3', borderWidth: 1, borderRadius: 12, padding: 10, marginBottom: 12 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#00FFA3' }} />
+                  <Text style={{ fontSize: 11, fontWeight: '900', color: '#00FFA3' }}>
+                    CLOUD OTA: {cloudSensitivityMeta ? cloudSensitivityMeta.metaVersion : 'Meta OB47'}
+                  </Text>
+                  <Text style={{ fontSize: 9, color: '#8E93A6' }}>• Tự động đồng bộ</Text>
+                </View>
+                <TouchableOpacity
+                  style={{ backgroundColor: '#1A1D2E', borderColor: '#383E58', borderWidth: 1, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4 }}
+                  onPress={() => checkGitHubUpdates(true)}>
+                  <Text style={{ fontSize: 9.5, fontWeight: '800', color: '#FFBB00' }}>
+                    {isCheckingUpdate ? 'Đang check...' : `v${CURRENT_APP_VERSION} • Check Update`}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <Text style={{ fontSize: 9.5, color: '#8E93A6', marginTop: 4 }}>
+                💡 {cloudSensitivityMeta ? cloudSensitivityMeta.updateNotes : 'Độ nhạy AI tự động cập nhật từ máy chủ Cloud không cần người dùng cài lại app.'}
+              </Text>
+            </View>
+
             {/* Stats Dashboard */}
             <View style={styles.statsRow}>
               <View style={styles.statBox}>
-                <Text style={styles.statNumber}>{MOCK_DATA.length}+</Text>
+                <Text style={styles.statNumber}>{allSensitivityData.length}+</Text>
                 <Text style={styles.statLabel}>Thiết Bị</Text>
               </View>
               <View style={styles.statBox}>
@@ -1823,6 +1932,52 @@ export default function App() {
             </View>
           </View>
         </KeyboardAvoidingView>
+      </Modal>
+
+      {/* MODAL THÔNG BÁO BẢN CẬP NHẬT MỚI TỪ GITHUB (1-CHẠM TẢI APK) */}
+      <Modal visible={!!newReleaseInfo} transparent animationType="fade">
+        <View style={styles.turboModalBackdrop}>
+          <View style={[styles.gameSpaceHudCard, { borderColor: '#00FFA3', borderWidth: 2, padding: 18 }]}>
+            <View style={{ alignItems: 'center', marginBottom: 14 }}>
+              <Text style={{ fontSize: 36, marginBottom: 6 }}>🚀</Text>
+              <Text style={{ fontSize: 16, fontWeight: '900', color: '#00FFA3', textAlign: 'center', letterSpacing: 1 }}>
+                ĐÃ CÓ BẢN MỚI {newReleaseInfo?.version}!
+              </Text>
+              <Text style={{ fontSize: 11, color: '#8E93A6', marginTop: 4, textAlign: 'center' }}>
+                Bản phát hành cập nhật tính năng định kỳ từ GitHub
+              </Text>
+            </View>
+
+            <View style={{ backgroundColor: '#141724', borderRadius: 12, padding: 12, marginBottom: 16, borderColor: '#252A3D', borderWidth: 1 }}>
+              <Text style={{ fontSize: 12, fontWeight: '800', color: '#FFBB00', marginBottom: 6 }}>
+                📋 Chi tiết bản cập nhật:
+              </Text>
+              <Text style={{ fontSize: 11, color: '#D0D5E5', lineHeight: 18 }} numberOfLines={6}>
+                {newReleaseInfo?.notes}
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              style={{ backgroundColor: '#00FFA3', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginBottom: 10 }}
+              onPress={() => {
+                if (newReleaseInfo?.downloadUrl) {
+                  Linking.openURL(newReleaseInfo.downloadUrl);
+                }
+              }}>
+              <Text style={{ color: '#000', fontWeight: '900', fontSize: 13, letterSpacing: 1 }}>
+                📥 TẢI APK MỚI NGAY (1-CHẠM)
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{ paddingVertical: 8, alignItems: 'center' }}
+              onPress={() => setNewReleaseInfo(null)}>
+              <Text style={{ color: '#8E93A6', fontSize: 11, fontWeight: '700' }}>
+                Để sau (Độ nhạy AI vẫn tự động cập nhật OTA)
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </Modal>
 
       {/* BONG BÓNG CHAT AI COACH OB 2026 (Nổi trên mọi màn hình, tự động neo góc an toàn khi xoay ngang) */}
