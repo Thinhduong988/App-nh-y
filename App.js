@@ -137,6 +137,57 @@ export default function App() {
   const [selectedGameSpaceDpi, setSelectedGameSpaceDpi] = useState(480);
   const [gameSpaceMode, setGameSpaceMode] = useState('⚡ CÂN BẰNG');
 
+  const handleRequestAllPermissions = async () => {
+    if (!FloatingOverlayModule) {
+      Alert.alert('Thông báo', 'Tính năng cần cài đặt trên thiết bị Android để sử dụng.');
+      return;
+    }
+    try {
+      const hasOverlay = await FloatingOverlayModule.checkPermission();
+      if (!hasOverlay) {
+        Alert.alert(
+          '1. Quyền Xuất Hiện Trên Cùng',
+          'Cần bật quyền này để menu GG Game Space có thể hiển thị nép sát mép trái khi bạn đang chơi Free Fire.',
+          [
+            { text: 'Bật ngay', onPress: () => FloatingOverlayModule.requestPermission() },
+            { text: 'Bỏ qua', style: 'cancel' }
+          ]
+        );
+        return;
+      }
+
+      const hasWrite = await FloatingOverlayModule.checkWriteSettingsPermission?.();
+      if (!hasWrite) {
+        Alert.alert(
+          '2. Quyền Sửa Đổi Cài Đặt Hệ Thống',
+          'Để tính năng Khóa xoay màn hình và Khóa độ sáng 100% trong menu có thể thực sự hoạt động trên máy, vui lòng bật quyền "Sửa đổi cài đặt hệ thống" (Modify system settings).',
+          [
+            { text: 'Cấp quyền ngay', onPress: () => FloatingOverlayModule.requestWriteSettingsPermission?.() },
+            { text: 'Bỏ qua', style: 'cancel' }
+          ]
+        );
+        return;
+      }
+
+      const hasDnd = await FloatingOverlayModule.checkNotificationPolicyPermission?.();
+      if (!hasDnd) {
+        Alert.alert(
+          '3. Quyền Chặn Thông Báo (Không Làm Phiền)',
+          'Để tính năng Chặn thông báo trong menu thực sự tắt chuông/thông báo khi đang bắn Free Fire, vui lòng cấp quyền "Truy cập Không làm phiền".',
+          [
+            { text: 'Cấp quyền DND', onPress: () => FloatingOverlayModule.requestNotificationPolicyPermission?.() },
+            { text: 'Bỏ qua', style: 'cancel' }
+          ]
+        );
+        return;
+      }
+
+      Alert.alert('✅ Hoàn Tất!', 'Ứng dụng đã có đầy đủ quyền hệ thống để toàn bộ tính năng GG Game Space hoạt động thực tế 100%!');
+    } catch (e) {
+      console.log('handleRequestAllPermissions error', e);
+    }
+  };
+
   const toggleSystemFloatingOverlay = async () => {
     if (!FloatingOverlayModule) {
       setShowGameTurboModal(true);
@@ -147,7 +198,7 @@ export default function App() {
       if (!hasPerm) {
         Alert.alert(
           'Cấp quyền hiển thị trên ứng dụng khác',
-          'Để nút nổi GG Game Space (Đo xung nhịp CPU, % Pin, FPS live, Đổi nhanh DPI) hiển thị phủ trên màn hình khi bạn đang chơi Free Fire, vui lòng bật quyền "Xuất hiện trên cùng" (Draw over other apps).',
+          'Để menu GG Game Space vòng cung hiển thị nép sát mép trái khi bạn đang chơi Free Fire, vui lòng bật quyền "Xuất hiện trên cùng" (Draw over other apps).',
           [
             { text: 'Hủy', style: 'cancel' },
             { text: 'Bật quyền ngay', onPress: () => FloatingOverlayModule.requestPermission() }
@@ -155,7 +206,10 @@ export default function App() {
         );
       } else {
         FloatingOverlayModule.startOverlay();
-        Alert.alert('⚡ Đã kích hoạt GG Game Space!', 'Nút nổi hình tròn đã xuất hiện và sẽ nổi trên màn hình khi bạn vào Free Fire.');
+        Alert.alert(
+          '⚡ Đã kích hoạt NOVO GG Game Space!',
+          'Thanh gạt GG Game Space đã xuất hiện nép sát mép trái màn hình. Bấm vào thanh gạt để trượt mở menu vòng cung và trải nghiệm Tâm Ảo, Tăng Tốc FPS, Khóa Xoay, Sáng 100%.'
+        );
       }
     } catch (e) {
       console.log(e);
@@ -753,33 +807,40 @@ export default function App() {
             {/* Real System Overlay Trigger Card */}
             <View style={{ backgroundColor: 'rgba(255, 107, 0, 0.12)', borderColor: COLORS.primary, borderWidth: 1.5, borderRadius: 14, padding: 14, marginBottom: 16 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                <Text style={{ fontSize: 13, fontWeight: '900', color: '#FFF' }}>🎮 GG GAME SPACE • NÚT NỔI HÌNH TRÒN</Text>
+                <Text style={{ fontSize: 13, fontWeight: '900', color: '#FFF' }}>🎮 NOVO GG GAME SPACE • SÁT MÉP TRÁI</Text>
                 <View style={{ backgroundColor: COLORS.accentGreen, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 }}>
-                  <Text style={{ fontSize: 9, fontWeight: '900', color: '#000' }}>GAMING PHONE HUD</Text>
+                  <Text style={{ fontSize: 9, fontWeight: '900', color: '#000' }}>CÀI ĐẶT HỆ THỐNG THẬT</Text>
                 </View>
               </View>
               <Text style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 16, marginBottom: 10 }}>
-                Nút nổi hình tròn Game Space đo <Text style={{ color: COLORS.secondary, fontWeight: 'bold' }}>Xung nhịp CPU, % Pin, FPS live, Đổi nhanh DPI</Text> và hiển thị xuyên suốt khi bạn đang bắn Free Fire!
+                Thanh gạt nép sát mép trái màn hình, trượt ra mở menu vòng cung Gaming Phone: <Text style={{ color: '#FF3355', fontWeight: 'bold' }}>Tâm Ảo (Mira Virtual)</Text>, <Text style={{ color: '#00FFA3', fontWeight: 'bold' }}>Tăng Tốc FPS (Dọn RAM thật)</Text>, <Text style={{ color: COLORS.secondary, fontWeight: 'bold' }}>Khóa Xoay, Sáng 100%, DND Chặn Thông Báo & Đổi DPI</Text>!
               </Text>
-              <View style={{ flexDirection: 'row', gap: 8 }}>
+              <View style={{ flexDirection: 'row', gap: 6 }}>
                 <TouchableOpacity
-                  style={{ flex: 1.3, backgroundColor: COLORS.primary, paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}
+                  style={{ flex: 1.4, backgroundColor: COLORS.primary, paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}
                   onPress={toggleSystemFloatingOverlay}>
                   <Text style={{ fontSize: 11, fontWeight: '900', color: '#000' }}>
-                    🔘 BẬT NÚT NỔI TRÒN
+                    🔘 BẬT GG GAME SPACE
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={{ flex: 1, backgroundColor: 'rgba(255, 51, 85, 0.15)', borderColor: '#FF3355', borderWidth: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}
+                  style={{ flex: 1.1, backgroundColor: '#1A1D2E', borderColor: '#FFBB00', borderWidth: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}
+                  onPress={handleRequestAllPermissions}>
+                  <Text style={{ fontSize: 10, fontWeight: '900', color: '#FFBB00' }}>
+                    ⚙️ CẤP QUYỀN
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ flex: 0.8, backgroundColor: 'rgba(255, 51, 85, 0.15)', borderColor: '#FF3355', borderWidth: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}
                   onPress={stopSystemFloatingOverlay}>
-                  <Text style={{ fontSize: 11, fontWeight: '900', color: '#FF3355' }}>
-                    🔴 TẮT NÚT NỔI
+                  <Text style={{ fontSize: 10.5, fontWeight: '900', color: '#FF3355' }}>
+                    🔴 TẮT
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={{ width: 44, backgroundColor: COLORS.surface, borderColor: COLORS.border, borderWidth: 1, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}
+                  style={{ width: 38, backgroundColor: COLORS.surface, borderColor: COLORS.border, borderWidth: 1, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}
                   onPress={() => setShowGameTurboModal(true)}>
-                  <Text style={{ fontSize: 14 }}>👁️</Text>
+                  <Text style={{ fontSize: 13 }}>👁️</Text>
                 </TouchableOpacity>
               </View>
             </View>

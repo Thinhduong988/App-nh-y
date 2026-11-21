@@ -34,6 +34,62 @@ class FloatingOverlayModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
+    fun checkWriteSettingsPermission(promise: Promise) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                promise.resolve(Settings.System.canWrite(reactApplicationContext))
+            } else {
+                promise.resolve(true)
+            }
+        } catch (e: Exception) {
+            promise.resolve(false)
+        }
+    }
+
+    @ReactMethod
+    fun requestWriteSettingsPermission() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply {
+                    data = Uri.parse("package:" + reactApplicationContext.packageName)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                reactApplicationContext.startActivity(intent)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "requestWriteSettingsPermission error", e)
+        }
+    }
+
+    @ReactMethod
+    fun checkNotificationPolicyPermission(promise: Promise) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val nm = reactApplicationContext.getSystemService(android.content.Context.NOTIFICATION_SERVICE) as? android.app.NotificationManager
+                promise.resolve(nm?.isNotificationPolicyAccessGranted ?: false)
+            } else {
+                promise.resolve(true)
+            }
+        } catch (e: Exception) {
+            promise.resolve(false)
+        }
+    }
+
+    @ReactMethod
+    fun requestNotificationPolicyPermission() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                reactApplicationContext.startActivity(intent)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "requestNotificationPolicyPermission error", e)
+        }
+    }
+
+    @ReactMethod
     fun requestPermission() {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
