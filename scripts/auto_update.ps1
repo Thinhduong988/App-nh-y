@@ -77,6 +77,20 @@ if ($todayDayOfWeek -eq [System.DayOfWeek]::Sunday) {
     if (Test-Path $builtApk) {
         Copy-Item $builtApk $targetApk -Force
         Write-Host "✓ Release APK created: $targetApk"
+        
+        # Clean up older APKs in $repoDir to keep disk lightweight (only keep latest)
+        Get-ChildItem -Path $repoDir -Filter "Do_Nhay_Free_Fire_AI_Pro_v*.apk" | Where-Object { $_.FullName -ne $targetApk } | ForEach-Object {
+            Remove-Item $_.FullName -Force
+            Write-Host "✓ Cleaned up old APK: $($_.Name)"
+        }
+        
+        # Update Desktop APK and remove older APKs on Desktop
+        $desktopApk = "C:\Users\ADMIN\Desktop\Do_Nhay_Free_Fire_AI_Pro_v$newVersion.apk"
+        Copy-Item $targetApk $desktopApk -Force
+        Get-ChildItem -Path "C:\Users\ADMIN\Desktop" -Filter "Do_Nhay_Free_Fire_AI_Pro_v*.apk" | Where-Object { $_.FullName -ne $desktopApk } | ForEach-Object {
+            Remove-Item $_.FullName -Force
+        }
+        Write-Host "✓ Synced latest APK to Desktop and cleaned up previous versions"
     } else {
         Write-Error "Release APK build failed or output not found!"
         exit 1
