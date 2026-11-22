@@ -1,0 +1,10 @@
+services:
+  ff-sensitivity-web:
+    container_name: ff-sensitivity-web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ff-sensitivity-web:latest
+    ports:
+      - "8080:80"
+    restart: unless-stopped
