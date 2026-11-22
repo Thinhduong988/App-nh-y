@@ -117,7 +117,10 @@ export default function AiSensitivityCoach({ onSaveConfig, onGoToTrainer }) {
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: 140 }}
+      showsVerticalScrollIndicator={false}>
       {/* Header */}
       <View style={styles.glassHeader}>
         <View style={styles.headerTag}>

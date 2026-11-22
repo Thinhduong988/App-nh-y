@@ -22,6 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS } from './src/theme/colors';
 import { BRANDS, SUB_SERIES_MAP, MOCK_DATA, PRO_TIPS } from './src/data/sensitivityData';
 import TrainingAndHudStudio from './src/components/TrainingAndHudStudio';
+import AiSensitivityCoach from './src/components/AiSensitivityCoach';
 import AiChatBubble from './src/components/AiChatBubble';
 
 const { FloatingOverlayModule } = NativeModules;
@@ -891,13 +892,11 @@ export default function App() {
               <TouchableOpacity
                 style={styles.toolCard}
                 onPress={() => {
-                  handleTabSwitch('SensitivityTab');
-                  setSensSubScreen('BrandList');
-                  setBrandListFilter('2026');
+                  handleTabSwitch('GeneratorTab');
                 }}>
                 <Text style={styles.toolIcon}>⚡</Text>
-                <Text style={styles.toolTitle}>Siêu Phẩm 2026 ({devices2026.length})</Text>
-                <Text style={styles.toolDesc}>Cấu hình Flagship OB mới nhất</Text>
+                <Text style={styles.toolTitle}>Tạo 5D AI Chuyên Sâu</Text>
+                <Text style={styles.toolDesc}>Chẩn đoán lỗi & tạo bộ số dính đầu</Text>
               </TouchableOpacity>
             </View>
 
@@ -1421,12 +1420,20 @@ export default function App() {
         }
         return null;
 
-      // ---------------- TAB 3: PHÒNG LUYỆN KÉO TÂM & HUD STUDIO (GỘP CHUNG) ----------------
+      // ---------------- TAB 3: TẠO ĐỘ NHẠY 5D AI CHUYÊN SÂU ----------------
+      case 'GeneratorTab':
+      case 'AiCoachTab':
+        return (
+          <AiSensitivityCoach
+            onSaveConfig={(cfg) => handleOpenSaveModal(cfg)}
+            onGoToTrainer={() => handleTabSwitch('TrainingHudTab')}
+          />
+        );
+
+      // ---------------- TAB 4: PHÒNG LUYỆN KÉO TÂM & HUD STUDIO ----------------
       case 'TrainingHudTab':
       case 'AimTrainerTab':
       case 'HudDpiTab':
-      case 'AiCoachTab':
-      case 'GeneratorTab':
         return (
           <TrainingAndHudStudio
             onBack={async () => {
@@ -1816,13 +1823,13 @@ export default function App() {
         </View>
       </Modal>
 
-      {/* Bottom Navigation Bar (iOS 26 Floating Frosted Bar - Tự ẩn khi xoay ngang trong phòng luyện) */}
+      {/* Bottom Navigation Bar (iOS 26 Floating Frosted Bar - 5 Tabs chuẩn Figma) */}
       {!(activeTab === 'TrainingHudTab' && isLandscapeMode) && (
         <View style={styles.bottomBar}>
           <TouchableOpacity style={styles.navItem} onPress={() => handleTabSwitch('HomeTab')}>
-            <Text style={[styles.navIcon, activeTab === 'HomeTab' && styles.activeNavText]}>🏠</Text>
+            <Text style={[styles.navIcon, activeTab === 'HomeTab' && styles.activeNavText]}>🌌</Text>
             <Text style={[styles.navLabel, activeTab === 'HomeTab' && styles.activeNavText]}>
-              Trang Chủ
+              Khám Phá
             </Text>
           </TouchableOpacity>
 
@@ -1843,12 +1850,23 @@ export default function App() {
 
           <TouchableOpacity
             style={styles.navItem}
+            onPress={() => handleTabSwitch('GeneratorTab')}>
+            <Text style={[styles.navIcon, (activeTab === 'GeneratorTab' || activeTab === 'AiCoachTab') && styles.activeNavText]}>
+              ⚡
+            </Text>
+            <Text style={[styles.navLabel, (activeTab === 'GeneratorTab' || activeTab === 'AiCoachTab') && styles.activeNavText]}>
+              Tạo 5D
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navItem}
             onPress={() => handleTabSwitch('TrainingHudTab')}>
             <Text style={[styles.navIcon, (activeTab === 'TrainingHudTab' || activeTab === 'AimTrainerTab' || activeTab === 'HudDpiTab') && styles.activeNavText]}>
               🎮
             </Text>
             <Text style={[styles.navLabel, (activeTab === 'TrainingHudTab' || activeTab === 'AimTrainerTab' || activeTab === 'HudDpiTab') && styles.activeNavText]}>
-              Luyện & HUD
+              Tập Kéo
             </Text>
           </TouchableOpacity>
 
@@ -3078,17 +3096,18 @@ const styles = StyleSheet.create({
   },
   navIcon: {
     fontSize: 20,
-    color: COLORS.textMuted,
     marginBottom: 2,
+    opacity: 0.75,
   },
   navLabel: {
-    fontSize: 11,
-    color: COLORS.textMuted,
+    fontSize: 9.5,
+    color: '#8E93A6',
     fontWeight: '600',
   },
   activeNavText: {
-    color: COLORS.primaryBright,
-    fontWeight: '800',
+    color: '#00FFA3',
+    fontWeight: '900',
+    opacity: 1,
   },
 
   // Modals (iOS Liquid Glass Sheet)
