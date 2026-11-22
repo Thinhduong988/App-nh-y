@@ -764,29 +764,6 @@ export default function App() {
               </TouchableOpacity>
             </View>
 
-            {/* Cloud Sensitivity OTA & App Version Status Bar */}
-            <View style={{ backgroundColor: '#0B0D15', borderColor: '#00FFA3', borderWidth: 1, borderRadius: 12, padding: 10, marginBottom: 12 }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#00FFA3' }} />
-                  <Text style={{ fontSize: 11, fontWeight: '900', color: '#00FFA3' }}>
-                    CLOUD OTA: {cloudSensitivityMeta ? cloudSensitivityMeta.metaVersion : 'Meta OB47'}
-                  </Text>
-                  <Text style={{ fontSize: 9, color: '#8E93A6' }}>• Tự động đồng bộ</Text>
-                </View>
-                <TouchableOpacity
-                  style={{ backgroundColor: '#1A1D2E', borderColor: '#383E58', borderWidth: 1, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4 }}
-                  onPress={() => checkGitHubUpdates(true)}>
-                  <Text style={{ fontSize: 9.5, fontWeight: '800', color: '#FFBB00' }}>
-                    {isCheckingUpdate ? 'Đang check...' : `v${CURRENT_APP_VERSION} • Check Update`}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <Text style={{ fontSize: 9.5, color: '#8E93A6', marginTop: 4 }}>
-                💡 {cloudSensitivityMeta ? cloudSensitivityMeta.updateNotes : 'Độ nhạy AI tự động cập nhật từ máy chủ Cloud không cần người dùng cài lại app.'}
-              </Text>
-            </View>
-
             {/* Stats Dashboard */}
             <View style={styles.statsRow}>
               <View style={styles.statBox}>
@@ -807,13 +784,13 @@ export default function App() {
             {/* Real System Overlay Trigger Card */}
             <View style={{ backgroundColor: 'rgba(255, 107, 0, 0.12)', borderColor: COLORS.primary, borderWidth: 1.5, borderRadius: 14, padding: 14, marginBottom: 16 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                <Text style={{ fontSize: 13, fontWeight: '900', color: '#FFF' }}>🎮 NOVO GG GAME SPACE • SÁT MÉP TRÁI</Text>
+                <Text style={{ fontSize: 13, fontWeight: '900', color: '#FFF' }}>🎮 NOVO GAME SPACE • TỰ DO BẤT KỲ GÓC NÀO</Text>
                 <View style={{ backgroundColor: COLORS.accentGreen, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 }}>
                   <Text style={{ fontSize: 9, fontWeight: '900', color: '#000' }}>CÀI ĐẶT HỆ THỐNG THẬT</Text>
                 </View>
               </View>
               <Text style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 16, marginBottom: 10 }}>
-                Thanh gạt nép sát mép trái màn hình, trượt ra mở menu vòng cung Gaming Phone: <Text style={{ color: '#FF3355', fontWeight: 'bold' }}>Tâm Ảo (Mira Virtual)</Text>, <Text style={{ color: '#00FFA3', fontWeight: 'bold' }}>Tăng Tốc FPS (Dọn RAM thật)</Text>, <Text style={{ color: COLORS.secondary, fontWeight: 'bold' }}>Khóa Xoay, Sáng 100%, DND Chặn Thông Báo & Đổi DPI</Text>!
+                Thanh gạt thu nhỏ gọn gàng, kéo thả tự do bất kỳ vị trí/góc nào trên màn hình. Mở ra bảng <Text style={{ color: COLORS.secondary, fontWeight: 'bold' }}>Monster Dashboard</Text> (CPU, GPU, FPS, Monster Mode), <Text style={{ color: '#FF3355', fontWeight: 'bold' }}>Tâm Ảo Tùy Chỉnh Vị Trí (Fix Lệch)</Text>, <Text style={{ color: '#00FFA3', fontWeight: 'bold' }}>Dọn RAM Thật</Text> và các tính năng hệ thống!
               </Text>
               <View style={{ flexDirection: 'row', gap: 6 }}>
                 <TouchableOpacity
@@ -1613,6 +1590,38 @@ export default function App() {
                 <Text style={styles.menuRowText}>📖 Hướng dẫn mở DPI chi tiết theo máy</Text>
                 <Text style={styles.brandArrow}>➔</Text>
               </TouchableOpacity>
+            </View>
+
+            {/* KHU VỰC CẬP NHẬT ĐỘ NHẠY OTA & BẢN MỚI GITHUB */}
+            <View style={{ backgroundColor: '#0B0D15', borderColor: '#00FFA3', borderWidth: 1.5, borderRadius: 14, padding: 14, marginTop: 14, marginBottom: 14 }}>
+              <View style={styles.tacticalCornerTL} />
+              <View style={styles.tacticalCornerBR} />
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '900', color: '#00FFA3' }}>☁️ CẬP NHẬT ĐỘ NHẠY CLOUD OTA</Text>
+                </View>
+                <View style={{ backgroundColor: '#1A1D2E', borderColor: '#00FFA3', borderWidth: 1, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                  <Text style={{ fontSize: 9.5, fontWeight: '800', color: '#00FFA3' }}>
+                    {cloudSensitivityMeta ? cloudSensitivityMeta.metaVersion : 'Meta OB47'}
+                  </Text>
+                </View>
+              </View>
+              <Text style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 16, marginBottom: 10 }}>
+                💡 {cloudSensitivityMeta ? cloudSensitivityMeta.updateNotes : 'Hệ thống tự động cập nhật thông số kéo tâm AI cho meta Free Fire mới nhất từ máy chủ GitHub mà không cần người dùng tải lại app.'}
+              </Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 8, borderTopWidth: 1, borderTopColor: '#1A1D2E' }}>
+                <View>
+                  <Text style={{ fontSize: 11, fontWeight: '700', color: '#FFF' }}>Phiên bản App hiện tại:</Text>
+                  <Text style={{ fontSize: 13, fontWeight: '900', color: COLORS.secondary }}>v{CURRENT_APP_VERSION}</Text>
+                </View>
+                <TouchableOpacity
+                  style={{ backgroundColor: '#FF6B00', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, flexDirection: 'row', alignItems: 'center', gap: 6 }}
+                  onPress={() => checkGitHubUpdates(true)}>
+                  <Text style={{ fontSize: 11, fontWeight: '900', color: '#FFF' }}>
+                    {isCheckingUpdate ? '⏳ ĐANG KIỂM TRA...' : '🔄 KIỂM TRA BẢN MỚI'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             {/* CÀI ĐẶT TRỢ LÝ & BONG BÓNG CHAT */}
