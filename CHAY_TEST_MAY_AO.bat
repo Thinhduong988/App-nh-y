@@ -30,8 +30,8 @@ if %errorlevel% neq 0 (
 
 echo.
 echo [2/4] Đang cài đặt file APK mới nhất vào máy ảo...
-if exist "D:\ff-sensitivity-app\Do_Nhay_Free_Fire_AI_Pro_v1.0.6.apk" (
-    adb install -r "D:\ff-sensitivity-app\Do_Nhay_Free_Fire_AI_Pro_v1.0.6.apk"
+if exist "D:\ff-sensitivity-app\Do_Nhay_Free_Fire_AI_Pro_v1.0.7.apk" (
+    adb install -r "D:\ff-sensitivity-app\Do_Nhay_Free_Fire_AI_Pro_v1.0.7.apk"
 ) else (
     adb install -r "D:\ff-sensitivity-app\android\app\build\outputs\apk\release\app-release.apk"
 )

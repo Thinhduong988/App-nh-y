@@ -1,6 +1,6 @@
 {
   "name": "ff-sensitivity-pro",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Ứng dụng tra cứu và tối ưu độ nhạy Free Fire chuẩn thi đấu Esports",
   "main": "expo/AppEntry.js",
   "scripts": {

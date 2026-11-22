@@ -24,7 +24,7 @@ if %errorlevel% neq 0 (
 
 echo.
 echo [2/3] Cập nhật file APK ra thư mục gốc...
-copy /y "D:\ff-sensitivity-app\android\app\build\outputs\apk\release\app-release.apk" "D:\ff-sensitivity-app\Do_Nhay_Free_Fire_AI_Pro_v1.0.6.apk" >nul
+copy /y "D:\ff-sensitivity-app\android\app\build\outputs\apk\release\app-release.apk" "D:\ff-sensitivity-app\Do_Nhay_Free_Fire_AI_Pro_v1.0.7.apk" >nul
 
 echo.
 echo [3/3] Đẩy bản cài đặt vào máy ảo và mở app...

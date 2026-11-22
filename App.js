@@ -71,7 +71,7 @@ export default function App() {
   });
 
   // Cloud Sensitivity OTA & App Update System
-  const CURRENT_APP_VERSION = '1.0.6';
+  const CURRENT_APP_VERSION = '1.0.7';
   const [allSensitivityData, setAllSensitivityData] = useState(MOCK_DATA);
   const [cloudSensitivityMeta, setCloudSensitivityMeta] = useState(null);
   const [newReleaseInfo, setNewReleaseInfo] = useState(null);
