@@ -411,17 +411,19 @@ export default function AiChatBubble({
       const isYtOrTt = /(?:youtube\.com|youtu\.be|tiktok\.com)/i.test(track.uri || '');
       if (isYtOrTt) {
         Alert.alert(
-          '⚠️ Link YouTube / TikTok Không Thể Phát Trực Tiếp',
-          'YouTube & TikTok sử dụng mã hóa trang web nên không cho phép ứng dụng phát qua link URL thô.\n\n💡 CÁCH NGHE ĐƠN GIẢN NHẤT:\n1. Bấm nút dưới để tải nhanh file MP3 về máy (khoảng 5 giây).\n2. Trong app, bấm "📁 THÊM NHẠC TỪ MÁY" để phát vĩnh viễn, cực mượt khi leo rank!',
+          '⚠️ Link YouTube / TikTok Cần Chuyển Sang MP3',
+          'YouTube & TikTok sử dụng mã hóa trang web nên không cho phép ứng dụng phát qua link URL thô.\n\n💡 CÁCH TẢI MP3 CỰC NHANH VỚI COBALT.TOOLS (SẠCH, KHÔNG QUẢNG CÁO):\n1. Bấm nút dưới để mở công cụ cobalt.tools (đã tự động điền sẵn link bài hát).\n2. Chọn định dạng Audio/MP3 và tải về máy trong vài giây.\n3. Trong app, bấm "📁 THÊM NHẠC TỪ MÁY" để phát vĩnh viễn, cực mượt khi leo rank!',
           [
             { text: 'Đóng', style: 'cancel' },
             {
-              text: '🚀 TẢI MP3 NHANH',
+              text: '⚡ TẢI QUA COBALT.TOOLS',
               onPress: () => {
-                const target = (track.uri || '').includes('tiktok')
-                  ? 'https://snaptik.app/'
-                  : 'https://y2mate.nu/en1/';
-                Linking.openURL(target).catch(() => {});
+                const target = track.uri
+                  ? `https://cobalt.tools/#${encodeURIComponent(track.uri)}`
+                  : 'https://cobalt.tools/';
+                Linking.openURL(target).catch(() => {
+                  Linking.openURL('https://cobalt.tools/');
+                });
               },
             },
           ]
@@ -574,15 +576,16 @@ export default function AiChatBubble({
 
     if (isYouTube) {
       Alert.alert(
-        '🎬 Link YouTube Không Thể Phát Trực Tiếp',
-        'YouTube bảo vệ bản quyền và mã hóa luồng phát dạng trang web, các ứng dụng không thể phát qua link URL thô.\n\n💡 CÁCH NGHE CỰC DỄ (Chỉ mất 5 giây):\n1. Bấm nút dưới để chuyển nhanh sang trang y2mate tải file MP3 về máy.\n2. Trong app, bấm nút "📁 THÊM NHẠC TỪ MÁY" để chọn bài hát.\n\n👉 Nhạc sẽ lưu vĩnh viễn, phát cực mượt, không tốn dung lượng 4G và không bị giật lag ping khi kéo tâm!',
+        '🎬 Link YouTube Cần Tải MP3 Qua Cobalt.tools',
+        'YouTube bảo vệ bản quyền và mã hóa luồng phát dạng trang web, các ứng dụng không thể phát qua link URL thô.\n\n💡 CÁCH TẢI MP3 CỰC NHANH VỚI COBALT.TOOLS:\n1. Bấm nút dưới để chuyển nhanh sang cobalt.tools (đã tự điền sẵn link YouTube, không quảng cáo rác).\n2. Chọn tải file âm thanh MP3 về máy trong 5 giây.\n3. Trong app, bấm nút "📁 THÊM NHẠC TỪ MÁY" để chọn bài hát.\n\n👉 Nhạc sẽ lưu vĩnh viễn, phát cực mượt, không tốn dung lượng 4G và không bị giật lag ping khi kéo tâm!',
         [
           { text: 'Đóng', style: 'cancel' },
           {
-            text: '🚀 MỞ TRANG TẢI MP3 YOUTUBE',
+            text: '⚡ TẢI MP3 QUA COBALT.TOOLS',
             onPress: () => {
-              Linking.openURL('https://y2mate.nu/en1/').catch(() => {
-                Linking.openURL('https://www.google.com/search?q=youtube+to+mp3');
+              const target = `https://cobalt.tools/#${encodeURIComponent(url)}`;
+              Linking.openURL(target).catch(() => {
+                Linking.openURL('https://cobalt.tools/');
               });
             },
           },
@@ -593,15 +596,16 @@ export default function AiChatBubble({
 
     if (isTikTok) {
       Alert.alert(
-        '🎵 Link TikTok Không Thể Phát Trực Tiếp',
-        'TikTok bảo vệ bản quyền video nên không cho phép phát qua link URL thô.\n\n💡 CÁCH NGHE CỰC DỄ (Chỉ mất 5 giây):\n1. Bấm nút dưới để mở trang SnapTik tải file MP3 của video này về máy.\n2. Bấm nút "📁 THÊM NHẠC TỪ MÁY" trong app để thêm vào danh sách phát.\n\n👉 Nhạc phát trong nền mượt mà suốt mọi trận đấu!',
+        '🎵 Link TikTok Cần Tải MP3 Qua Cobalt.tools',
+        'TikTok bảo vệ bản quyền video nên không cho phép phát qua link URL thô.\n\n💡 CÁCH TẢI MP3 CỰC NHANH VỚI COBALT.TOOLS:\n1. Bấm nút dưới để mở cobalt.tools (đã tự điền sẵn link TikTok, tải nhạc sạch & không quảng cáo).\n2. Tải file MP3 của video này về máy.\n3. Bấm nút "📁 THÊM NHẠC TỪ MÁY" trong app để thêm vào danh sách phát.\n\n👉 Nhạc phát trong nền mượt mà suốt mọi trận đấu!',
         [
           { text: 'Đóng', style: 'cancel' },
           {
-            text: '🚀 MỞ TRANG TẢI MP3 TIKTOK',
+            text: '⚡ TẢI MP3 QUA COBALT.TOOLS',
             onPress: () => {
-              Linking.openURL('https://snaptik.app/').catch(() => {
-                Linking.openURL('https://www.google.com/search?q=tiktok+download+mp3');
+              const target = `https://cobalt.tools/#${encodeURIComponent(url)}`;
+              Linking.openURL(target).catch(() => {
+                Linking.openURL('https://cobalt.tools/');
               });
             },
           },
@@ -1118,21 +1122,33 @@ export default function AiChatBubble({
                     {/* YouTube & TikTok Fast Converter Helper Box */}
                     <View style={styles.quickConvertBox}>
                       <Text style={styles.quickConvertTitle}>
-                        🎬 BẠN CÓ LINK YOUTUBE HOẶC TIKTOK?
+                        ⚡ TẢI NHẠC YOUTUBE & TIKTOK QUA COBALT.TOOLS
                       </Text>
                       <Text style={styles.quickConvertDesc}>
-                        Link chia sẻ YouTube/TikTok là link web mã hóa. Bấm nút dưới để chuyển nhanh sang trang tải MP3 về máy chỉ 5 giây:
+                        Link chia sẻ YouTube/TikTok là link web mã hóa. Dùng cobalt.tools để tải MP3 siêu tốc, hoàn toàn không quảng cáo rác:
                       </Text>
                       <View style={styles.quickConvertBtnRow}>
                         <TouchableOpacity
                           style={[styles.quickConvertBtn, styles.quickConvertYt]}
-                          onPress={() => Linking.openURL('https://y2mate.nu/en1/').catch(() => {})}>
-                          <Text style={styles.quickConvertBtnText}>🎬 Tải MP3 YouTube</Text>
+                          onPress={() => {
+                            const link = inputLinkUrl.trim();
+                            const target = (link && (link.includes('youtube') || link.includes('youtu.be')))
+                              ? `https://cobalt.tools/#${encodeURIComponent(link)}`
+                              : 'https://cobalt.tools/';
+                            Linking.openURL(target).catch(() => {});
+                          }}>
+                          <Text style={styles.quickConvertBtnText}>⚡ Cobalt (Tải YouTube)</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                           style={[styles.quickConvertBtn, styles.quickConvertTt]}
-                          onPress={() => Linking.openURL('https://snaptik.app/').catch(() => {})}>
-                          <Text style={styles.quickConvertBtnText}>🎵 Tải MP3 TikTok</Text>
+                          onPress={() => {
+                            const link = inputLinkUrl.trim();
+                            const target = (link && link.includes('tiktok'))
+                              ? `https://cobalt.tools/#${encodeURIComponent(link)}`
+                              : 'https://cobalt.tools/';
+                            Linking.openURL(target).catch(() => {});
+                          }}>
+                          <Text style={styles.quickConvertBtnText}>🎵 Cobalt (Tải TikTok)</Text>
                         </TouchableOpacity>
                       </View>
                       <Text style={styles.quickConvertHint}>
