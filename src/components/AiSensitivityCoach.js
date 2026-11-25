@@ -5,191 +5,244 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  TextInput,
   Alert,
 } from 'react-native';
-import { COLORS } from '../theme/colors';
+import { COLORS, getAccentTheme } from '../theme/colors';
 
 const COMMON_ISSUES = [
-  { id: 'chest_lock', label: '❌ Tâm hay bị dính ngực (Kéo không lên đầu)', icon: '🛡️' },
-  { id: 'head_overshoot', label: '❌ Tâm hay vọt qua đầu bay lên trời', icon: '🚀' },
-  { id: 'shotgun_miss', label: '❌ Bắn Shotgun M1887 cận chiến hụt nhiều', icon: '💥' },
-  { id: 'smg_spread', label: '❌ Sấy MP40 đạn bị xòe, không dính cụm đỏ', icon: '⚡' },
-  { id: 'matte_glass', label: '❌ Mới dán kính nhám / Đeo bao ngón tay', icon: '🧤' },
+  { id: 'over_head', label: 'Vượt quá đầu (tâm bay lên trời)', desc: 'Lực kéo nhanh hoặc độ nhạy Red Dot / General đang hơi cao' },
+  { id: 'chest_lock', label: 'Khó lên đầu, dính ngực / chân', desc: 'Ma sát màn hình cao hoặc độ nhạy đang quá ghì nặng' },
+  { id: 'recoil_spread', label: 'Tâm rung / đạn xòe khi sấy SMG', desc: 'Cần cân bằng ống ngắm và mở rộng nút bắn hợp lý' },
+  { id: 'awm_slow', label: 'Kéo tâm AWM / M82B bị chậm', desc: 'Độ nhạy Súng Ngắm chưa tối ưu theo tốc độ vuốt tay' },
+  { id: 'need_balance', label: 'Cân bằng toàn diện (One-Shot & Sấy)', desc: 'Bộ số ổn định cho cả bắn Shotgun tầm gần lẫn AK/MP40' },
 ];
 
-export default function AiSensitivityCoach({ onSaveConfig, onGoToTrainer }) {
+export default function AiSensitivityCoach({ onSaveConfig, onGoToTrainer, accentColor }) {
+  const accent = getAccentTheme(accentColor || COLORS.primary);
   const [selectedIssue, setSelectedIssue] = useState('chest_lock');
-  const [deviceType, setDeviceType] = useState('Android Tầm Trung (90Hz-120Hz)');
+  const [deviceType, setDeviceType] = useState('iPhone / iPad Pro');
   const [customWeapon, setCustomWeapon] = useState('Shotgun (M1887, M1014)');
   const [analyzing, setAnalyzing] = useState(false);
   const [aiResult, setAiResult] = useState(null);
 
-  // Interactive Fine-tune Sliders
-  const [customGeneral, setCustomGeneral] = useState(188);
-  const [customRedDot, setCustomRedDot] = useState(176);
-  const [customScope2x, setCustomScope2x] = useState(170);
-  const [customScope4x, setCustomScope4x] = useState(162);
+  // Interactive sliders inside AI Coach
+  const [customGeneral, setCustomGeneral] = useState(190);
+  const [customRedDot, setCustomRedDot] = useState(182);
+  const [customScope2x, setCustomScope2x] = useState(168);
+  const [customScope4x, setCustomScope4x] = useState(156);
   const [customButtonSize, setCustomButtonSize] = useState(42);
 
   const handleDiagnose = () => {
     setAnalyzing(true);
     setTimeout(() => {
-      let gen = 188;
-      let red = 176;
-      let sc2 = 170;
-      let sc4 = 162;
-      let btn = 42;
-      let hud = 'Đáy 11% • Phải 18%';
-      let drag = 'Vuốt Móc Chữ J Siêu Tốc';
-      let diagnosis = '';
+      setAnalyzing(false);
 
-      if (selectedIssue === 'chest_lock') {
-        gen = 196;
-        red = 188;
-        sc2 = 182;
-        sc4 = 174;
-        btn = 40;
-        hud = 'Đáy 10% • Phải 17%';
-        drag = 'Vẩy Thẳng 1 Nhịp Nhanh Dứt Khoát';
-        diagnosis = 'Tâm bị ghim ngực do lực ma sát màn hình lớn hoặc Red Dot quá thấp. AI đã tăng Red Dot lên 188 và hạ kích thước nút xuống 40% để giải phóng biên độ vuốt tay!';
-      } else if (selectedIssue === 'head_overshoot') {
-        gen = 180;
-        red = 168;
-        sc2 = 162;
-        sc4 = 154;
-        btn = 48;
-        hud = 'Đáy 13% • Phải 19%';
-        drag = 'Kéo Nhẹ Hãm Phanh Ngón Tay';
-        diagnosis = 'Tâm vọt qua đầu vì gia tốc ngón tay quá cao. AI đã giảm nhìn xung quanh xuống 180 và tăng nút bắn lên 48% để làm điểm hãm quán tính ngón tay chuẩn xác!';
-      } else if (selectedIssue === 'shotgun_miss') {
+      let gen = 188;
+      let redDot = 178;
+      let s2x = 166;
+      let s4x = 152;
+      let awm = 95;
+      let btn = 42;
+      let dpi = '480 - 520';
+      let diagNote = '';
+
+      if (deviceType.includes('iPhone')) {
         gen = 192;
-        red = 182;
-        sc2 = 174;
-        sc4 = 166;
-        btn = 39;
-        hud = 'Đáy 10% • Phải 18%';
-        drag = 'Vuốt Móc Chữ J Góc Rộng';
-        diagnosis = 'Shotgun cần hành trình móc chữ J rộng. AI đã tối ưu nút bắn siêu gọn 39% giúp ngón tay có không gian vẽ đường cong hoàn hảo vào đầu địch.';
-      } else if (selectedIssue === 'smg_spread') {
+        redDot = 184;
+        dpi = 'Con trượt 120 (iOS)';
+      } else if (deviceType.includes('Flagship')) {
         gen = 186;
-        red = 178;
-        sc2 = 172;
-        sc4 = 165;
-        btn = 46;
-        hud = 'Đáy 12% • Phải 18%';
-        drag = 'Kéo Thẳng Đều Tay Ghìm Độ Giật';
-        diagnosis = 'Đạn MP40 xòe vì kéo giật cục bộ. AI thiết lập thông số cân bằng ổn định 186 giúp tâm khóa cứng ở cổ và tự động nảy lên đầu ở viên thứ 3.';
-      } else {
+        redDot = 176;
+        dpi = '500 - 560 (120Hz+)';
+      } else if (deviceType.includes('Yếu')) {
         gen = 198;
-        red = 192;
-        sc2 = 186;
-        sc4 = 178;
-        btn = 44;
-        hud = 'Đáy 11% • Phải 18%';
-        drag = 'Vuốt Vừa Tay (Đã Bù Trừ Ma Sát)';
-        diagnosis = 'Kính nhám và bao ngón tay làm giảm độ bám tiếp xúc cảm ứng. AI đã đẩy độ nhạy lên mức tối đa để giữ nguyên cảm giác lướt mượt mà!';
+        redDot = 194;
+        dpi = '411 - 450';
       }
 
-      setCustomGeneral(gen);
-      setCustomRedDot(red);
-      setCustomScope2x(sc2);
-      setCustomScope4x(sc4);
-      setCustomButtonSize(btn);
+      if (selectedIssue === 'over_head') {
+        gen -= 10;
+        redDot -= 12;
+        btn += 4;
+        diagNote = 'AI phát hiện dư lực vuốt khiến tâm vượt đỉnh đầu. Đã giảm nhẹ Nhìn Xung Quanh & Red Dot, đồng thời tăng nhẹ kích thước Nút Bắn để ghìm nhịp kéo.';
+      } else if (selectedIssue === 'chest_lock') {
+        gen += 8;
+        redDot += 12;
+        btn -= 2;
+        diagNote = 'Tâm đang bị ghì ở vùng ngực. AI đã nâng Nhìn Xung Quanh và Red Dot thêm +10/+12 để thoát khỏi lực hút thân và bắt đỉnh đầu dứt khoát.';
+      } else if (selectedIssue === 'recoil_spread') {
+        s2x -= 6;
+        s4x -= 8;
+        btn += 2;
+        diagNote = 'Tối ưu độ ổn định cho ống ngắm 2X/4X để gom tia đạn khi sấy SMG hoặc AR, giảm độ rung tầm trung.';
+      } else if (selectedIssue === 'awm_slow') {
+        awm = 135;
+        diagNote = 'Đẩy nhạy Súng Ngắm (AWM/M82B) lên mức 135 giúp vẩy tâm nhanh và bám mục tiêu di chuyển ngang mượt mà.';
+      } else {
+        diagNote = 'Cấu hình cân bằng Esports chuẩn OB 2026: ổn định tâm dính đầu với Shotgun/One-Shot và giữ đạn gọn khi sấy MP40.';
+      }
 
-      setAiResult({
-        deviceName: `Cấu hình AI: ${customWeapon.split(' ')[0]} • ${selectedIssue}`,
+      if (customWeapon.includes('Shotgun')) {
+        btn = Math.max(38, btn - 2);
+      } else if (customWeapon.includes('SMG')) {
+        btn = Math.min(50, btn + 2);
+      }
+
+      gen = Math.min(200, Math.max(100, gen));
+      redDot = Math.min(200, Math.max(100, redDot));
+      s2x = Math.min(200, Math.max(90, s2x));
+      s4x = Math.min(200, Math.max(80, s4x));
+
+      const res = {
+        id: `ai_${Date.now()}`,
+        deviceName: `Cấu hình AI 5D • ${deviceType.split(' ')[0]}`,
+        brand: 'AI 5D Lab',
         general: gen,
-        redDot: red,
-        scope2x: sc2,
-        scope4x: sc4,
-        awm: 74,
-        freeLook: 140,
+        redDot,
+        scope2x: s2x,
+        scope4x: s4x,
+        awm,
+        freeLook: 145,
         buttonSize: btn,
-        hudPos: hud,
-        dragType: drag,
-        diagnosis,
+        dpi,
+        hudPos: 'Cách đáy 13% • Cách phải 18%',
+        dragType: selectedIssue === 'over_head' ? 'Vuốt thẳng nhẹ có điểm dừng' : 'Vuốt chữ J dứt khoát lên đỉnh đầu',
         headshotRate: '99.6% ĐẦU',
-        dpi: '460 DPI (Hoặc 120 Trợ năng iOS)',
-      });
-      setAnalyzing(false);
-    }, 400);
+        diagnosis: diagNote,
+      };
+
+      setCustomGeneral(gen);
+      setCustomRedDot(redDot);
+      setCustomScope2x(s2x);
+      setCustomScope4x(s4x);
+      setCustomButtonSize(btn);
+      setAiResult(res);
+    }, 650);
   };
 
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={{ paddingBottom: 140 }}
+      contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}>
-      {/* Header */}
-      <View style={styles.glassHeader}>
-        <View style={styles.headerTag}>
-          <Text style={styles.headerTagText}>🤖 AI ESPORTS TACTICAL COACH 2026</Text>
+      {/* Figma iOS Header Card */}
+      <View style={styles.heroHeaderCard}>
+        <View style={[styles.headerTag, { backgroundColor: accent.light, borderColor: accent.border }]}>
+          <Text style={[styles.headerTagText, { color: accent.bright }]}>
+            ⚡ AI 5D TACTICAL GENERATOR 2026
+          </Text>
         </View>
-        <Text style={styles.headerTitle}>TRỢ LÝ AI TẠO & CHẨN ĐOÁN ĐỘ NHẠY</Text>
+        <Text style={styles.headerTitle}>Tạo độ nhạy AI 5 chiều</Text>
         <Text style={styles.headerSub}>
-          Hoạt động như một huấn luyện viên thật: Phân tích thói quen bắn, bắt bệnh tâm ngắm và tạo cấu hình dính đầu tuyệt đối.
+          Chẩn đoán lỗi kéo tâm và hiệu chuẩn ma trận 5 trục (General, Red Dot, 2X/4X, Nút bắn & DPI) theo thiết bị.
         </Text>
+        <View style={styles.disclaimerBadge}>
+          <Text style={styles.disclaimerText}>
+            ℹ️ Gợi ý tham khảo, không bảo đảm tỷ lệ headshot.
+          </Text>
+        </View>
       </View>
 
-      {/* Step 1: Chọn vấn đề gặp phải */}
+      {/* Main Input Card */}
       <View style={styles.cardBox}>
         <Text style={styles.cardTitle}>1. BẠN ĐANG GẶP VẤN ĐỀ GÌ KHI KÉO TÂM?</Text>
         <View style={styles.issueList}>
-          {COMMON_ISSUES.map((issue) => (
-            <TouchableOpacity
-              key={issue.id}
-              style={[styles.issueItem, selectedIssue === issue.id && styles.issueItemActive]}
-              onPress={() => setSelectedIssue(issue.id)}>
-              <Text style={[styles.issueText, selectedIssue === issue.id && styles.issueTextActive]}>
-                {issue.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          {COMMON_ISSUES.map((issue) => {
+            const isSelected = selectedIssue === issue.id;
+            return (
+              <TouchableOpacity
+                key={issue.id}
+                activeOpacity={0.85}
+                style={[
+                  styles.issueItem,
+                  isSelected && {
+                    borderColor: accent.border,
+                    backgroundColor: accent.light,
+                  },
+                ]}
+                onPress={() => setSelectedIssue(issue.id)}>
+                <View style={styles.issueRowInner}>
+                  <View
+                    style={[
+                      styles.radioOuter,
+                      isSelected && { borderColor: accent.primary },
+                    ]}>
+                    {isSelected && (
+                      <View style={[styles.radioInner, { backgroundColor: accent.primary }]} />
+                    )}
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[styles.issueText, isSelected && { color: COLORS.text, fontWeight: '800' }]}>
+                      {issue.label}
+                    </Text>
+                    <Text style={styles.issueDesc} numberOfLines={2}>
+                      {issue.desc}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
-        {/* Step 2: Dòng máy */}
-        <Text style={[styles.cardTitle, { marginTop: 16 }]}>2. PHÂN LOẠI THIẾT BỊ:</Text>
+        <Text style={[styles.cardTitle, { marginTop: 18 }]}>2. PHÂN LOẠI THIẾT BỊ</Text>
         <View style={styles.chipRow}>
           {[
             'iPhone / iPad Pro',
             'Android Flagship (120Hz+)',
             'Android Tầm Trung (90Hz-120Hz)',
             'Máy Cấu Hình Yếu (60Hz)',
-          ].map((dev) => (
-            <TouchableOpacity
-              key={dev}
-              style={[styles.chip, deviceType === dev && styles.chipActive]}
-              onPress={() => setDeviceType(dev)}>
-              <Text style={[styles.chipText, deviceType === dev && styles.chipTextActive]}>
-                {dev}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          ].map((dev) => {
+            const active = deviceType === dev;
+            return (
+              <TouchableOpacity
+                key={dev}
+                activeOpacity={0.8}
+                style={[
+                  styles.chip,
+                  active && { borderColor: accent.border, backgroundColor: accent.light },
+                ]}
+                onPress={() => setDeviceType(dev)}>
+                <Text style={[styles.chipText, active && { color: accent.bright, fontWeight: '800' }]}>
+                  {dev}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
-        {/* Step 3: Vũ khí */}
-        <Text style={[styles.cardTitle, { marginTop: 16 }]}>3. DÒNG SÚNG SỞ TRƯỜNG:</Text>
+        <Text style={[styles.cardTitle, { marginTop: 18 }]}>3. DÒNG SÚNG SỞ TRƯỜNG</Text>
         <View style={styles.chipRow}>
           {[
             'Shotgun (M1887, M1014)',
             'SMG Sấy (MP40, UMP)',
             'Súng Trường (AK, Scar)',
             'Trường Tầm Xa (Woodpecker, SVD)',
-          ].map((w) => (
-            <TouchableOpacity
-              key={w}
-              style={[styles.chip, customWeapon === w && styles.chipActive]}
-              onPress={() => setCustomWeapon(w)}>
-              <Text style={[styles.chipText, customWeapon === w && styles.chipTextActive]}>{w}</Text>
-            </TouchableOpacity>
-          ))}
+          ].map((w) => {
+            const active = customWeapon === w;
+            return (
+              <TouchableOpacity
+                key={w}
+                activeOpacity={0.8}
+                style={[
+                  styles.chip,
+                  active && { borderColor: accent.border, backgroundColor: accent.light },
+                ]}
+                onPress={() => setCustomWeapon(w)}>
+                <Text style={[styles.chipText, active && { color: accent.bright, fontWeight: '800' }]}>
+                  {w}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
-        {/* Diagnose Button */}
-        <TouchableOpacity style={styles.diagnoseBtn} onPress={handleDiagnose}>
-          <Text style={styles.diagnoseBtnText}>
-            {analyzing ? '🔄 AI ĐANG TÍNH TOÁN...' : '⚡ AI PHÂN TÍCH & TẠO ĐỘ NHẠY DÍNH ĐẦU'}
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={[styles.diagnoseBtn, { backgroundColor: accent.primary }]}
+          onPress={handleDiagnose}>
+          <Text style={[styles.diagnoseBtnText, { color: accent.textOnPrimary }]}>
+            {analyzing ? '🔄 Đang phân tích ma trận 5D...' : '⚡ Tạo cấu hình độ nhạy 5D'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -198,36 +251,38 @@ export default function AiSensitivityCoach({ onSaveConfig, onGoToTrainer }) {
       {aiResult && (
         <View style={styles.resultCard}>
           <View style={styles.resultHeader}>
+            <Text style={styles.aiResultTitle}>⚡ Kết quả hiệu chuẩn 5D</Text>
             <View style={styles.aiRateBadge}>
-              <Text style={styles.aiRateBadgeText}>{aiResult.headshotRate}</Text>
+              <Text style={styles.aiRateBadgeText}>Chỉ số nguồn: {aiResult.headshotRate}</Text>
             </View>
-            <Text style={styles.aiResultTitle}>CẤU HÌNH ĐÃ TỐI ƯU HÓA HOÀN TẤT</Text>
           </View>
 
-          {/* AI Diagnosis Explanations */}
-          <View style={styles.diagnosisBox}>
-            <Text style={styles.diagnosisIcon}>🤖</Text>
+          <View style={[styles.diagnosisBox, { borderLeftColor: accent.primary }]}>
+            <Text style={styles.diagnosisLabel}>💡 Chẩn đoán AI</Text>
             <Text style={styles.diagnosisText}>{aiResult.diagnosis}</Text>
           </View>
 
-          {/* Interactive Sliders (Tùy biến độ nhạy trực tiếp) */}
-          <Text style={styles.sliderSectionTitle}>🎛️ BẠN CÓ THỂ TÙY BIẾN THÊM VÀI NẤC ĐỘ NHẠY:</Text>
+          <Text style={styles.sliderSectionTitle}>🎛️ TINH CHỈNH TỪNG TRỤC ĐỘ NHẠY (THANG 200)</Text>
 
-          {/* General */}
-          <View style={styles.sliderRow}>
+          {/* 1D General */}
+          <View style={styles.calibrationCard}>
             <View style={styles.sliderInfo}>
-              <Text style={styles.sliderLabel}>Nhìn Xung Quanh</Text>
-              <Text style={styles.sliderVal}>{customGeneral}</Text>
+              <Text style={styles.sliderLabel}>1D • Nhìn xung quanh</Text>
+              <Text style={[styles.sliderVal, { color: accent.bright }]}>{customGeneral}</Text>
             </View>
             <View style={styles.stepGroup}>
               {[-4, -2, 0, +2, +4].map((step) => {
                 const target = Math.max(100, Math.min(200, aiResult.general + step));
+                const active = customGeneral === target;
                 return (
                   <TouchableOpacity
                     key={step}
-                    style={[styles.stepItem, customGeneral === target && styles.stepItemActive]}
+                    style={[
+                      styles.stepItem,
+                      active && { backgroundColor: accent.light, borderColor: accent.primary },
+                    ]}
                     onPress={() => setCustomGeneral(target)}>
-                    <Text style={[styles.stepText, customGeneral === target && styles.stepTextActive]}>
+                    <Text style={[styles.stepText, active && { color: COLORS.text, fontWeight: '900' }]}>
                       {target}
                     </Text>
                   </TouchableOpacity>
@@ -236,21 +291,25 @@ export default function AiSensitivityCoach({ onSaveConfig, onGoToTrainer }) {
             </View>
           </View>
 
-          {/* Red Dot */}
-          <View style={styles.sliderRow}>
+          {/* 2D Red Dot */}
+          <View style={styles.calibrationCard}>
             <View style={styles.sliderInfo}>
-              <Text style={styles.sliderLabel}>Red Dot Sight</Text>
-              <Text style={styles.sliderVal}>{customRedDot}</Text>
+              <Text style={styles.sliderLabel}>2D • Red Dot Sight</Text>
+              <Text style={[styles.sliderVal, { color: accent.bright }]}>{customRedDot}</Text>
             </View>
             <View style={styles.stepGroup}>
               {[-4, -2, 0, +2, +4].map((step) => {
                 const target = Math.max(100, Math.min(200, aiResult.redDot + step));
+                const active = customRedDot === target;
                 return (
                   <TouchableOpacity
                     key={step}
-                    style={[styles.stepItem, customRedDot === target && styles.stepItemActive]}
+                    style={[
+                      styles.stepItem,
+                      active && { backgroundColor: accent.light, borderColor: accent.primary },
+                    ]}
                     onPress={() => setCustomRedDot(target)}>
-                    <Text style={[styles.stepText, customRedDot === target && styles.stepTextActive]}>
+                    <Text style={[styles.stepText, active && { color: COLORS.text, fontWeight: '900' }]}>
                       {target}
                     </Text>
                   </TouchableOpacity>
@@ -259,51 +318,60 @@ export default function AiSensitivityCoach({ onSaveConfig, onGoToTrainer }) {
             </View>
           </View>
 
-          {/* Scope 2X & 4X */}
-          <View style={styles.sliderRow}>
-            <View style={styles.sliderInfo}>
-              <Text style={styles.sliderLabel}>Ống Ngắm 2X / 4X</Text>
-              <Text style={styles.sliderVal}>{customScope2x} / {customScope4x}</Text>
+          {/* 3D/4D Scopes */}
+          <View style={styles.calibrationCard}>
+            <View style={[styles.sliderInfo, { marginBottom: 0 }]}>
+              <Text style={styles.sliderLabel}>3D/4D • Ống ngắm 2X / 4X</Text>
+              <Text style={[styles.sliderVal, { color: COLORS.accentCyan }]}>
+                {customScope2x} / {customScope4x}
+              </Text>
             </View>
           </View>
 
-          {/* Button Size */}
-          <View style={styles.sliderRow}>
+          {/* 5D Button Size */}
+          <View style={styles.calibrationCard}>
             <View style={styles.sliderInfo}>
-              <Text style={styles.sliderLabel}>Kích Thước Nút Bắn</Text>
+              <Text style={styles.sliderLabel}>5D • Kích thước nút bắn</Text>
               <Text style={[styles.sliderVal, { color: COLORS.secondary }]}>{customButtonSize}%</Text>
             </View>
             <View style={styles.stepGroup}>
-              {[38, 42, 46, 50].map((s) => (
-                <TouchableOpacity
-                  key={s}
-                  style={[styles.stepItem, customButtonSize === s && styles.stepItemActive]}
-                  onPress={() => setCustomButtonSize(s)}>
-                  <Text style={[styles.stepText, customButtonSize === s && styles.stepTextActive]}>
-                    {s}%
-                  </Text>
-                </TouchableOpacity>
-              ))}
+              {[38, 42, 46, 50].map((s) => {
+                const active = customButtonSize === s;
+                return (
+                  <TouchableOpacity
+                    key={s}
+                    style={[
+                      styles.stepItem,
+                      active && { backgroundColor: COLORS.secondaryLight, borderColor: COLORS.secondary },
+                    ]}
+                    onPress={() => setCustomButtonSize(s)}>
+                    <Text style={[styles.stepText, active && { color: COLORS.text, fontWeight: '900' }]}>
+                      {s}%
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
           </View>
 
           {/* Strategy Details */}
           <View style={styles.extraDetailsCard}>
             <Text style={styles.extraDetailItem}>
-              🎯 <Text style={styles.boldWhite}>DPI Đề Xuất:</Text> {aiResult.dpi}
+              🎯 <Text style={styles.boldWhite}>DPI đề xuất:</Text> {aiResult.dpi}
             </Text>
             <Text style={styles.extraDetailItem}>
-              📐 <Text style={styles.boldWhite}>Vị Trí HUD:</Text> {aiResult.hudPos}
+              📐 <Text style={styles.boldWhite}>Vị trí HUD:</Text> {aiResult.hudPos}
             </Text>
             <Text style={styles.extraDetailItem}>
-              ⚡ <Text style={styles.boldWhite}>Kỹ Thuật Vuốt:</Text> {aiResult.dragType}
+              ⚡ <Text style={styles.boldWhite}>Kỹ thuật vuốt:</Text> {aiResult.dragType}
             </Text>
           </View>
 
           {/* Actions */}
           <View style={styles.btnRow}>
             <TouchableOpacity
-              style={styles.saveBtn}
+              activeOpacity={0.85}
+              style={[styles.saveBtn, { backgroundColor: accent.primary }]}
               onPress={() => {
                 const finalConfig = {
                   ...aiResult,
@@ -316,19 +384,24 @@ export default function AiSensitivityCoach({ onSaveConfig, onGoToTrainer }) {
                 if (onSaveConfig) onSaveConfig(finalConfig);
                 else Alert.alert('💾 Đã Lưu', 'Cấu hình AI đã được lưu thành công!');
               }}>
-              <Text style={styles.saveBtnText}>💾 LƯU CẤU HÌNH (ĐẶT TÊN)</Text>
+              <Text style={[styles.saveBtnText, { color: accent.textOnPrimary }]}>
+                💾 Lưu cấu hình (Đặt tên)
+              </Text>
             </TouchableOpacity>
 
             {onGoToTrainer && (
-              <TouchableOpacity style={styles.trainerBtn} onPress={onGoToTrainer}>
-                <Text style={styles.trainerBtnText}>🎯 VÀO PHÒNG BẮN TEST NGAY →</Text>
+              <TouchableOpacity
+                activeOpacity={0.85}
+                style={styles.trainerBtn}
+                onPress={onGoToTrainer}>
+                <Text style={[styles.trainerBtnText, { color: accent.bright }]}>
+                  🎯 Thử nghiệm trong Phòng Kéo Tâm →
+                </Text>
               </TouchableOpacity>
             )}
           </View>
         </View>
       )}
-
-      <View style={{ height: 120 }} />
     </ScrollView>
   );
 }
@@ -339,196 +412,223 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
     paddingHorizontal: 16,
   },
-  glassHeader: {
-    backgroundColor: COLORS.glassCard,
-    padding: 16,
+  scrollContent: {
+    paddingBottom: 120,
+    paddingTop: 10,
+  },
+  heroHeaderCard: {
+    backgroundColor: COLORS.surface,
+    padding: 18,
     borderRadius: COLORS.rounded.lg,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorder,
-    marginTop: 12,
     marginBottom: 14,
   },
   headerTag: {
     alignSelf: 'flex-start',
-    backgroundColor: COLORS.primaryLight,
     paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: COLORS.rounded.sm,
+    paddingVertical: 5,
+    borderRadius: COLORS.rounded.full,
     borderWidth: 1,
-    borderColor: COLORS.primary,
-    marginBottom: 6,
+    marginBottom: 10,
   },
   headerTagText: {
-    color: COLORS.primaryBright,
     fontSize: 11,
-    fontWeight: '900',
+    fontWeight: '800',
+    letterSpacing: 0.4,
   },
   headerTitle: {
     color: COLORS.text,
-    fontSize: 21,
-    fontWeight: '900',
-    letterSpacing: 0.5,
+    fontSize: 22,
+    fontWeight: '800',
+    letterSpacing: -0.3,
   },
   headerSub: {
-    color: COLORS.textSecondary,
+    color: COLORS.textMuted,
     fontSize: 13,
-    marginTop: 4,
-    lineHeight: 18,
+    marginTop: 6,
+    lineHeight: 19,
+  },
+  disclaimerBadge: {
+    marginTop: 12,
+    backgroundColor: 'rgba(56, 189, 248, 0.1)',
+    borderRadius: COLORS.rounded.sm,
+    borderWidth: 1,
+    borderColor: 'rgba(56, 189, 248, 0.25)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  disclaimerText: {
+    color: COLORS.accentCyan,
+    fontSize: 12,
+    fontWeight: '600',
   },
   cardBox: {
-    backgroundColor: COLORS.glassCard,
+    backgroundColor: COLORS.surface,
     padding: 16,
     borderRadius: COLORS.rounded.lg,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORS.glassBorder,
     marginBottom: 14,
   },
   cardTitle: {
-    color: COLORS.textSecondary,
-    fontSize: 12,
+    color: COLORS.textMuted,
+    fontSize: 11,
     fontWeight: '800',
-    letterSpacing: 0.5,
-    marginBottom: 8,
+    letterSpacing: 0.7,
+    marginBottom: 10,
   },
   issueList: {
     gap: 8,
   },
   issueItem: {
-    backgroundColor: COLORS.glassCardElevated,
+    backgroundColor: COLORS.backgroundAlt,
     paddingVertical: 12,
-    paddingHorizontal: 14,
+    paddingHorizontal: 12,
     borderRadius: COLORS.rounded.md,
     borderWidth: 1,
     borderColor: COLORS.glassBorder,
   },
-  issueItemActive: {
-    borderColor: COLORS.primaryBright,
-    backgroundColor: 'rgba(255, 94, 0, 0.25)',
-    borderWidth: 1.5,
+  issueRowInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  radioOuter: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: COLORS.textDim,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
   issueText: {
     color: COLORS.textSecondary,
     fontSize: 13,
     fontWeight: '700',
   },
-  issueTextActive: {
-    color: '#FFF',
-    fontWeight: '900',
+  issueDesc: {
+    color: COLORS.textMuted,
+    fontSize: 11,
+    marginTop: 2,
+    lineHeight: 15,
   },
   chipRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 6,
+    gap: 8,
   },
   chip: {
-    backgroundColor: COLORS.glassCardElevated,
+    backgroundColor: COLORS.backgroundAlt,
     paddingHorizontal: 12,
-    paddingVertical: 9,
-    borderRadius: COLORS.rounded.md,
+    paddingVertical: 10,
+    borderRadius: COLORS.rounded.sm,
     borderWidth: 1,
     borderColor: COLORS.glassBorder,
   },
-  chipActive: {
-    borderColor: COLORS.primaryBright,
-    backgroundColor: 'rgba(255, 94, 0, 0.22)',
-  },
   chipText: {
     color: COLORS.textSecondary,
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  chipTextActive: {
-    color: COLORS.primaryBright,
-    fontWeight: '900',
+    fontSize: 12,
+    fontWeight: '600',
   },
   diagnoseBtn: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: 14,
-    borderRadius: COLORS.rounded.full,
+    paddingVertical: 15,
+    borderRadius: COLORS.rounded.md,
     alignItems: 'center',
-    marginTop: 18,
+    justifyContent: 'center',
+    marginTop: 20,
+    minHeight: 48,
   },
   diagnoseBtnText: {
-    color: '#FFF',
     fontSize: 14,
-    fontWeight: '900',
-    letterSpacing: 0.5,
+    fontWeight: '800',
   },
   resultCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    backgroundColor: COLORS.surface,
     borderRadius: COLORS.rounded.xl,
-    padding: 18,
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.14)',
+    padding: 16,
+    borderWidth: 1,
+    borderColor: COLORS.glassBorderHighlight,
     marginBottom: 16,
   },
   resultHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
     marginBottom: 12,
   },
+  aiResultTitle: {
+    color: COLORS.text,
+    fontSize: 16,
+    fontWeight: '800',
+  },
   aiRateBadge: {
-    backgroundColor: 'rgba(52, 199, 89, 0.2)',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
+    backgroundColor: 'rgba(34, 197, 94, 0.14)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: COLORS.rounded.full,
     borderWidth: 1,
-    borderColor: COLORS.accentGreen,
+    borderColor: 'rgba(34, 197, 94, 0.4)',
   },
   aiRateBadgeText: {
     color: COLORS.accentGreen,
     fontSize: 11,
-    fontWeight: '900',
-  },
-  aiResultTitle: {
-    color: '#FFF',
-    fontSize: 14,
-    fontWeight: '900',
+    fontWeight: '800',
   },
   diagnosisBox: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    backgroundColor: COLORS.backgroundAlt,
     borderRadius: COLORS.rounded.md,
-    padding: 14,
-    alignItems: 'center',
-    gap: 8,
+    padding: 12,
     borderLeftWidth: 3.5,
-    borderLeftColor: COLORS.primary,
     marginBottom: 14,
   },
-  diagnosisIcon: {
-    fontSize: 22,
+  diagnosisLabel: {
+    color: COLORS.text,
+    fontSize: 12,
+    fontWeight: '800',
+    marginBottom: 4,
   },
   diagnosisText: {
     color: COLORS.textSecondary,
     fontSize: 12,
     lineHeight: 18,
-    flex: 1,
   },
   sliderSectionTitle: {
     color: COLORS.textMuted,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '800',
     marginBottom: 10,
-    letterSpacing: 0.5,
+    letterSpacing: 0.6,
   },
-  sliderRow: {
-    marginBottom: 12,
+  calibrationCard: {
+    backgroundColor: COLORS.backgroundAlt,
+    borderRadius: COLORS.rounded.md,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: COLORS.glassBorder,
+    marginBottom: 10,
   },
   sliderInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 6,
+    alignItems: 'center',
+    marginBottom: 8,
   },
   sliderLabel: {
     color: COLORS.textSecondary,
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
   },
   sliderVal: {
-    color: COLORS.primaryBright,
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '900',
   },
   stepGroup: {
@@ -537,41 +637,34 @@ const styles = StyleSheet.create({
   },
   stepItem: {
     flex: 1,
-    backgroundColor: COLORS.glassCard,
-    paddingVertical: 8,
-    borderRadius: COLORS.rounded.sm,
+    backgroundColor: COLORS.surface,
+    paddingVertical: 9,
+    borderRadius: COLORS.rounded.xs,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: COLORS.glassBorder,
-  },
-  stepItemActive: {
-    backgroundColor: 'rgba(255, 94, 0, 0.3)',
-    borderColor: COLORS.primaryBright,
   },
   stepText: {
     color: COLORS.textMuted,
     fontSize: 12,
     fontWeight: '700',
   },
-  stepTextActive: {
-    color: '#FFF',
-    fontWeight: '900',
-  },
   extraDetailsCard: {
-    backgroundColor: COLORS.glassCard,
+    backgroundColor: COLORS.backgroundAlt,
     borderRadius: COLORS.rounded.md,
     padding: 12,
-    marginVertical: 12,
+    marginVertical: 10,
     borderWidth: 1,
     borderColor: COLORS.glassBorder,
+    gap: 4,
   },
   extraDetailItem: {
     color: COLORS.textSecondary,
     fontSize: 12,
-    lineHeight: 20,
+    lineHeight: 19,
   },
   boldWhite: {
-    color: '#FFF',
+    color: COLORS.text,
     fontWeight: '800',
   },
   btnRow: {
@@ -579,29 +672,28 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   saveBtn: {
-    backgroundColor: COLORS.primary,
     paddingVertical: 14,
-    borderRadius: COLORS.rounded.lg,
+    borderRadius: COLORS.rounded.md,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.secondary,
+    justifyContent: 'center',
+    minHeight: 48,
   },
   saveBtnText: {
-    color: '#FFF',
-    fontSize: 13,
-    fontWeight: '900',
+    fontSize: 14,
+    fontWeight: '800',
   },
   trainerBtn: {
-    backgroundColor: COLORS.glassCardElevated,
+    backgroundColor: COLORS.backgroundAlt,
     paddingVertical: 14,
-    borderRadius: COLORS.rounded.lg,
+    borderRadius: COLORS.rounded.md,
     alignItems: 'center',
-    borderWidth: 1.5,
+    justifyContent: 'center',
+    borderWidth: 1,
     borderColor: COLORS.glassBorderHighlight,
+    minHeight: 48,
   },
   trainerBtnText: {
-    color: COLORS.primaryBright,
     fontSize: 13,
-    fontWeight: '900',
+    fontWeight: '800',
   },
 });
